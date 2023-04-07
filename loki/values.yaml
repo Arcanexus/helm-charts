@@ -1,0 +1,46 @@
+namespace:
+  name: 
+
+volumes:
+  lokiconfig:
+    name: loki-config
+    size: 10Mi
+    path: /volume2/docker/loki/loki-config-k8s-nfs-pv
+    server: 192.168.2.50
+    containerMountPath: /etc/loki
+  lokidata:
+    name: loki-data
+    size: 10Gi
+    path: /volume2/docker/loki/loki-data-k8s-nfs-pv
+    server: 192.168.2.50
+    containerMountPath: /tmp/loki
+
+  promtailconfig:
+    name: promtail-config
+    size: 10Mi
+    path: /volume2/docker/loki/promtail-config-k8s-nfs-pv
+    server: 192.168.2.50
+    containerMountPath: /etc/promtail/
+  
+  # syslogngconfig:
+  #   name: syslogng-config
+  #   size: 10Mi
+  #   path: /volume2/docker/loki/syslogng-config-k8s-nfs-pv
+  #   server: 192.168.2.50
+  #   containerMountPath: /etc/syslog-ng
+
+pods:
+  loki:
+    image: grafana/loki:latest
+    replicas: 0
+    httpContainerPort: 3100
+    httpExposedPort: 30007
+    grpcContainerPort: 9096
+    grpcExposedPort: 30008
+
+  promtail:
+    image: grafana/promtail:latest
+    replicas: 1
+    httpContainerPort: 1514
+    httpExposedPort: 30009
+

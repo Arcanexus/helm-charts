@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "app.name" . }}-{{ .Values.volumes.lokiconfig.name }}-pvc
+  namespace: {{ template "app.name" . }}
+spec:
+  storageClassName: {{ template "app.name" . }}-{{ .Values.volumes.lokiconfig.name }}-volume
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.volumes.lokiconfig.size }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "app.name" . }}-{{ .Values.volumes.lokidata.name }}-pvc
+  namespace: {{ template "app.name" . }}
+spec:
+  storageClassName: {{ template "app.name" . }}-{{ .Values.volumes.lokidata.name }}-volume
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.volumes.lokidata.size }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "app.name" . }}-{{ .Values.volumes.promtailconfig.name }}-pvc
+  namespace: {{ template "app.name" . }}
+spec:
+  storageClassName: {{ template "app.name" . }}-{{ .Values.volumes.promtailconfig.name }}-volume
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.volumes.promtailconfig.size }}

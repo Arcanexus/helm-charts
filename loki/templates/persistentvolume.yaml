@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ template "app.name" . }}-{{ .Values.volumes.lokiconfig.name }}-volume
+  namespace: {{ template "app.name" . }}
+spec:
+  capacity:
+    storage: {{ .Values.volumes.lokiconfig.size }}
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: {{ template "app.name" . }}-{{ .Values.volumes.lokiconfig.name }}-volume
+  mountOptions:
+    - hard
+    - intr
+  nfs:
+    path: {{ .Values.volumes.lokiconfig.path }}
+    server: {{ .Values.volumes.lokiconfig.server }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ template "app.name" . }}-{{ .Values.volumes.lokidata.name }}-volume
+  namespace: {{ template "app.name" . }}
+spec:
+  capacity:
+    storage: {{ .Values.volumes.lokidata.size }}
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: {{ template "app.name" . }}-{{ .Values.volumes.lokidata.name }}-volume
+  mountOptions:
+    - hard
+    - intr
+  nfs:
+    path: {{ .Values.volumes.lokidata.path }}
+    server: {{ .Values.volumes.lokidata.server }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ template "app.name" . }}-{{ .Values.volumes.promtailconfig.name }}-volume
+  namespace: {{ template "app.name" . }}
+spec:
+  capacity:
+    storage: {{ .Values.volumes.promtailconfig.size }}
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: {{ template "app.name" . }}-{{ .Values.volumes.promtailconfig.name }}-volume
+  mountOptions:
+    - hard
+    - intr
+  nfs:
+    path: {{ .Values.volumes.promtailconfig.path }}
+    server: {{ .Values.volumes.promtailconfig.server }}
+

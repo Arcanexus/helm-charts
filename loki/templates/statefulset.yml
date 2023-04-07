@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: {{ template "app.name" . }}
+  name: {{ include "app.name" . }}-loki
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}-loki # has to match .spec.template.metadata.labels
+  serviceName: {{ template "app.name" . }}-lokihttpservice
+  replicas: {{ .Values.pods.loki.replicas }}
+  minReadySeconds: 10 # by default is 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-loki # has to match .spec.selector.matchLabels
+        date: "{{ now | unixEpoch }}"
+    spec:
+      terminationGracePeriodSeconds: 10
+      # serviceAccountName: {{ include "app.name" . }}
+      # automountServiceAccountToken: true
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      containers:
+      - name: {{ include "app.name" . }}-loki
+        image: {{ .Values.pods.loki.image }}
+        ImagePullPolicy: Always
+        args: ["-config.file=/etc/loki/local-config.yaml"]
+        ports:
+        - containerPort: {{ .Values.pods.loki.httpContainerPort }}
+          name: loki-http
+        - containerPort: {{ .Values.pods.loki.grpcContainerPort }}
+          name: loki-grpc
+        volumeMounts:
+        - name: {{ include "app.name" . }}-{{ .Values.volumes.lokiconfig.name }}
+          mountPath: {{ .Values.volumes.lokiconfig.containerMountPath }}
+        - name: {{ include "app.name" . }}-{{ .Values.volumes.lokidata.name }}
+          mountPath: {{ .Values.volumes.lokidata.containerMountPath }}
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+      volumes:
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.lokiconfig.name }}
+        persistentVolumeClaim:
+          claimName: {{ include "app.name" . }}-{{ .Values.volumes.lokiconfig.name }}-pvc
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.lokidata.name }}
+        persistentVolumeClaim:
+          claimName: {{ include "app.name" . }}-{{ .Values.volumes.lokidata.name }}-pvc
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: {{ template "app.name" . }}
+  name: {{ include "app.name" . }}-promtail
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}-promtail # has to match .spec.template.metadata.labels
+  serviceName: {{ template "app.name" . }}-promtailhttpservice
+  replicas: {{ .Values.pods.promtail.replicas }}
+  minReadySeconds: 10 # by default is 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-promtail # has to match .spec.selector.matchLabels
+        date: "{{ now | unixEpoch }}"
+    spec:
+      terminationGracePeriodSeconds: 10
+      # serviceAccountName: {{ include "app.name" . }}
+      # automountServiceAccountToken: true
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      containers:
+      - name: {{ include "app.name" . }}-promtail
+        image: {{ .Values.pods.promtail.image }}
+        ImagePullPolicy: Always
+        args: ["-config.file=/etc/promtail/config.yml"]
+        ports:
+        - containerPort: {{ .Values.pods.promtail.httpContainerPort }}
+          name: promtail-http
+        volumeMounts:
+        - name: {{ include "app.name" . }}-{{ .Values.volumes.promtailconfig.name }}
+          mountPath: {{ .Values.volumes.promtailconfig.containerMountPath }}
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+      volumes:
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.promtailconfig.name }}
+        persistentVolumeClaim:
+          claimName: {{ include "app.name" . }}-{{ .Values.volumes.promtailconfig.name }}-pvc
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "app.name" . }}-lokihttpservice
+  namespace: {{ template "app.name" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "app.name" . }}-lokihttpservice
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: NodePort
+  ports:
+  - port: {{ .Values.pods.loki.httpContainerPort }}
+    targetPort: {{ .Values.pods.loki.httpContainerPort }}
+    name: {{ include "app.name" . }}-loki
+    nodePort: {{ .Values.pods.loki.httpExposedPort }}
+  selector:
+    app: {{ include "app.name" . }}-loki
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "app.name" . }}-lokigrpcservice
+  namespace: {{ template "app.name" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "app.name" . }}-lokigrpcservice
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: NodePort
+  ports:
+  - port: {{ .Values.pods.loki.grpcContainerPort }}
+    targetPort: {{ .Values.pods.loki.grpcContainerPort }}
+    name: {{ include "app.name" . }}-loki
+    nodePort: {{ .Values.pods.loki.grpcExposedPort }}
+  selector:
+    app: {{ include "app.name" . }}-loki
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "app.name" . }}-promtailhttpservice
+  namespace: {{ template "app.name" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "app.name" . }}-promtailhttpservice
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: NodePort
+  ports:
+  - port: {{ .Values.pods.promtail.httpContainerPort }}
+    targetPort: {{ .Values.pods.promtail.httpContainerPort }}
+    name: {{ include "app.name" . }}-promtail
+    nodePort: {{ .Values.pods.promtail.httpExposedPort }}
+  selector:
+    app: {{ include "app.name" . }}-promtail
+
