@@ -1,0 +1,17 @@
+namespace:
+  name: 
+
+volumes:
+  config:
+    name: config
+    size: 10Mi
+    path: /volume2/docker/snmp-exporter/snmp-exporter-config-k8s-nfs-pv
+    server: 192.168.2.50
+    containerMountPath: /etc/snmp_exporter/
+
+pods:
+  snmpexporter:
+    image: prom/snmp-exporter:latest
+    replicas: 1
+    containerPort: 9116
+    exposedPort: 30006

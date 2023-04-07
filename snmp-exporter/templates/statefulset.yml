@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: {{ template "app.name" . }}
+  name: {{ include "app.name" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }} # has to match .spec.template.metadata.labels
+  serviceName: {{ template "app.name" . }}-service
+  replicas: {{ .Values.pods.snmpexporter.replicas }}
+  minReadySeconds: 10 # by default is 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }} # has to match .spec.selector.matchLabels
+        date: "{{ now | unixEpoch }}"
+    spec:
+      terminationGracePeriodSeconds: 10
+      # serviceAccountName: {{ include "app.name" . }}
+      # automountServiceAccountToken: true
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      containers:
+      - name: {{ include "app.name" . }}
+        image: {{ .Values.pods.snmpexporter.image }}
+        ImagePullPolicy: Always
+        args: ["--config.file=/etc/snmp_exporter/snmp.yml"]
+        ports:
+        - containerPort: {{ .Values.pods.snmpexporter.containerPort }}
+          name: web
+        volumeMounts:
+        - name: {{ include "app.name" . }}-{{ .Values.volumes.config.name }}
+          mountPath: {{ .Values.volumes.config.containerMountPath }}
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+      volumes:
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.config.name }}
+        persistentVolumeClaim:
+          claimName: {{ include "app.name" . }}-{{ .Values.volumes.config.name }}-pvc
+
