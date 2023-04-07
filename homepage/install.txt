@@ -1,0 +1,2 @@
+helm upgrade homepage ..\helm\ --kubeconfig C:\Users\schwa\.kube\config_k3s-amd64-0.yml -i
+helm upgrade homepage ../helm/ --kubeconfig ~/.kube/config_k3s-amd64-0.yml -i

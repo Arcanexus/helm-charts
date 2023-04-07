@@ -1,0 +1,17 @@
+namespace:
+  name: 
+
+volumes:
+  config:
+    name: config
+    size: 100Mi
+    path: /volume2/docker/homepage/homepage-config-k8s-nfs-pv
+    server: 192.168.2.50
+    containerMountPath: /app/config
+
+pods:
+  homepage:
+    image: ghcr.io/benphelps/homepage:latest
+    replicas: 1
+    containerPort: 3000
+    exposedPort: 30001

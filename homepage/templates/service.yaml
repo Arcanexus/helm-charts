@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "app.name" . }}-service
+  namespace: {{ template "app.name" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "app.name" . }}-service
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: NodePort
+  ports:
+  - port: {{ .Values.pods.homepage.containerPort }}
+    targetPort: {{ .Values.pods.homepage.containerPort }}
+    name: {{ include "app.name" . }}
+    nodePort: {{ .Values.pods.homepage.exposedPort }}
+  selector:
+    app: {{ include "app.name" . }}
+
