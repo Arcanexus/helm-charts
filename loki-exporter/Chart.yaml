@@ -1,4 +1,4 @@
 apiVersion: v1
-description: A Helm chart for loki-exporter
-name: loki-exporter
+description: A Helm chart for snmp-exporter
+name: snmp-exporter
 version: 0.0.1

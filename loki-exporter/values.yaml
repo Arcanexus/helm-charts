@@ -5,13 +5,13 @@ volumes:
   config:
     name: config
     size: 10Mi
-    path: /volume2/docker/loki-exporter/loki-exporter-config-k8s-nfs-pv
+    path: /volume2/docker/snmp-exporter/snmp-exporter-config-k8s-nfs-pv
     server: 192.168.2.50
-    containerMountPath: /config
+    containerMountPath: /etc/snmp_exporter/
 
 pods:
-  lokiexporter:
-    image: ricoberger/loki_exporter:latest
+  snmpexporter:
+    image: prom/snmp-exporter:latest
     replicas: 1
-    containerPort: 9524
-    exposedPort: 30004
+    containerPort: 9116
+    exposedPort: 30006
