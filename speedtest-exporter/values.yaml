@@ -1,0 +1,11 @@
+namespace:
+  name: 
+
+volumes:
+
+pods:
+  speedtestexporter:
+    image: miguelndecarvalho/speedtest-exporter:latest
+    replicas: 1
+    containerPort: 9798
+    exposedPort: 30005
