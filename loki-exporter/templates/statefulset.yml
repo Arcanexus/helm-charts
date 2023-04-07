@@ -8,7 +8,7 @@ spec:
     matchLabels:
       app: {{ include "app.name" . }} # has to match .spec.template.metadata.labels
   serviceName: {{ template "app.name" . }}-service
-  replicas: {{ .Values.pods.snmpexporter.replicas }}
+  replicas: {{ .Values.pods.lokiexporter.replicas }}
   minReadySeconds: 10 # by default is 0
   template:
     metadata:
@@ -23,11 +23,13 @@ spec:
       enableServiceLinks: true
       containers:
       - name: {{ include "app.name" . }}
-        image: {{ .Values.pods.snmpexporter.image }}
+        image: {{ .Values.pods.lokiexporter.image }}
         ImagePullPolicy: Always
-        args: ["--config.file=/etc/snmp_exporter/snmp.yml"]
+        args: ["--config.file=/config/config.yaml"]
+        securityContext:
+          privileged: true
         ports:
-        - containerPort: {{ .Values.pods.snmpexporter.containerPort }}
+        - containerPort: {{ .Values.pods.lokiexporter.containerPort }}
           name: web
         volumeMounts:
         - name: {{ include "app.name" . }}-{{ .Values.volumes.config.name }}

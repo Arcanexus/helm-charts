@@ -11,10 +11,10 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - port: {{ .Values.pods.snmpexporter.containerPort }}
-    targetPort: {{ .Values.pods.snmpexporter.containerPort }}
+  - port: {{ .Values.pods.lokiexporter.containerPort }}
+    targetPort: {{ .Values.pods.lokiexporter.containerPort }}
     name: {{ include "app.name" . }}
-    nodePort: {{ .Values.pods.snmpexporter.exposedPort }}
+    nodePort: {{ .Values.pods.lokiexporter.exposedPort }}
   selector:
     app: {{ include "app.name" . }}
 
