@@ -74,7 +74,7 @@ spec:
       - name: {{ include "app.name" . }}-promtail
         image: {{ .Values.pods.promtail.image }}
         ImagePullPolicy: Always
-        args: ["-config.file=/etc/promtail/config.yml"]
+        args: ["-config.file=/etc/promtail/config.yml -config.expand-env=true"]
         ports:
         - containerPort: {{ .Values.pods.promtail.httpContainerPort }}
           name: promtail-http
