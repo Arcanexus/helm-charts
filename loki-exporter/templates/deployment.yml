@@ -15,9 +15,6 @@ spec:
         app: {{ include "app.name" . }}
         date: "{{ now | unixEpoch }}"
     spec:
-      # terminationGracePeriodSeconds: 10
-      serviceAccountName: {{ include "app.name" . }}
-      automountServiceAccountToken: true
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
       containers:
