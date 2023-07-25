@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ template "app.name" . }}
+  name: {{ include "app.name" . }}
+spec:
+  replicas: {{ .Values.pods.lokiexporter.replicas }}
+  #minReadySeconds: 10
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}
+        date: "{{ now | unixEpoch }}"
+    spec:
+      # terminationGracePeriodSeconds: 10
+      serviceAccountName: {{ include "app.name" . }}
+      automountServiceAccountToken: true
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      containers:
+        - name: {{ include "app.name" . }}
+          image: {{ .Values.pods.lokiexporter.image }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: {{ .Values.pods.lokiexporter.containerPort }}
+              name: web
+          volumeMounts:
+            - name: {{ include "app.name" . }}-{{ .Values.volumes.config.name }}
+              mountPath: {{ .Values.volumes.config.containerMountPath }}
+          env:
+            - name: TZ
+              value: "Europe/Paris"
+      volumes:
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.config.name }}
+        persistentVolumeClaim:
+          claimName: {{ include "app.name" . }}-{{ .Values.volumes.config.name }}-pvc
+
