@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   namespace: {{ template "app.name" . }}
   name: {{ include "app.name" . }}
@@ -7,24 +7,19 @@ spec:
   selector:
     matchLabels:
       app: {{ include "app.name" . }} # has to match .spec.template.metadata.labels
-  serviceName: {{ template "app.name" . }}-service
   replicas: {{ .Values.pods.speedtestexporter.replicas }}
-  minReadySeconds: 10 # by default is 0
   template:
     metadata:
       labels:
         app: {{ include "app.name" . }} # has to match .spec.selector.matchLabels
         date: "{{ now | unixEpoch }}"
     spec:
-      terminationGracePeriodSeconds: 10
-      # serviceAccountName: {{ include "app.name" . }}
-      # automountServiceAccountToken: true
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
       containers:
       - name: {{ include "app.name" . }}
         image: {{ .Values.pods.speedtestexporter.image }}
-        ImagePullPolicy: Always
+        imagePullPolicy: Always
         ports:
         - containerPort: {{ .Values.pods.speedtestexporter.containerPort }}
           name: web
