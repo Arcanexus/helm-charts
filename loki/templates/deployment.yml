@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   namespace: {{ template "app.name" . }}
   name: {{ include "app.name" . }}-loki
@@ -7,24 +7,19 @@ spec:
   selector:
     matchLabels:
       app: {{ include "app.name" . }}-loki # has to match .spec.template.metadata.labels
-  serviceName: {{ template "app.name" . }}-lokihttpservice
   replicas: {{ .Values.pods.loki.replicas }}
-  minReadySeconds: 10 # by default is 0
   template:
     metadata:
       labels:
         app: {{ include "app.name" . }}-loki # has to match .spec.selector.matchLabels
         date: "{{ now | unixEpoch }}"
     spec:
-      terminationGracePeriodSeconds: 10
-      # serviceAccountName: {{ include "app.name" . }}
-      # automountServiceAccountToken: true
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
       containers:
       - name: {{ include "app.name" . }}-loki
         image: {{ .Values.pods.loki.image }}
-        ImagePullPolicy: Always
+        imagePullPolicy: Always
         args: ["-config.file=/etc/loki/local-config.yaml"]
         ports:
         - containerPort: {{ .Values.pods.loki.httpContainerPort }}
@@ -48,7 +43,7 @@ spec:
           claimName: {{ include "app.name" . }}-{{ .Values.volumes.lokidata.name }}-pvc
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   namespace: {{ template "app.name" . }}
   name: {{ include "app.name" . }}-promtail
@@ -56,24 +51,19 @@ spec:
   selector:
     matchLabels:
       app: {{ include "app.name" . }}-promtail # has to match .spec.template.metadata.labels
-  serviceName: {{ template "app.name" . }}-promtailhttpservice
   replicas: {{ .Values.pods.promtail.replicas }}
-  minReadySeconds: 10 # by default is 0
   template:
     metadata:
       labels:
         app: {{ include "app.name" . }}-promtail # has to match .spec.selector.matchLabels
         date: "{{ now | unixEpoch }}"
     spec:
-      terminationGracePeriodSeconds: 10
-      # serviceAccountName: {{ include "app.name" . }}
-      # automountServiceAccountToken: true
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
       containers:
       - name: {{ include "app.name" . }}-promtail
         image: {{ .Values.pods.promtail.image }}
-        ImagePullPolicy: Always
+        imagePullPolicy: Always
         args: ["-config.file=/etc/promtail/config.yml", "-config.expand-env=true"]
         ports:
         - containerPort: {{ .Values.pods.promtail.httpContainerPort }}
@@ -88,16 +78,3 @@ spec:
       - name: {{ include "app.name" . }}-{{ .Values.volumes.promtailconfig.name }}
         persistentVolumeClaim:
           claimName: {{ include "app.name" . }}-{{ .Values.volumes.promtailconfig.name }}-pvc
-
-
-
-
-
-
-
-
-
-
-
-
-
