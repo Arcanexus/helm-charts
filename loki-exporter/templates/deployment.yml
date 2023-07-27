@@ -21,6 +21,7 @@ spec:
         - name: {{ include "app.name" . }}
           image: {{ .Values.pods.lokiexporter.image }}
           imagePullPolicy: Always
+          args: ["--config.file=/config/config.yaml"]
           ports:
             - containerPort: {{ .Values.pods.lokiexporter.containerPort }}
               name: web
