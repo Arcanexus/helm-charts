@@ -30,3 +30,7 @@ spec:
         env:
           - name: TZ
             value: "Europe/Paris"
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.config.name }}
+        persistentVolumeClaim:
+          claimName: {{ include "app.name" . }}-{{ .Values.volumes.config.name }}-pvc
+
