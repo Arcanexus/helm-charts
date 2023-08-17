@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ template "app.name" . }}
+  name: {{ include "app.name" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }} # has to match .spec.template.metadata.labels
+  replicas: {{ .Values.pods.freshrss.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }} # has to match .spec.selector.matchLabels
+        date: "{{ now | unixEpoch }}"
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      containers:
+      - name: {{ include "app.name" . }}
+        image: {{ .Values.pods.freshrss.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.pods.freshrss.httpContainerPort }}
+          name: freshrss-http
+        volumeMounts:
+        - name: {{ include "app.name" . }}-{{ .Values.volumes.freshrssextensions.name }}
+          mountPath: {{ .Values.volumes.freshrssconfig.containerMountPath }}
+        - name: {{ include "app.name" . }}-{{ .Values.volumes.freshrssdata.name }}
+          mountPath: {{ .Values.volumes.freshrssdata.containerMountPath }}
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+          - name: CRON_MIN
+            value: "1,31"
+      volumes:
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.freshrssextensions.name }}
+        persistentVolumeClaim:
+          claimName: {{ include "app.name" . }}-{{ .Values.volumes.freshrssextensions.name }}-pvc
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.freshrssdata.name }}
+        persistentVolumeClaim:
+          claimName: {{ include "app.name" . }}-{{ .Values.volumes.freshrssdata.name }}-pvc

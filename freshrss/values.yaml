@@ -1,0 +1,27 @@
+namespace:
+  name: 
+
+volumes:
+  freshrssextensions:
+    name: freshrss-extensions
+    size: 10Mi
+    path: /volume2/docker/freshrss/freshrss-extensions-k8s-nfs-pv
+    server: 192.168.2.50
+    containerMountPath: /var/www/FreshRSS/extensions
+  freshrssdata:
+    name: freshrss-data
+    size: 10Gi
+    path: /volume2/docker/freshrss/freshrss-data-k8s-nfs-pv
+    server: 192.168.2.50
+    containerMountPath: /var/www/FreshRSS/data
+
+pods:
+  freshrss:
+    image: freshrss/freshrss:latest
+    replicas: 1
+    httpContainerPort: 80
+    httpExposedPort: 30011
+
+
+
+

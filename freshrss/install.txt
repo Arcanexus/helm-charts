@@ -1,0 +1,2 @@
+helm upgrade freshrss ..\helm\ --kubeconfig C:\Users\schwa\.kube\config_k3s-amd64-0.yml -i
+helm upgrade freshrss ../helm/ --kubeconfig ~/.kube/config_k3s-amd64-0.yml -i
