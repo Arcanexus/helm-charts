@@ -2,16 +2,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: {{ template "app.name" . }}
-  name: {{ include "app.name" . }}-komga
+  name: {{ include "app.name" . }}
 spec:
   selector:
     matchLabels:
-      app: {{ include "app.name" . }}-komga # has to match .spec.template.metadata.labels
+      app: {{ include "app.name" . }} # has to match .spec.template.metadata.labels
   replicas: {{ .Values.pods.komga.replicas }}
   template:
     metadata:
       labels:
-        app: {{ include "app.name" . }}-komga # has to match .spec.selector.matchLabels
+        app: {{ include "app.name" . }} # has to match .spec.selector.matchLabels
         date: "{{ now | unixEpoch }}"
     spec:
       dnsPolicy: ClusterFirst
@@ -20,7 +20,7 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
       containers:
-      - name: {{ include "app.name" . }}-komga
+      - name: {{ include "app.name" . }}
         image: {{ .Values.pods.komga.image }}
         imagePullPolicy: Always
         args: ["-config.file=/etc/komga/local-config.yaml"]
