@@ -13,7 +13,7 @@ spec:
   ports:
   - port: {{ .Values.pods.komga.httpContainerPort }}
     targetPort: {{ .Values.pods.komga.httpContainerPort }}
-    name: {{ include "app.name" . }}-komga
+    name: {{ include "app.name" . }}
     nodePort: {{ .Values.pods.komga.httpExposedPort }}
   selector:
-    app: {{ include "app.name" . }}-komga
+    app: {{ include "app.name" . }}
