@@ -25,7 +25,7 @@ pods:
   komga:
     image: gotson/komga:latest
     replicas: 1
-    httpContainerPort: 8080
+    httpContainerPort: 25600
     httpExposedPort: 30010
 
 
