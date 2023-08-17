@@ -21,19 +21,19 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: {{ template "app.name" . }}-{{ .Values.volumes.komgadata.name }}-volume
+  name: {{ template "app.name" . }}-{{ .Values.volumes.komgadata2.name }}-volume
   namespace: {{ template "app.name" . }}
 spec:
   capacity:
-    storage: {{ .Values.volumes.komgadata.size }}
+    storage: {{ .Values.volumes.komgadata2.size }}
   volumeMode: Filesystem
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: {{ template "app.name" . }}-{{ .Values.volumes.komgadata.name }}-volume
+  storageClassName: {{ template "app.name" . }}-{{ .Values.volumes.komgadata2.name }}-volume
   mountOptions:
     - hard
     - intr
   nfs:
-    path: {{ .Values.volumes.komgadata.path }}
-    server: {{ .Values.volumes.komgadata.server }}
+    path: {{ .Values.volumes.komgadata2.path }}
+    server: {{ .Values.volumes.komgadata2.server }}

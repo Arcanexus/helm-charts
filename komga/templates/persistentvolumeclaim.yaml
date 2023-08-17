@@ -14,12 +14,12 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "app.name" . }}-{{ .Values.volumes.komgadata.name }}-pvc
+  name: {{ template "app.name" . }}-{{ .Values.volumes.komgadata2.name }}-pvc
   namespace: {{ template "app.name" . }}
 spec:
-  storageClassName: {{ template "app.name" . }}-{{ .Values.volumes.komgadata.name }}-volume
+  storageClassName: {{ template "app.name" . }}-{{ .Values.volumes.komgadata2.name }}-volume
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: {{ .Values.volumes.komgadata.size }}
+      storage: {{ .Values.volumes.komgadata2.size }}
