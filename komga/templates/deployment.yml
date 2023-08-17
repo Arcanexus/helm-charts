@@ -32,6 +32,8 @@ spec:
           mountPath: {{ .Values.volumes.komgaconfig.containerMountPath }}
         - name: {{ include "app.name" . }}-{{ .Values.volumes.komgadata.name }}
           mountPath: {{ .Values.volumes.komgadata.containerMountPath }}
+        - name: {{ include "app.name" . }}-{{ .Values.volumes.komgadata2.name }}
+          mountPath: {{ .Values.volumes.komgadata2.containerMountPath }}
         env:
           - name: TZ
             value: "Europe/Paris"
@@ -43,3 +45,6 @@ spec:
         nfs:
           server: {{ .Values.volumes.komgadata.server }}
           path: {{ .Values.volumes.komgadata.path }}
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.komgadata2.name }}
+        persistentVolumeClaim:
+          claimName: {{ include "app.name" . }}-{{ .Values.volumes.komgadata2.name }}-pvc

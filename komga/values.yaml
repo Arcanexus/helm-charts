@@ -14,6 +14,12 @@ volumes:
     path: /volume1/Data/ebook/BD
     server: 192.168.2.15
     containerMountPath: /nas_2_data
+  komgadata2:
+    name: komga-data
+    size: 10Mi
+    path: /volume2/docker/komga/komga-data-k8s-nfs-pv
+    server: 192.168.2.50
+    containerMountPath: /data
 
 pods:
   komga:

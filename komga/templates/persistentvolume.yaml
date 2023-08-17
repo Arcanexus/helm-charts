@@ -17,23 +17,23 @@ spec:
   nfs:
     path: {{ .Values.volumes.komgaconfig.path }}
     server: {{ .Values.volumes.komgaconfig.server }}
-# ---
-# apiVersion: v1
-# kind: PersistentVolume
-# metadata:
-#   name: {{ template "app.name" . }}-{{ .Values.volumes.komgadata.name }}-volume
-#   namespace: {{ template "app.name" . }}
-# spec:
-#   capacity:
-#     storage: {{ .Values.volumes.komgadata.size }}
-#   volumeMode: Filesystem
-#   accessModes:
-#     - ReadWriteMany
-#   persistentVolumeReclaimPolicy: Retain
-#   storageClassName: {{ template "app.name" . }}-{{ .Values.volumes.komgadata.name }}-volume
-#   mountOptions:
-#     - hard
-#     - intr
-#   nfs:
-#     path: {{ .Values.volumes.komgadata.path }}
-#     server: {{ .Values.volumes.komgadata.server }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ template "app.name" . }}-{{ .Values.volumes.komgadata.name }}-volume
+  namespace: {{ template "app.name" . }}
+spec:
+  capacity:
+    storage: {{ .Values.volumes.komgadata.size }}
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: {{ template "app.name" . }}-{{ .Values.volumes.komgadata.name }}-volume
+  mountOptions:
+    - hard
+    - intr
+  nfs:
+    path: {{ .Values.volumes.komgadata.path }}
+    server: {{ .Values.volumes.komgadata.server }}

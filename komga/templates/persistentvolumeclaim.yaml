@@ -10,16 +10,16 @@ spec:
   resources:
     requests:
       storage: {{ .Values.volumes.komgaconfig.size }}
-# ---
-# apiVersion: v1
-# kind: PersistentVolumeClaim
-# metadata:
-#   name: {{ template "app.name" . }}-{{ .Values.volumes.komgadata.name }}-pvc
-#   namespace: {{ template "app.name" . }}
-# spec:
-#   storageClassName: {{ template "app.name" . }}-{{ .Values.volumes.komgadata.name }}-volume
-#   accessModes:
-#     - ReadWriteMany
-#   resources:
-#     requests:
-#       storage: {{ .Values.volumes.komgadata.size }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "app.name" . }}-{{ .Values.volumes.komgadata.name }}-pvc
+  namespace: {{ template "app.name" . }}
+spec:
+  storageClassName: {{ template "app.name" . }}-{{ .Values.volumes.komgadata.name }}-volume
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.volumes.komgadata.size }}
