@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ template "app.name" . }}
+  name: {{ include "app.name" . }}-komga
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}-komga # has to match .spec.template.metadata.labels
+  replicas: {{ .Values.pods.komga.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-komga # has to match .spec.selector.matchLabels
+        date: "{{ now | unixEpoch }}"
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      containers:
+      - name: {{ include "app.name" . }}-komga
+        image: {{ .Values.pods.komga.image }}
+        imagePullPolicy: Always
+        args: ["-config.file=/etc/komga/local-config.yaml"]
+        ports:
+        - containerPort: {{ .Values.pods.komga.httpContainerPort }}
+          name: komga-http
+        volumeMounts:
+        - name: {{ include "app.name" . }}-{{ .Values.volumes.komgaconfig.name }}
+          mountPath: {{ .Values.volumes.komgaconfig.containerMountPath }}
+        - name: {{ include "app.name" . }}-{{ .Values.volumes.komgadata.name }}
+          mountPath: {{ .Values.volumes.komgadata.containerMountPath }}
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+      volumes:
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.komgaconfig.name }}
+        persistentVolumeClaim:
+          claimName: {{ include "app.name" . }}-{{ .Values.volumes.komgaconfig.name }}-pvc
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.komgadata.name }}
+        nfs:
+          server: {{ .Values.volumes.komgadata.server }}
+          path: {{ .Values.volumes.komgadata.containerMountPath }}

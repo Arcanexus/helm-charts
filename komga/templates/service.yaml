@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "app.name" . }}-komgahttpservice
+  namespace: {{ template "app.name" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "app.name" . }}-komgahttpservice
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: NodePort
+  ports:
+  - port: {{ .Values.pods.komga.httpContainerPort }}
+    targetPort: {{ .Values.pods.komga.httpContainerPort }}
+    name: {{ include "app.name" . }}-komga
+    nodePort: {{ .Values.pods.komga.httpExposedPort }}
+  selector:
+    app: {{ include "app.name" . }}-komga

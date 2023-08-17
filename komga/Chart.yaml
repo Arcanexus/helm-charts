@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A Helm chart for Komga
+name: komga
+version: 0.0.1
