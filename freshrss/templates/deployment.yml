@@ -28,7 +28,7 @@ spec:
           name: freshrss-http
         volumeMounts:
         - name: {{ include "app.name" . }}-{{ .Values.volumes.freshrssextensions.name }}
-          mountPath: {{ .Values.volumes.freshrssconfig.containerMountPath }}
+          mountPath: {{ .Values.volumes.freshrssextensions.containerMountPath }}
         - name: {{ include "app.name" . }}-{{ .Values.volumes.freshrssdata.name }}
           mountPath: {{ .Values.volumes.freshrssdata.containerMountPath }}
         env:
