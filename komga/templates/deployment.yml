@@ -42,4 +42,4 @@ spec:
       - name: {{ include "app.name" . }}-{{ .Values.volumes.komgadata.name }}
         nfs:
           server: {{ .Values.volumes.komgadata.server }}
-          path: {{ .Values.volumes.komgadata.containerMountPath }}
+          path: {{ .Values.volumes.komgadata.path }}
