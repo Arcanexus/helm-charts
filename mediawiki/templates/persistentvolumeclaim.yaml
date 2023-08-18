@@ -10,19 +10,19 @@ spec:
   resources:
     requests:
       storage: {{ .Values.volumes.mediawikiimages.size }}
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ template "app.name" . }}-{{ .Values.volumes.mediawikiconfig.name }}-pvc
-  namespace: {{ template "app.name" . }}
-spec:
-  storageClassName: {{ template "app.name" . }}-{{ .Values.volumes.mediawikiconfig.name }}-volume
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: {{ .Values.volumes.mediawikiconfig.size }}
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: {{ template "app.name" . }}-{{ .Values.volumes.mediawikiconfig.name }}-pvc
+#   namespace: {{ template "app.name" . }}
+# spec:
+#   storageClassName: {{ template "app.name" . }}-{{ .Values.volumes.mediawikiconfig.name }}-volume
+#   accessModes:
+#     - ReadWriteMany
+#   resources:
+#     requests:
+#       storage: {{ .Values.volumes.mediawikiconfig.size }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

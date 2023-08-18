@@ -28,18 +28,25 @@ spec:
         - containerPort: {{ .Values.pods.mediawiki.httpContainerPort }}
           name: mediawiki-http
         volumeMounts:
+        # - name: {{ include "app.name" . }}-{{ .Values.volumes.mediawikiconfig.name }}
+        #   mountPath: {{ .Values.volumes.mediawikiconfig.containerMountPath }}
+        #   subPath: LocalSettings.php
         - name: {{ include "app.name" . }}-{{ .Values.volumes.mediawikiconfig.name }}
           mountPath: {{ .Values.volumes.mediawikiconfig.containerMountPath }}
           subPath: LocalSettings.php
+          readOnly: true
         - name: {{ include "app.name" . }}-{{ .Values.volumes.mediawikiimages.name }}
           mountPath: {{ .Values.volumes.mediawikiimages.containerMountPath }}
         env:
           - name: TZ
             value: "Europe/Paris"
       volumes:
+      # - name: {{ include "app.name" . }}-{{ .Values.volumes.mediawikiconfig.name }}
+      #   persistentVolumeClaim:
+      #     claimName: {{ include "app.name" . }}-{{ .Values.volumes.mediawikiconfig.name }}-pvc
       - name: {{ include "app.name" . }}-{{ .Values.volumes.mediawikiconfig.name }}
-        persistentVolumeClaim:
-          claimName: {{ include "app.name" . }}-{{ .Values.volumes.mediawikiconfig.name }}-pvc
+          secret:
+            secretName: {{ .Values.volumes.mediawikiconfig.name }}
       - name: {{ include "app.name" . }}-{{ .Values.volumes.mediawikiimages.name }}
         persistentVolumeClaim:
           claimName: {{ include "app.name" . }}-{{ .Values.volumes.mediawikiimages.name }}-pvc

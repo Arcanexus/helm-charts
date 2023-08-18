@@ -17,26 +17,26 @@ spec:
   nfs:
     path: {{ .Values.volumes.mediawikiimages.path }}
     server: {{ .Values.volumes.mediawikiimages.server }}
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: {{ template "app.name" . }}-{{ .Values.volumes.mediawikiconfig.name }}-volume
-  namespace: {{ template "app.name" . }}
-spec:
-  capacity:
-    storage: {{ .Values.volumes.mediawikiconfig.size }}
-  volumeMode: Filesystem
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: {{ template "app.name" . }}-{{ .Values.volumes.mediawikiconfig.name }}-volume
-  mountOptions:
-    - hard
-    - intr
-  nfs:
-    path: {{ .Values.volumes.mediawikiconfig.path }}
-    server: {{ .Values.volumes.mediawikiconfig.server }}
+# ---
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: {{ template "app.name" . }}-{{ .Values.volumes.mediawikiconfig.name }}-volume
+#   namespace: {{ template "app.name" . }}
+# spec:
+#   capacity:
+#     storage: {{ .Values.volumes.mediawikiconfig.size }}
+#   volumeMode: Filesystem
+#   accessModes:
+#     - ReadWriteMany
+#   persistentVolumeReclaimPolicy: Retain
+#   storageClassName: {{ template "app.name" . }}-{{ .Values.volumes.mediawikiconfig.name }}-volume
+#   mountOptions:
+#     - hard
+#     - intr
+#   nfs:
+#     path: {{ .Values.volumes.mediawikiconfig.path }}
+#     server: {{ .Values.volumes.mediawikiconfig.server }}
 ---
 apiVersion: v1
 kind: PersistentVolume
