@@ -62,8 +62,8 @@ spec:
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
       securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
+        runAsUser: 0
+        runAsGroup: 0
       containers:
       - name: {{ include "app.name" . }}-db
         image: {{ .Values.pods.db.image }}
