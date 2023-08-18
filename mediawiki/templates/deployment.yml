@@ -30,6 +30,7 @@ spec:
         volumeMounts:
         - name: {{ include "app.name" . }}-{{ .Values.volumes.mediawikiconfig.name }}
           mountPath: {{ .Values.volumes.mediawikiconfig.containerMountPath }}
+          subPath: LocalSettings.php
         - name: {{ include "app.name" . }}-{{ .Values.volumes.mediawikiimages.name }}
           mountPath: {{ .Values.volumes.mediawikiimages.containerMountPath }}
         env:
