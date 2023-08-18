@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ template "app.name" . }}
+  name: {{ include "app.name" . }}-mediawiki
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}-mediawiki # has to match .spec.template.metadata.labels
+  replicas: {{ .Values.pods.mediawiki.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-mediawiki # has to match .spec.selector.matchLabels
+        date: "{{ now | unixEpoch }}"
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      containers:
+      - name: {{ include "app.name" . }}-mediawiki
+        image: {{ .Values.pods.mediawiki.image }}
+        imagePullPolicy: Always
+        # args: ["-config.file=/etc/mediawiki/local-config.yaml"]
+        ports:
+        - containerPort: {{ .Values.pods.mediawiki.httpContainerPort }}
+          name: mediawiki-http
+        volumeMounts:
+        # - name: {{ include "app.name" . }}-{{ .Values.volumes.mediawikiconfig.name }}
+        #   mountPath: {{ .Values.volumes.mediawikiconfig.containerMountPath }}
+        - name: {{ include "app.name" . }}-{{ .Values.volumes.mediawikiimages.name }}
+          mountPath: {{ .Values.volumes.mediawikiimages.containerMountPath }}
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+      volumes:
+      # - name: {{ include "app.name" . }}-{{ .Values.volumes.mediawikiconfig.name }}
+      #   persistentVolumeClaim:
+      #     claimName: {{ include "app.name" . }}-{{ .Values.volumes.mediawikiconfig.name }}-pvc
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.mediawikiimages.name }}
+        persistentVolumeClaim:
+          claimName: {{ include "app.name" . }}-{{ .Values.volumes.mediawikiimages.name }}-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ template "app.name" . }}
+  name: {{ include "app.name" . }}-db
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}-db # has to match .spec.template.metadata.labels
+  replicas: {{ .Values.pods.db.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-db # has to match .spec.selector.matchLabels
+        date: "{{ now | unixEpoch }}"
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      containers:
+      - name: {{ include "app.name" . }}-db
+        image: {{ .Values.pods.db.image }}
+        imagePullPolicy: Always
+        # args: ["-config.file=/etc/mediawiki/local-config.yaml"]
+        ports:
+        - containerPort: {{ .Values.pods.db.dbContainerPort }}
+          name: mediawiki-db
+        volumeMounts:
+        - name: {{ include "app.name" . }}-{{ .Values.volumes.mediawikidb.name }}
+          mountPath: {{ .Values.volumes.mediawikidb.containerMountPath }}
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+          - name: MYSQL_DATABASE
+            value: arcanexus_wiki
+          - name: MYSQL_USER
+            value: wikiuser
+          - name: MYSQL_PASSWORD
+            value: wikipassword
+          - name: MYSQL_RANDOM_ROOT_PASSWORD
+            value: "yes"
+      volumes:
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.mediawikidb.name }}
+        persistentVolumeClaim:
+          claimName: {{ include "app.name" . }}-{{ .Values.volumes.mediawikidb.name }}-pvc

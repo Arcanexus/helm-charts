@@ -1,0 +1,36 @@
+namespace:
+  name: 
+
+volumes:
+  mediawikiimages:
+    name: mediawiki-images
+    size: 10Gi
+    path: /volume2/docker/mediawiki/mediawiki-images-k8s-nfs-pv
+    server: 192.168.2.50
+    containerMountPath: /var/www/html/images
+  mediawikiconfig:
+    name: mediawiki-config
+    size: 100Mi
+    path: /volume2/docker/mediawiki/mediawiki-config-k8s-nfs-pv/LocalSettings.php
+    server: 192.168.2.50
+    containerMountPath: /var/www/html/LocalSettings.php
+  mediawikidb:
+    name: mediawiki-db
+    size: 10Gi
+    path: /volume2/docker/mediawiki/mediawiki-db-k8s-nfs-pv
+    server: 192.168.2.50
+    containerMountPath: /var/lib/mysql
+
+pods:
+  mediawiki:
+    image: mediawiki:latest
+    replicas: 1
+    httpContainerPort: 80
+    httpExposedPort: 30012
+  db:
+    image: mariadb:latest
+    replicas: 1
+    dbContainerPort: 3306
+
+
+

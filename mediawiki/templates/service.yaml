@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "app.name" . }}-mediawikihttpservice
+  namespace: {{ template "app.name" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "app.name" . }}-mediawikihttpservice
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: NodePort
+  ports:
+  - port: {{ .Values.pods.mediawiki.httpContainerPort }}
+    targetPort: {{ .Values.pods.mediawiki.httpContainerPort }}
+    name: {{ include "app.name" . }}
+    nodePort: {{ .Values.pods.mediawiki.httpExposedPort }}
+  selector:
+    app: {{ include "app.name" . }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "app.name" . }}-mediawikidbservice
+  namespace: {{ template "app.name" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "app.name" . }}-mediawikidbservice
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+  clusterIP: None
+  selector:
+    app: {{ include "app.name" . }}-db
