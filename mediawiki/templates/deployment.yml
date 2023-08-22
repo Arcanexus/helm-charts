@@ -8,6 +8,7 @@ spec:
     matchLabels:
       app: {{ include "app.name" . }}-mediawiki # has to match .spec.template.metadata.labels
   replicas: {{ .Values.pods.mediawiki.replicas }}
+  revisionHistoryLimit: 0
   template:
     metadata:
       labels:
@@ -61,6 +62,7 @@ spec:
     matchLabels:
       app: {{ include "app.name" . }}-db # has to match .spec.template.metadata.labels
   replicas: {{ .Values.pods.db.replicas }}
+  revisionHistoryLimit: 0
   template:
     metadata:
       labels:
