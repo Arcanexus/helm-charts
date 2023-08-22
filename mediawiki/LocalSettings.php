@@ -19,8 +19,8 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 ## Uncomment this to disable output compression
 # $wgDisableOutputCompression = true;
 
-$wgSitename = "Arcanexus Wiki";
-$wgMetaNamespace = "Arcanexus_Wiki";
+$wgSitename = "{{ .Values.parameters.mediawiki.siteName }}";
+$wgMetaNamespace = "{{ .Values.parameters.mediawiki.metaNameSpace }}";
 
 ## The URL base path to the directory containing the wiki;
 ## defaults for all runtime URL paths are based off of this.
@@ -30,7 +30,7 @@ $wgMetaNamespace = "Arcanexus_Wiki";
 $wgScriptPath = "";
 
 ## The protocol and server name to use in fully-qualified URLs
-$wgServer = "http://192.168.2.56:30012";
+$wgServer = "http://{{ .Values.parameters.mediawiki.fqdn }}:{{ .Values.pods.mediawiki.httpExposedPort }}";
 
 ## The URL path to static resources (images, scripts, etc.)
 $wgResourceBasePath = $wgScriptPath;
@@ -100,14 +100,14 @@ $wgLocaltimezone = "UTC";
 ## be publicly accessible from the web.
 #$wgCacheDirectory = "$IP/cache";
 
-$wgSecretKey = "225251f1337d0214f76ce4e85f6567253ab43fb69138f0473202fcfd36de9bd6";
+$wgSecretKey = "{{ .Values.parameters.mediawiki.secretKey }}";
 
 # Changing this will log out all existing sessions.
 $wgAuthenticationTokenVersion = "1";
 
 # Site upgrade key. Must be set to a string (default provided) to turn on the
 # web installer while LocalSettings.php is in place
-$wgUpgradeKey = "8d48fb3ee9e03d55";
+$wgUpgradeKey = "{{ .Values.parameters.mediawiki.upgradeKey }}";
 
 ## For attaching licensing metadata to pages, and displaying an
 ## appropriate copyright notice / icon. GNU Free Documentation

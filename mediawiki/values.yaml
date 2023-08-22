@@ -32,5 +32,14 @@ pods:
     replicas: 1
     dbContainerPort: 3306
 
+parameters:
+  mediawiki:
+    fqdn: 192.168.2.56
+    siteName: Arcanexus Wiki
+    metaNameSpace: Arcanexus_Wiki
+    secretKey:
+    upgradeKey:
+
+
 
 
