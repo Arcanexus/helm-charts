@@ -19,8 +19,8 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 ## Uncomment this to disable output compression
 # $wgDisableOutputCompression = true;
 
-$wgSitename = "{{ .Values.parameters.mediawiki.siteName }}";
-$wgMetaNamespace = "{{ .Values.parameters.mediawiki.metaNameSpace }}";
+$wgSitename = {{ .Values.parameters.mediawiki.siteName | quote }};
+$wgMetaNamespace = {{ .Values.parameters.mediawiki.metaNameSpace | quote }};
 
 ## The URL base path to the directory containing the wiki;
 ## defaults for all runtime URL paths are based off of this.
@@ -100,14 +100,14 @@ $wgLocaltimezone = "UTC";
 ## be publicly accessible from the web.
 #$wgCacheDirectory = "$IP/cache";
 
-$wgSecretKey = "{{ .Values.parameters.mediawiki.secretKey }}";
+$wgSecretKey = {{ .Values.parameters.mediawiki.secretKey | quote }};
 
 # Changing this will log out all existing sessions.
 $wgAuthenticationTokenVersion = "1";
 
 # Site upgrade key. Must be set to a string (default provided) to turn on the
 # web installer while LocalSettings.php is in place
-$wgUpgradeKey = "{{ .Values.parameters.mediawiki.upgradeKey }}";
+$wgUpgradeKey = {{ .Values.parameters.mediawiki.upgradeKey | quote }};
 
 ## For attaching licensing metadata to pages, and displaying an
 ## appropriate copyright notice / icon. GNU Free Documentation
