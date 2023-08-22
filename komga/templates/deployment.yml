@@ -8,6 +8,7 @@ spec:
     matchLabels:
       app: {{ include "app.name" . }} # has to match .spec.template.metadata.labels
   replicas: {{ .Values.pods.komga.replicas }}
+  revisionHistoryLimit: 0
   template:
     metadata:
       labels:

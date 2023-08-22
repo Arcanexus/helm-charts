@@ -5,6 +5,7 @@ metadata:
   name: {{ include "app.name" . }}
 spec:
   replicas: {{ .Values.pods.lokiexporter.replicas }}
+  revisionHistoryLimit: 0
   #minReadySeconds: 10
   selector:
     matchLabels:

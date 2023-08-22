@@ -8,6 +8,7 @@ spec:
     matchLabels:
       app: {{ include "app.name" . }}-loki # has to match .spec.template.metadata.labels
   replicas: {{ .Values.pods.loki.replicas }}
+  revisionHistoryLimit: 0
   template:
     metadata:
       labels:
@@ -52,6 +53,7 @@ spec:
     matchLabels:
       app: {{ include "app.name" . }}-promtail # has to match .spec.template.metadata.labels
   replicas: {{ .Values.pods.promtail.replicas }}
+  revisionHistoryLimit: 0
   template:
     metadata:
       labels:
