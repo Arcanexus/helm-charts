@@ -11,7 +11,7 @@ volumes:
 
 pods:
   homepage:
-    image: ghcr.io/benphelps/homepage:latest
+    image: ghcr.io/gethomepage/homepage:latest
     replicas: 1
     containerPort: 3000
     exposedPort: 30001
