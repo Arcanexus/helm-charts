@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "app.name" . }}-phphttpservice
+  namespace: {{ template "app.name" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "app.name" . }}-phphttpservice
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: NodePort
+  ports:
+  - port: {{ .Values.pods.php.httpContainerPort }}
+    targetPort: {{ .Values.pods.php.httpContainerPort }}
+    name: {{ include "app.name" . }}
+    nodePort: {{ .Values.pods.php.httpExposedPort }}
+  selector:
+    app: {{ include "app.name" . }}

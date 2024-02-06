@@ -1,0 +1,20 @@
+namespace:
+  name: 
+
+volumes:
+  phpdata:
+    name: php-data
+    server: 192.168.2.50
+    path: /volume2/docker/php/data
+    containerMountPath: /var/www/html/
+
+pods:
+  php:
+    image: php:8.3-apache:latest
+    replicas: 1
+    httpContainerPort: 80
+    httpExposedPort: 30013
+
+
+
+
