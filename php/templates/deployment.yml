@@ -2,17 +2,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: {{ template "app.name" . }}
-  name: {{ include "app.name" . }}-{{ .Release.Name . }}
+  name: {{ include "app.name" . }}-{{ .Release.Name }}
 spec:
   selector:
     matchLabels:
-      app: {{ include "app.name" . }}-{{ .Release.Name . }} # has to match .spec.template.metadata.labels
+      app: {{ include "app.name" . }}-{{ .Release.Name }} # has to match .spec.template.metadata.labels
   replicas: {{ .Values.pods.php.replicas }}
   revisionHistoryLimit: 0
   template:
     metadata:
       labels:
-        app: {{ include "app.name" . }}-{{ .Release.Name . }} # has to match .spec.selector.matchLabels
+        app: {{ include "app.name" . }}-{{ .Release.Name }} # has to match .spec.selector.matchLabels
         date: "{{ now | unixEpoch }}"
     spec:
       dnsPolicy: ClusterFirst
@@ -21,20 +21,20 @@ spec:
         runAsUser: 0
         runAsGroup: 0
       containers:
-      - name: {{ include "app.name" . }}-{{ .Release.Name . }}
+      - name: {{ include "app.name" . }}-{{ .Release.Name }}
         image: {{ .Values.pods.php.image }}
         imagePullPolicy: Always
         ports:
         - containerPort: {{ .Values.pods.php.httpContainerPort }}
           name: php-http
         volumeMounts:
-        - name: {{ include "app.name" . }}-{{ .Release.Name . }}-{{ .Values.volumes.phpdata.name }}
+        - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.volumes.phpdata.name }}
           mountPath: {{ .Values.volumes.phpdata.containerMountPath }}
         env:
           - name: TZ
             value: "Europe/Paris"
       volumes:
-      - name: {{ include "app.name" . }}-{{ .Release.Name . }}-{{ .Values.volumes.phpdata.name }}
+      - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.volumes.phpdata.name }}
         nfs:
           server: {{ .Values.volumes.phpdata.server }}
           path: {{ .Values.volumes.phpdata.path }}
