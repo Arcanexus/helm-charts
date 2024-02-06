@@ -10,7 +10,7 @@ volumes:
 
 pods:
   php:
-    image: php:8.3-apache:latest
+    image: php:8.3-apache
     replicas: 1
     httpContainerPort: 80
     httpExposedPort: 30013
