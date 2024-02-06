@@ -18,8 +18,8 @@ spec:
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
       securityContext:
-        runAsUser: 0
-        runAsGroup: 0
+        runAsUser: {{ .Values.security.runAsUser }}
+        runAsGroup: {{ .Values.security.runAsGroup }}
       containers:
       - name: {{ include "app.name" . }}-{{ .Release.Name }}
         image: {{ .Values.pods.php.image }}

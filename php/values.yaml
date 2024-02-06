@@ -1,6 +1,10 @@
 namespace:
   name: 
 
+security:
+  runAsUser: 0
+  runAsGroup: 0
+
 volumes:
   phpdata:
     name: php-data
