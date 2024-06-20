@@ -31,7 +31,7 @@ spec:
           - name: TZ
             value: "Europe/Paris"
           - name: DEBUG
-            value: {{ .Values.pods.healthckecksio.debug }}
+            value: "{{ .Values.pods.healthckecksio.debug }}"
       volumes:
       - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.volumes.healthckecksioconfig.name }}
         nfs:
