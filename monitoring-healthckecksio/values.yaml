@@ -6,14 +6,14 @@ security:
   runAsGroup: 0
 
 volumes:
-  monitoring-healthckecksioconfig:
-    name: monitoring-healthckecksio-config
+  healthckecksioconfig:
+    name: healthckecksio-config
     server: 192.168.2.50
     path: /volume2/docker/monitoring-healthckecksio/config
     containerMountPath: /app/config/
 
 pods:
-  monitoring-healthckecksio:
+  healthckecksio:
     image: ghcr.io/arcanexus/docker-healthchecksio:latest
     replicas: 1
 

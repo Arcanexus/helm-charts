@@ -7,7 +7,7 @@ spec:
   selector:
     matchLabels:
       app: {{ include "app.name" . }}-{{ .Release.Name }} # has to match .spec.template.metadata.labels
-  replicas: {{ .Values.pods.monitoring-healthckecksio.replicas }}
+  replicas: {{ .Values.pods.healthckecksio.replicas }}
   revisionHistoryLimit: 0
   template:
     metadata:
@@ -22,18 +22,18 @@ spec:
         runAsGroup: {{ .Values.security.runAsGroup }}
       containers:
       - name: {{ include "app.name" . }}-{{ .Release.Name }}
-        image: {{ .Values.pods.monitoring-healthckecksio.image }}
+        image: {{ .Values.pods.healthckecksio.image }}
         imagePullPolicy: Always
         volumeMounts:
-        - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.volumes.monitoring-healthckecksioconfig.name }}
-          mountPath: {{ .Values.volumes.monitoring-healthckecksioconfig.containerMountPath }}
+        - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.volumes.healthckecksioconfig.name }}
+          mountPath: {{ .Values.volumes.healthckecksioconfig.containerMountPath }}
         env:
           - name: TZ
             value: "Europe/Paris"
           - name: DEBUG
             value: "false"
       volumes:
-      - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.volumes.monitoring-healthckecksioconfig.name }}
+      - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.volumes.healthckecksioconfig.name }}
         nfs:
-          server: {{ .Values.volumes.monitoring-healthckecksioconfig.server }}
-          path: {{ .Values.volumes.monitoring-healthckecksioconfig.path }}
+          server: {{ .Values.volumes.healthckecksioconfig.server }}
+          path: {{ .Values.volumes.healthckecksioconfig.path }}
