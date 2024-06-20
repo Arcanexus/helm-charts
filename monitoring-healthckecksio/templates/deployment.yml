@@ -29,7 +29,7 @@ spec:
           mountPath: {{ .Values.volumes.healthckecksioconfig.containerMountPath }}
         env:
           - name: TZ
-            value: "Europe/Paris"
+            value: "{{ .Values.pods.healthckecksio.tz }}"
           - name: DEBUG
             value: "{{ .Values.pods.healthckecksio.debug }}"
       volumes:

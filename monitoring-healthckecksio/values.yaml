@@ -17,7 +17,7 @@ pods:
     image: ghcr.io/arcanexus/docker-healthchecksio:latest
     replicas: 1
     debug: "false"
-
+    tz: "Europe/Paris"
 
 
 
