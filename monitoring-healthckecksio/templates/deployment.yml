@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ template "app.name" . }}
+  name: {{ include "app.name" . }}-{{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}-{{ .Release.Name }} # has to match .spec.template.metadata.labels
+  replicas: {{ .Values.pods.monitoring-healthckecksio.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-{{ .Release.Name }} # has to match .spec.selector.matchLabels
+        date: "{{ now | unixEpoch }}"
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: {{ .Values.security.runAsUser }}
+        runAsGroup: {{ .Values.security.runAsGroup }}
+      containers:
+      - name: {{ include "app.name" . }}-{{ .Release.Name }}
+        image: {{ .Values.pods.monitoring-healthckecksio.image }}
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.volumes.monitoring-healthckecksioconfig.name }}
+          mountPath: {{ .Values.volumes.monitoring-healthckecksioconfig.containerMountPath }}
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+          - name: DEBUG
+            value: "false"
+      volumes:
+      - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.volumes.monitoring-healthckecksioconfig.name }}
+        nfs:
+          server: {{ .Values.volumes.monitoring-healthckecksioconfig.server }}
+          path: {{ .Values.volumes.monitoring-healthckecksioconfig.path }}

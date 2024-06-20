@@ -1,0 +1,23 @@
+namespace:
+  name: 
+
+security:
+  runAsUser: 0
+  runAsGroup: 0
+
+volumes:
+  monitoring-healthckecksioconfig:
+    name: monitoring-healthckecksio-config
+    server: 192.168.2.50
+    path: /volume2/docker/monitoring-healthckecksio/config
+    containerMountPath: /app/config/
+
+pods:
+  monitoring-healthckecksio:
+    image: ghcr.io/arcanexus/docker-healthchecksio:latest
+    replicas: 1
+
+
+
+
+
