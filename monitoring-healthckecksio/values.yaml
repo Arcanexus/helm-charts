@@ -7,7 +7,7 @@ security:
 
 volumes:
   healthckecksioconfig:
-    name: healthckecksio-config
+    name: config
     server: 192.168.2.50
     path: /volume2/docker/monitoring-healthckecksio/config
     containerMountPath: /app/config/
