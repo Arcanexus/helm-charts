@@ -17,8 +17,8 @@ spec:
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
       securityContext:
-        runAsUser: {{ .Values.pod.stash.security.runAsUser }}
-        runAsGroup: {{ .Values.pod.stash.security.runAsGroup }}
+        runAsUser: {{ .Values.pods.stash.security.runAsUser }}
+        runAsGroup: {{ .Values.pods.stash.security.runAsGroup }}
       containers:
       - name: {{ include "app.name" . }}
         image: {{ .Values.pods.stash.image }}
