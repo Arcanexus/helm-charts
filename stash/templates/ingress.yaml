@@ -2,6 +2,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "app.name" . }}-stashingress
+annotations:
+  {{- if .Values.pods.stash.ingress.annotations }}
+  {{- toYaml .Values.pods.stash.ingress.annotations | nindent 2 }}
+  {{- end }}
 spec:
   ingressClassName: traefik
   {{- if .Values.pods.stash.ingress.enabled }}
