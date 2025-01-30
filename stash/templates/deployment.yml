@@ -36,6 +36,16 @@ spec:
         env:
           - name: TZ
             value: "Europe/Paris"
+          - name: STASH_STASH
+            value: "/data/"
+          - name: STASH_GENERATED
+            value: "/stash_data/generated/"
+          - name: STASH_METADATA
+            value: "/stash_data/metadata/"
+          - name: STASH_CACHE
+            value: "/stash_data/cache/"
+          - name: STASH_PORT
+            value: "{{ .Values.pods.stash.httpContainerPort }}"
       volumes:
       - name: {{ include "app.name" . }}-{{ .Values.volumes.stashdata.name }}
         nfs:
