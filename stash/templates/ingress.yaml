@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "app.name" . }}-stashingress
+spec:
+  ingressClassName: traefik
+  {{- if .Values.pod.stash.ingress.enable }}
+    tls:
+      - hosts:
+          - {{ .Values.pod.stash.ingress.host }}
+        secretName: {{ include "app.name" . }}-stashingress-tls
+  {{- end }}
+  rules:
+    - host: {{ .Values.pod.stash.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ include "app.name" . }}-stashhttpservice
+                port:
+                  number: {{ .Values.pods.stash.httpContainerPort }}

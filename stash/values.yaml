@@ -1,0 +1,35 @@
+volumes:
+  stashdata:
+    name: stash-data
+    server: 192.168.2.50
+    path: /volume2/docker-data/stash
+    containerMountPath: /stash_data
+  stashconfig:
+    name: stash-config
+    server: 192.168.2.50
+    path: /volume2/docker/stash/config
+    containerMountPath: /root/.stash
+  stashlibrary:
+    name: stash-library
+    server: 192.168.2.15
+    path: /volume1/P1
+    containerMountPath: /data
+
+pods:
+  stash:
+    image: stashapp/stash:v0.27.2
+    replicas: 1
+
+    httpContainerPort: 9999
+    # httpExposedPort: 30011
+
+    security:
+      runAsUser: 0
+      runAsGroup: 0
+
+    ingress:
+      enabled: true
+      host: stash.arcanexus.com
+      ingressClassName: traefik
+      annotations:
+        cert-manager.io/cluster-issuer: le-wildcard-issuer

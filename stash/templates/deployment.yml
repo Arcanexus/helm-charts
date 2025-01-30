@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }} # has to match .spec.template.metadata.labels
+  replicas: {{ .Values.pods.stash.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }} # has to match .spec.selector.matchLabels
+        date: "{{ now | unixEpoch }}"
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: {{ .Values.pod.stash.security.runAsUser }}
+        runAsGroup: {{ .Values.pod.stash.security.runAsGroup }}
+      containers:
+      - name: {{ include "app.name" . }}
+        image: {{ .Values.pods.stash.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.pods.stash.httpContainerPort }}
+          name: stash-http
+        volumeMounts:
+        - name: {{ include "app.name" . }}-{{ .Values.volumes.stashdata.name }}
+          mountPath: {{ .Values.volumes.stashdata.containerMountPath }}
+        - name: {{ include "app.name" . }}-{{ .Values.volumes.stashconfig.name }}
+          mountPath: {{ .Values.volumes.stashconfig.containerMountPath }}
+        - name: {{ include "app.name" . }}-{{ .Values.volumes.stashlibrary.name }}
+          mountPath: {{ .Values.volumes.stashlibrary.containerMountPath }}
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+      volumes:
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.stashdata.name }}
+        nfs:
+          server: {{ .Values.volumes.stashdata.server }}
+          path: {{ .Values.volumes.stashdata.path }}
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.stashconfig.name }}
+        nfs:
+          server: {{ .Values.volumes.stashconfig.server }}
+          path: {{ .Values.volumes.stashconfig.path }}
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.stashlibrary.name }}
+        nfs:
+          server: {{ .Values.volumes.stashlibrary.server }}
+          path: {{ .Values.volumes.stashlibrary.path }}
