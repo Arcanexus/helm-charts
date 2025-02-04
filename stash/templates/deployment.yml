@@ -19,16 +19,8 @@ spec:
       securityContext:
         runAsUser: {{ .Values.pods.stash.security.runAsUser }}
         runAsGroup: {{ .Values.pods.stash.security.runAsGroup }}
-      affinity:
-        podAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: kubernetes.io/hostname
-                operator: In
-                values:
-                - k3s-amd64-0
-            topologyKey: kubernetes.io/hostname
+      nodeSelector:
+        silent: fanless
       containers:
       - name: {{ include "app.name" . }}
         image: {{ .Values.pods.stash.image }}
