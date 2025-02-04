@@ -30,6 +30,7 @@ spec:
                   operator: In
                   values:
                   - k3s-amd64-0
+                  - k3s-amd64-3
               topologyKey: kubernetes.io/hostname
       containers:
       - name: {{ include "app.name" . }}
