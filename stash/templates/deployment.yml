@@ -23,14 +23,14 @@ spec:
         podAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100
-        podAffinityTerm:
-          labelSelector:
-            matchExpressions:
-            - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - k3s-amd64-0
-          topologyKey: kubernetes.io/hostname
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: In
+                  values:
+                  - k3s-amd64-0
+              topologyKey: kubernetes.io/hostname
       containers:
       - name: {{ include "app.name" . }}
         image: {{ .Values.pods.stash.image }}
