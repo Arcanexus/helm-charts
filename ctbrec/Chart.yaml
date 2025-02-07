@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A Helm chart for ctbrec
+name: ctbrec
+version: 0.0.1

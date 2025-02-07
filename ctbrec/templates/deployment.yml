@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }} # has to match .spec.template.metadata.labels
+  replicas: {{ .Values.pods.ctbrec.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }} # has to match .spec.selector.matchLabels
+        date: "{{ now | unixEpoch }}"
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: {{ .Values.pods.ctbrec.security.runAsUser }}
+        runAsGroup: {{ .Values.pods.ctbrec.security.runAsGroup }}
+      nodeSelector:
+        silent: fanless
+      containers:
+      - name: {{ include "app.name" . }}
+        image: {{ .Values.pods.ctbrec.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.pods.ctbrec.httpContainerPort }}
+          name: ctbrec-http
+        volumeMounts:
+        - name: {{ include "app.name" . }}-{{ .Values.volumes.ctbrecdata.name }}
+          mountPath: {{ .Values.volumes.ctbrecdata.containerMountPath }}
+        - name: {{ include "app.name" . }}-{{ .Values.volumes.ctbrecconfig.name }}
+          mountPath: {{ .Values.volumes.ctbrecconfig.containerMountPath }}
+        - name: {{ include "app.name" . }}-{{ .Values.volumes.ctbreclogs.name }}
+          mountPath: {{ .Values.volumes.ctbreclogs.containerMountPath }}
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+          - name: PGID
+            value: "{{ .Values.pods.ctbrec.security.runAsGroup }}"
+          - name: PUID
+            value: "{{ .Values.pods.ctbrec.security.runAsUser }}"
+
+      volumes:
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.ctbrecdata.name }}
+        nfs:
+          server: {{ .Values.volumes.ctbrecdata.server }}
+          path: {{ .Values.volumes.ctbrecdata.path }}
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.ctbrecconfig.name }}
+        nfs:
+          server: {{ .Values.volumes.ctbrecconfig.server }}
+          path: {{ .Values.volumes.ctbrecconfig.path }}
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.ctbreclogs.name }}
+        nfs:
+          server: {{ .Values.volumes.ctbreclogs.server }}
+          path: {{ .Values.volumes.ctbreclogs.path }}

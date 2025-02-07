@@ -1,0 +1,35 @@
+volumes:
+  ctbrecdata:
+    name: ctbrec-data
+    server: 192.168.2.15
+    path: /volume1/P1/cam
+    containerMountPath: /app/captures
+  ctbrecconfig:
+    name: ctbrec-config
+    server: 192.168.2.50
+    path: /volume2/docker/ctbrec/.config/ctbrec
+    containerMountPath: /app/config
+  ctbreclogs:
+    name: ctbrec-logs
+    server: 192.168.2.50
+    path: /volume2/docker/ctbrec/logs
+    containerMountPath: /app/logs
+
+pods:
+  ctbrec:
+    image: jafea7/ctbrec-alpine:5.3.0
+    replicas: 1
+
+    httpContainerPort: 8080
+    # httpExposedPort: 30011
+
+    security:
+      runAsUser: 1000
+      runAsGroup: 1000
+
+    ingress:
+      enabled: true
+      host: ctbrec.arcanexus.com
+      ingressClassName: traefik
+      annotations:
+        cert-manager.io/cluster-issuer: le-wildcard-issuer

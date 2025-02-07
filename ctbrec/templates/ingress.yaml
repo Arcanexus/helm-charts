@@ -1,0 +1,27 @@
+{{- if .Values.pods.ctbrec.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "app.name" . }}-ctbrecingress
+  annotations:
+    {{- if .Values.pods.ctbrec.ingress.annotations }}
+    {{- toYaml .Values.pods.ctbrec.ingress.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - {{ .Values.pods.ctbrec.ingress.host }}
+      secretName: {{ include "app.name" . }}-ctbrecingress-tls
+  rules:
+    - host: {{ .Values.pods.ctbrec.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ include "app.name" . }}-ctbrechttpservice
+                port:
+                  number: {{ .Values.pods.ctbrec.httpContainerPort }}
+{{- end }}
