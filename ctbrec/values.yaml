@@ -21,11 +21,12 @@ pods:
     replicas: 1
 
     httpContainerPort: 8080
+    httpsContainerPort: 8443
     # httpExposedPort: 30011
 
     security:
-      runAsUser: 1000
-      runAsGroup: 1000
+      runAsUser: 0 #1000
+      runAsGroup: 0 #1000
 
     ingress:
       enabled: true

@@ -21,7 +21,7 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ include "app.name" . }}-ctbrechttpservice
+                name: {{ include "app.name" . }}-ctbrechttpsservice
                 port:
-                  number: {{ .Values.pods.ctbrec.httpContainerPort }}
+                  number: {{ .Values.pods.ctbrec.httpsContainerPort }}
 {{- end }}
