@@ -4,6 +4,7 @@ kind: Ingress
 metadata:
   name: {{ include "app.name" . }}-ctbrecingress
   annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
     {{- if .Values.pods.ctbrec.ingress.annotations }}
     {{- toYaml .Values.pods.ctbrec.ingress.annotations | nindent 4 }}
     {{- end }}
