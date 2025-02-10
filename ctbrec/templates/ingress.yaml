@@ -16,6 +16,16 @@ spec:
 {{- if .Values.pods.ctbrec.ingress.enabled }}
 ---
 apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: no-tls-verify
+spec:
+  insecureSkipVerify: true
+{{- end }}
+
+{{- if .Values.pods.ctbrec.ingress.enabled }}
+---
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: {{ include "app.name" . }}-ctbrecingressroute
@@ -35,6 +45,7 @@ spec:
         - name: {{ include "app.name" . }}-ctbrechttpsservice
           port: {{ .Values.pods.ctbrec.httpsContainerPort }}
           scheme: https
+          ServersTransport: no-tls-verify
   tls:
     secretName: {{ include "app.name" . }}-ctbrecingressroute-tls
 {{- end }}
