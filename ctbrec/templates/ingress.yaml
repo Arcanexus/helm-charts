@@ -45,7 +45,7 @@ spec:
         - name: {{ include "app.name" . }}-ctbrechttpsservice
           port: {{ .Values.pods.ctbrec.httpsContainerPort }}
           scheme: https
-          ServersTransport: no-tls-verify
+          serversTransport: no-tls-verify
   tls:
     secretName: {{ include "app.name" . }}-ctbrecingressroute-tls
 {{- end }}
