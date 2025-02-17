@@ -1,12 +1,12 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "app.name" . }}-{{ .Release.Name }}-configwatcher
+  name: {{ .Release.Name }}-configwatcher
 spec:
   template:
     spec:
       containers:
-        - name: {{ include "app.name" . }}-{{ .Release.Name }}-configwatcher
+        - name: {{ .Release.Name }}-configwatcher
           image: alpine:latest
           command: ["/bin/sh", "-c"]
           args:
