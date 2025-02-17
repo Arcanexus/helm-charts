@@ -17,8 +17,8 @@ spec:
                 kubectl delete pod -l app={{ include "app.name" . }}-{{ .Release.Name }};
               done
           volumeMounts:
-        - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.volumes.healthckecksioconfig.name }}
-          mountPath: {{ .Values.volumes.healthckecksioconfig.containerMountPath }}
+          - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.volumes.healthckecksioconfig.name }}
+            mountPath: {{ .Values.volumes.healthckecksioconfig.containerMountPath }}
       volumes:
       - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.volumes.healthckecksioconfig.name }}
         nfs:
