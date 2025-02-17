@@ -6,7 +6,7 @@ spec:
   selector:
     matchLabels:
       app: {{ include "app.name" . }}-{{ .Release.Name }} # has to match .spec.template.metadata.labels
-  replicas: {{ .Values.pods.healthckecksio.replicas }}
+  replicas: {{ .Values.pods.healthchecksio.replicas }}
   revisionHistoryLimit: 0
   template:
     metadata:
@@ -21,31 +21,31 @@ spec:
         runAsGroup: {{ .Values.security.runAsGroup }}
       containers:
       - name: {{ include "app.name" . }}-{{ .Release.Name }}
-        image: {{ .Values.pods.healthckecksio.image }}
+        image: {{ .Values.pods.healthchecksio.image }}
         imagePullPolicy: Always
         volumeMounts:
-        - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.volumes.healthckecksioconfig.name }}
-          mountPath: {{ .Values.volumes.healthckecksioconfig.containerMountPath }}
+        - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.volumes.healthchecksioconfig.name }}
+          mountPath: {{ .Values.volumes.healthchecksioconfig.containerMountPath }}
         env:
           - name: TZ
-            value: "{{ .Values.pods.healthckecksio.tz }}"
+            value: "{{ .Values.pods.healthchecksio.tz }}"
           - name: DEBUG
-            value: "{{ .Values.pods.healthckecksio.debug }}"
+            value: "{{ .Values.pods.healthchecksio.debug }}"
       - name: {{ .Release.Name }}-configwatcher
         image: alpine:latest
         command: ["/bin/sh", "-c"]
         args:
-          - |
+        - |
           apk add --no-cache inotify-tools kubectl &&
-          while inotifywait -m -e modify,create,delete --format '%w%f' {{ .Values.volumes.healthckecksioconfig.containerMountPath }} --include '\.ya?ml$'; do
+          while inotifywait -m -e modify,create,delete --format '%w%f' {{ .Values.volumes.healthchecksioconfig.containerMountPath }} --include '\.ya?ml$'; do
             echo "File changed! Restarting pod...";
             kubectl delete pod -l app={{ include "app.name" . }}-{{ .Release.Name }};
           done
         volumeMounts:
-        - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.volumes.healthckecksioconfig.name }}
-          mountPath: {{ .Values.volumes.healthckecksioconfig.containerMountPath }}
+        - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.volumes.healthchecksioconfig.name }}
+          mountPath: {{ .Values.volumes.healthchecksioconfig.containerMountPath }}
       volumes:
-      - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.volumes.healthckecksioconfig.name }}
+      - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.volumes.healthchecksioconfig.name }}
         nfs:
-          server: {{ .Values.volumes.healthckecksioconfig.server }}
-          path: {{ .Values.volumes.healthckecksioconfig.path }}
+          server: {{ .Values.volumes.healthchecksioconfig.server }}
+          path: {{ .Values.volumes.healthchecksioconfig.path }}
