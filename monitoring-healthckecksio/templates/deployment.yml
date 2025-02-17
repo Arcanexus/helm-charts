@@ -37,7 +37,7 @@ spec:
         args:
         - |
           apk add --no-cache inotify-tools kubectl &&
-          while inotifywait -m -e modify,create,delete --format '%w%f' {{ .Values.volumes.healthchecksioconfig.containerMountPath }} --include '\.ya?ml$'; do
+          while inotifywait -m -r -e modify,create,delete --format '%w%f' {{ .Values.volumes.healthchecksioconfig.containerMountPath }} --include '\.ya?ml$'; do
             echo "File changed! Restarting pod...";
             kubectl delete pod -l app={{ include "app.name" . }}-{{ .Release.Name }};
           done
