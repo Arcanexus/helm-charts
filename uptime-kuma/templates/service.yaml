@@ -22,9 +22,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "app.name" . }}-dbservice
+  name: uptime-kuma-db
   labels:
-    app.kubernetes.io/name: {{ include "app.name" . }}-dbservice
+    app.kubernetes.io/name: uptime-kuma-db
     helm.sh/chart: {{ include "app.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
