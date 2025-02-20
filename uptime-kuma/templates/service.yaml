@@ -37,4 +37,4 @@ spec:
     targetPort: {{ .Values.pods.db.dbContainerPort }}
     # nodePort: {{ .Values.pods.uptimekuma.httpExposedPort }}
   selector:
-    app: {{ include "app.name" . }}
+    app: {{ include "app.name" . }}-db
