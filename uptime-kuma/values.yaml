@@ -8,7 +8,7 @@ volumes:
     name: uptimekuma-config
     server: 192.168.2.50
     path: /volume2/docker/uptime-kuma/config
-    containerMountPath: /app/config
+    containerMountPath: /app/data
 
 
 pods:
