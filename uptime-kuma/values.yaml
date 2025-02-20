@@ -1,0 +1,42 @@
+volumes:
+  uptimekumadata:
+    name: uptimekuma-data
+    server: 192.168.2.15
+    path: /volume2/docker-data/uptime-kuma/db
+    containerMountPath: /app/data/var/lib/mysql
+  uptimekumaconfig:
+    name: uptimekuma-config
+    server: 192.168.2.50
+    path: /volume2/docker/uptime-kuma/config
+    containerMountPath: /app/config
+
+
+pods:
+  uptimekuma:
+    image: louislam/uptime-kuma:2.0.0-beta.1
+    replicas: 1
+
+    httpContainerPort: 3001
+    # httpsContainerPort: 8443
+    # httpExposedPort: 30011
+
+    security:
+      runAsUser: 0 #1000
+      runAsGroup: 0 #1000
+
+    ingress:
+      enabled: true
+      host: status2.arcanexus.com
+      ingressClassName: traefik
+      annotations:
+        cert-manager.io/cluster-issuer: le-wildcard-issuer
+
+  db:
+    image: 'mariadb:11.6.2-noble'
+    replicas: 1
+    
+    dbContainerPort: 3306
+
+    security:
+      runAsUser: 0 #1000
+      runAsGroup: 0 #1000

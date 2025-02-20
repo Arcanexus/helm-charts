@@ -1,0 +1,30 @@
+{{- if .Values.pods.uptimekuma.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "app.name" . }}-uptimekumaingress
+  annotations:
+    {{- if .Values.pods.uptimekuma.ingress.annotations }}
+    {{- toYaml .Values.pods.uptimekuma.ingress.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: traefik
+  {{- if .Values.pods.uptimekuma.ingress.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.pods.uptimekuma.ingress.host }}
+      secretName: {{ include "app.name" . }}-uptimekumaingress-tls
+  {{- end }}
+  rules:
+    - host: {{ .Values.pods.uptimekuma.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ include "app.name" . }}-uptimekumahttpservice
+                port:
+                  number: {{ .Values.pods.uptimekuma.httpContainerPort }}
+{{- end }}

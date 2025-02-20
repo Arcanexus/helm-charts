@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }} # has to match .spec.template.metadata.labels
+  replicas: {{ .Values.pods.uptimekuma.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }} # has to match .spec.selector.matchLabels
+        # date: "{{ now | unixEpoch }}"
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: {{ .Values.pods.uptimekuma.security.runAsUser }}
+        runAsGroup: {{ .Values.pods.uptimekuma.security.runAsGroup }}
+      # nodeSelector:
+      #   silent: fanless
+      containers:
+      - name: {{ include "app.name" . }}
+        image: {{ .Values.pods.uptimekuma.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.pods.uptimekuma.httpContainerPort }}
+          name: uptimekuma-http
+        volumeMounts:
+        - name: {{ include "app.name" . }}-{{ .Values.volumes.uptimekumaconfig.name }}
+          mountPath: {{ .Values.volumes.uptimekumaconfig.containerMountPath }}
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+          - name: PGID
+            value: "{{ .Values.pods.uptimekuma.security.runAsGroup }}"
+          - name: PUID
+            value: "{{ .Values.pods.uptimekuma.security.runAsUser }}"
+
+      volumes:
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.uptimekumaconfig.name }}
+        nfs:
+          server: {{ .Values.volumes.uptimekumaconfig.server }}
+          path: {{ .Values.volumes.uptimekumaconfig.path }}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}-db
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}-db # has to match .spec.template.metadata.labels
+  replicas: {{ .Values.pods.db.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-db # has to match .spec.selector.matchLabels
+        # date: "{{ now | unixEpoch }}"
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: {{ .Values.pods.db.security.runAsUser }}
+        runAsGroup: {{ .Values.pods.db.security.runAsGroup }}
+      # nodeSelector:
+      #   silent: fanless
+      containers:
+      - name: {{ include "app.name" . }}
+        image: {{ .Values.pods.db.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.pods.db.dbContainerPort }}
+          name: db-port
+        volumeMounts:
+        - name: {{ include "app.name" . }}-{{ .Values.volumes.uptimekumadata.name }}
+          mountPath: {{ .Values.volumes.uptimekumadata.containerMountPath }}
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+          - name: PGID
+            value: "{{ .Values.pods.db.security.runAsGroup }}"
+          - name: PUID
+            value: "{{ .Values.pods.db.security.runAsUser }}"
+
+      volumes:
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.uptimekumadata.name }}
+        nfs:
+          server: {{ .Values.volumes.uptimekumadata.server }}
+          path: {{ .Values.volumes.uptimekumadata.path }}
