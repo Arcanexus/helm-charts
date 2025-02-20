@@ -1,7 +1,7 @@
 volumes:
   uptimekumadata:
     name: uptimekuma-data
-    server: 192.168.2.15
+    server: 192.168.2.50
     path: /volume2/docker-data/uptime-kuma/db
     containerMountPath: /app/data/var/lib/mysql
   uptimekumaconfig:
