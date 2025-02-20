@@ -86,7 +86,14 @@ spec:
             value: "{{ .Values.pods.db.security.runAsGroup }}"
           - name: PUID
             value: "{{ .Values.pods.db.security.runAsUser }}"
-
+          - name: MARIADB_ROOT_PASSWORD
+            value: 'kuma'
+          - name: MARIADB_DATABASE
+            value: 'kuma'
+          - name: MARIADB_USER
+            value: 'kuma'
+          - name: MARIADB_PASSWORD
+            value: 'kuma'
       volumes:
       - name: {{ include "app.name" . }}-{{ .Values.volumes.uptimekumadata.name }}
         nfs:
