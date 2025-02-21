@@ -1,0 +1,17 @@
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: recreate-speedtest-tracker
+spec:
+  schedule: "0 0 * * *" # Adjust the schedule as needed
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: recreate-speedtest-tracker
+            image: bitnami/kubectl:latest
+            imagePullPolicy: IfNotPresent
+            command: ["/bin/sh", "-c", "kubectl delete pod -l app={{ include "app.name" . }}"]
+          restartPolicy: OnFailure
