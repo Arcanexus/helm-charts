@@ -20,8 +20,8 @@ pods:
         value: "true"
 
     security:
-      runAsUser: 911
-      runAsGroup: 911
+      runAsUser: 0
+      runAsGroup: 0
 
     ingress:
       enabled: true
