@@ -26,10 +26,14 @@ pods:
 
     ingress:
       enabled: true
+      tls: true
       host: status.arcanexus.com
       ingressClassName: traefik
       annotations:
         cert-manager.io/cluster-issuer: le-wildcard-issuer
+    
+    # nodeSelector:
+    #   silent: fanless
 
   db:
     image: 'mariadb:11.6.2-noble'
@@ -40,3 +44,6 @@ pods:
     security:
       runAsUser: 0 #1000
       runAsGroup: 0 #1000
+    
+    # nodeSelector:
+    #   silent: fanless

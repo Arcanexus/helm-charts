@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "app.name" . }}
+  name: uptime-kuma
 spec:
   selector:
     matchLabels:
@@ -13,14 +13,20 @@ spec:
       labels:
         app: {{ include "app.name" . }} # has to match .spec.selector.matchLabels
         # date: "{{ now | unixEpoch }}"
+        app.kubernetes.io/name: {{ include "app.name" . }}
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
       securityContext:
         runAsUser: {{ .Values.pods.uptimekuma.security.runAsUser }}
         runAsGroup: {{ .Values.pods.uptimekuma.security.runAsGroup }}
-      # nodeSelector:
-      #   silent: fanless
+      {{- if .Values.pods.db.nodeSelector }}
+      nodeSelector:
+        {{- toYaml .Values.pods.db.nodeSelector | nindent 8 }}
+      {{- end }}
       containers:
       - name: {{ include "app.name" . }}
         image: {{ .Values.pods.uptimekuma.image }}
@@ -49,7 +55,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "app.name" . }}-db
+  name: uptime-kuma-db
 spec:
   selector:
     matchLabels:
@@ -61,14 +67,20 @@ spec:
       labels:
         app: {{ include "app.name" . }}-db # has to match .spec.selector.matchLabels
         # date: "{{ now | unixEpoch }}"
+        app.kubernetes.io/name: {{ include "app.name" . }}
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
       securityContext:
         runAsUser: {{ .Values.pods.db.security.runAsUser }}
         runAsGroup: {{ .Values.pods.db.security.runAsGroup }}
-      # nodeSelector:
-      #   silent: fanless
+      {{- if .Values.pods.db.nodeSelector }}
+      nodeSelector:
+        {{- toYaml .Values.pods.db.nodeSelector | nindent 8 }}
+      {{- end }}
       containers:
       - name: {{ include "app.name" . }}
         image: {{ .Values.pods.db.image }}
