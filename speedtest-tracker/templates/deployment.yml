@@ -33,7 +33,7 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: {{ .Values.pods.speedtesttracker.httpContainerPort }}
-          name: speedtesttracker-http
+          name: tracker-http
         volumeMounts:
         - name: {{ include "app.name" . }}-{{ .Values.volumes.speedtesttrackerconfig.name }}
           mountPath: {{ .Values.volumes.speedtesttrackerconfig.containerMountPath }}
