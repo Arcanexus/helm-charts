@@ -26,7 +26,7 @@ pods:
     ingress:
       enabled: true
       tls: true
-      host: status.arcanexus.com
+      host: speedtest-tracker.arcanexus.com
       ingressClassName: traefik
       annotations:
         cert-manager.io/cluster-issuer: le-wildcard-issuer
