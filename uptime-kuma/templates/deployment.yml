@@ -27,6 +27,10 @@ spec:
       nodeSelector:
         {{- toYaml .Values.pods.db.nodeSelector | nindent 8 }}
       {{- end }}
+      initContainers:
+      - name: wait-for-db
+        image: busybox
+        command: ['sh', '-c', 'until nslookup uptime-kuma-db; do echo waiting for db; sleep 2; done;']
       containers:
       - name: {{ include "app.name" . }}
         image: {{ .Values.pods.uptimekuma.image }}
