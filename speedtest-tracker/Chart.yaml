@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A Helm chart for speedtest-tracker
+name: speedtest-tracker
+version: 0.0.1

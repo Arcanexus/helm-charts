@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uptime-kuma
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }} # has to match .spec.template.metadata.labels
+  replicas: {{ .Values.pods.speedtesttracker.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }} # has to match .spec.selector.matchLabels
+        # date: "{{ now | unixEpoch }}"
+        app.kubernetes.io/name: {{ include "app.name" . }}
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: {{ .Values.pods.speedtesttracker.security.runAsUser }}
+        runAsGroup: {{ .Values.pods.speedtesttracker.security.runAsGroup }}
+      {{- if .Values.pods.speedtesttracker.nodeSelector }}
+      nodeSelector:
+        {{- toYaml .Values.pods.speedtesttracker.nodeSelector | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: {{ include "app.name" . }}
+        image: {{ .Values.pods.speedtesttracker.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.pods.speedtesttracker.httpContainerPort }}
+          name: speedtesttracker-http
+        volumeMounts:
+        - name: {{ include "app.name" . }}-{{ .Values.volumes.speedtesttrackerconfig.name }}
+          mountPath: {{ .Values.volumes.speedtesttrackerconfig.containerMountPath }}
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+          - name: PGID
+            value: "{{ .Values.pods.speedtesttracker.security.runAsGroup }}"
+          - name: PUID
+            value: "{{ .Values.pods.speedtesttracker.security.runAsUser }}"
+          {{- if .Values.pods.speedtesttracker.environment }}
+            {{- toYaml .Values.pods.speedtesttracker.environment | nindent 10 }}
+          {{- end }}
+      volumes:
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.speedtesttrackerconfig.name }}
+        nfs:
+          server: {{ .Values.volumes.speedtesttrackerconfig.server }}
+          path: {{ .Values.volumes.speedtesttrackerconfig.path }}
