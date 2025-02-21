@@ -30,7 +30,7 @@ spec:
       initContainers:
       - name: wait-for-db
         image: busybox
-        command: ['sh', '-c', 'until nslookup uptime-kuma-db; do echo waiting for db; sleep 2; done;']
+        command: ['sh', '-c', 'until nc -z -v -w30 uptime-kuma-db {{ .Values.pods.db.dbContainerPort }}; do echo waiting for db; sleep 2; done;']
       containers:
       - name: {{ include "app.name" . }}
         image: {{ .Values.pods.uptimekuma.image }}
@@ -48,7 +48,6 @@ spec:
             value: "{{ .Values.pods.uptimekuma.security.runAsGroup }}"
           - name: PUID
             value: "{{ .Values.pods.uptimekuma.security.runAsUser }}"
-
       volumes:
       - name: {{ include "app.name" . }}-{{ .Values.volumes.uptimekumaconfig.name }}
         nfs:
