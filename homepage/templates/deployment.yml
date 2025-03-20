@@ -35,7 +35,7 @@ spec:
             - name: TZ
               value: "Europe/Paris"
             - name: HOMEPAGE_ALLOWED_HOSTS
-              value: {{ .Values.pods.homepage.allowedHosts }}
+              value: "{{ .Values.pods.homepage.allowedHosts }}"
       volumes:
       - name: {{ include "app.name" . }}-{{ .Values.volumes.config.name }}
         persistentVolumeClaim:
