@@ -1,10 +1,9 @@
 volumes:
   config:
-    name: config
-    size: 100Mi
-    path: /volume2/docker/homepage/homepage-config-k8s-nfs-pv
-    server: 192.168.2.50
+    name: homepage-config
     containerMountPath: /app/config
+    server: 192.168.2.50
+    path: /volume2/docker/homepage/homepage-config-k8s-nfs-pv
 
 pods:
   homepage:

@@ -37,6 +37,6 @@ spec:
               value: "{{ .Values.pods.homepage.allowedHosts }}"
       volumes:
       - name: {{ include "app.name" . }}-{{ .Values.volumes.config.name }}
-        persistentVolumeClaim:
-          claimName: {{ include "app.name" . }}-{{ .Values.volumes.config.name }}-pvc
-
+        nfs:
+          server: {{ .Values.volumes.config.server }}
+          path: {{ .Values.volumes.config.path }}
