@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: {{ template "app.name" . }}
   name: {{ include "app.name" . }}
 spec:
   replicas: {{ .Values.pods.homepage.replicas }}
