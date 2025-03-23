@@ -33,6 +33,8 @@ pods:
     environment:
       - name: LITELLM_MASTER_KEY
         value: "sk-master-Sw4WaS4bkMMCNaYeTYa9"
+      - name: STORE_MODEL_IN_DB
+        value: "true"
   
   postgres:
     image: postgres:13.3
