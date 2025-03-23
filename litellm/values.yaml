@@ -5,10 +5,10 @@ volumes:
     path: /volume2/docker-data/litellm/db
     containerMountPath: /var/lib/postgresql/data
 
-  open-webui:
-    name: open-webui
+  openwebui:
+    name: openwebui
     server: 192.168.2.50
-    path: /volume2/docker-data/open-webui
+    path: /volume2/docker-data/openwebui
     containerMountPath: /app/backend/data
 
 pods:
@@ -38,8 +38,6 @@ pods:
     litellm_master_key: "sk-master-Sw4WaS4bkMMCNaYeTYa9"
 
     environment:
-      - name: LITELLM_MASTER_KEY
-        value: "sk-master-Sw4WaS4bkMMCNaYeTYa9"
       - name: STORE_MODEL_IN_DB
         value: "true"
   
@@ -51,7 +49,7 @@ pods:
     username: litellm
     password: litellm
 
-  open-webui:
+  openwebui:
     image: ghcr.io/open-webui/open-webui:main
     replicas: 1
 

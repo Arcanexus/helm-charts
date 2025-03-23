@@ -39,7 +39,7 @@ spec:
           - name: DATABASE_URL
             value: "postgresql://{{ .Values.pods.postgres.username }}:{{ .Values.pods.postgres.password }}@litellm-postgres:5432/{{ .Values.pods.postgres.database }}"
           - name: LITELLM_MASTER_KEY
-            valuefrom:
+            valueFrom:
               secretKeyRef:
                 name: litellm-secrets
                 key: LITELLM_MASTER_KEY
@@ -112,33 +112,33 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: open-webui
+  name: openwebui
   labels:
-    app: open-webui
+    app: openwebui
 spec:
-  replicas: 1
+  replicas: {{ .Values.pods.openwebui.replicas }}
   selector:
     matchLabels:
-      app: open-webui
+      app: openwebui
   template:
     metadata:
       labels:
-        app: open-webui
-        app.kubernetes.io/name: open-webui
+        app: openwebui
+        app.kubernetes.io/name: openwebui
         helm.sh/chart: {{ include "app.chart" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       containers:
-      - name: open-webui
-        image: ghcr.io/open-webui/open-webui:main
+      - name: openwebui
+        image: {{ .Values.pods.openwebui.image }}
         imagePullPolicy: Always
         ports:
-        - containerPort: 8080
-          name: open-webui-http
+        - containerPort: {{ .Values.pods.openwebui.httpContainerPort }}
+          name: openwebui-http
         volumeMounts:
-        - name: open-webui-data
-          mountPath: 
+        - name: openwebui-data
+          mountPath: {{ .Values.volumes.openwebui.containerMountPath }}
         env:
           - name: TZ
             value: "Europe/Paris"
@@ -153,7 +153,7 @@ spec:
         - name: OPENAI_API_BASE_URL
           value: "https://{{ .Values.pods.litellm.ingress.host }}/v1"
       volumes:
-      - name: open-webui-data
+      - name: openwebui-data
         nfs:
           server: {{ .Values.volumes.openwebui.server }}
           path: {{ .Values.volumes.openwebui.path }}
