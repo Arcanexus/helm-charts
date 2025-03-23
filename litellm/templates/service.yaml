@@ -32,3 +32,24 @@ spec:
       protocol: TCP
   selector:
     app: litellm-postgres
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openwebui-http
+  labels:
+    app.kubernetes.io/name: {{ include "app.name" . }}
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  # type: NodePort
+  type: ClusterIP
+  ports:
+  - name: {{ include "app.name" . }}
+    port: {{ .Values.pods.openwebui.httpContainerPort }}
+    targetPort: {{ .Values.pods.openwebui.httpContainerPort }}
+    # nodePort: {{ .Values.pods.litellm.httpExposedPort }}
+  selector:
+    app: {{ include "app.name" . }}
