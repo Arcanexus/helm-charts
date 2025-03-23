@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: litellm
+  labels:
+    app: litellm
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }} # has to match .spec.template.metadata.labels
+  replicas: {{ .Values.pods.litellm.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }} # has to match .spec.selector.matchLabels
+        # date: "{{ now | unixEpoch }}"
+        app.kubernetes.io/name: {{ include "app.name" . }}
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      {{- if .Values.pods.litellm.nodeSelector }}
+      nodeSelector:
+        {{- toYaml .Values.pods.litellm.nodeSelector | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: litellm
+        image: {{ .Values.pods.litellm.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.pods.litellm.httpContainerPort }}
+          name: litellm-http
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+          {{- if .Values.pods.litellm.environment }}
+            {{- toYaml .Values.pods.litellm.environment | nindent 10 }}
+          {{- end }}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/proxy_server_config.yaml
+          subPath: config.yaml
+        envFrom:
+        - secretRef:
+            name: litellm-secrets
+      volumes:
+        - name: config-volume
+          configMap:
+            name: litellm-config-file

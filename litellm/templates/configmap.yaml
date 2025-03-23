@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: litellm-config-file
+data:
+  config.yaml: |
+      model_list: 
+        - model_name: claude-3-5-sonnet-20241022
+          litellm_params:
+            model: claude-3-5-sonnet-20241022
+            api_base: https://api.anthropic.com/
+            api_key: os.environ/ANTHROPIC_API_KEY

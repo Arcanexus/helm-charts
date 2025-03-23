@@ -1,0 +1,35 @@
+{{- if .Values.pods.litellm.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "app.name" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "app.name" . }}
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    {{- if .Values.pods.litellm.ingress.annotations }}
+    {{- toYaml .Values.pods.litellm.ingress.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.pods.litellm.ingress.ingressClassName }}
+  {{- if .Values.pods.litellm.ingress.tls }}
+  tls:
+    - hosts:
+        - {{ .Values.pods.litellm.ingress.host }}
+      secretName: {{ include "app.name" . }}-tls
+  {{- end }}
+  rules:
+    - host: {{ .Values.pods.litellm.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: litellm-http
+                port:
+                  number: {{ .Values.pods.litellm.httpContainerPort }}
+{{- end }}
