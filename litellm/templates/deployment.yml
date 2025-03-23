@@ -83,6 +83,8 @@ spec:
         ports:
         - containerPort: 5432
         env:
+        - name: TZ
+          value: "Europe/Paris"
         - name: POSTGRES_DB
           value: {{ .Values.pods.postgres.database }}
         - name: POSTGRES_USER
