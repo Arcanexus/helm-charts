@@ -71,7 +71,7 @@ spec:
   selector:
     matchLabels:
       app: litellm-postgres
-  
+  revisionHistoryLimit: 0
   template:
     metadata:
       labels:
@@ -120,6 +120,7 @@ spec:
   selector:
     matchLabels:
       app: openwebui
+  revisionHistoryLimit: 0
   template:
     metadata:
       labels:
