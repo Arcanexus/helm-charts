@@ -9,4 +9,4 @@ data:
           litellm_params:
             model: claude-3-5-sonnet-20241022
             api_base: https://api.anthropic.com/
-            api_key: os.environ/ANTHROPIC_API_KEY
+            api_key: {{ .Values.ANTHROPIC_API_KEY }}
