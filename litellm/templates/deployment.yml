@@ -36,6 +36,8 @@ spec:
         env:
           - name: TZ
             value: "Europe/Paris"
+          - name: DATABASE_URL
+            value: "postgresql://{{ .Values.pods.postgres.username }}:{{ .Values.pods.postgres.password }}@litellm-postgres:5432/{{ .Values.pods.postgres.database }}"
           {{- if .Values.pods.litellm.environment }}
             {{- toYaml .Values.pods.litellm.environment | nindent 10 }}
           {{- end }}
@@ -50,3 +52,51 @@ spec:
         - name: config-volume
           configMap:
             name: litellm-config-file
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: litellm-postgres
+  labels:
+    app: litellm-postgres
+spec:
+  replicas: {{ .Values.pods.postgres.replicas }}
+  selector:
+    matchLabels:
+      app: litellm-postgres
+  
+  template:
+    metadata:
+      labels:
+        app: litellm-postgres
+        app.kubernetes.io/name: litellm-postgres
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      containers:
+      - name: postgres
+        image: {{ .Values.pods.postgres.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_DB
+          value: {{ .Values.pods.postgres.database }}
+        - name: POSTGRES_USER
+          value: {{ .Values.pods.postgres.username }}
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: litellm-postgres-secrets
+              key: password
+        volumeMounts:
+        - name: postgres-data
+          mountPath: {{ .Values.volumes.db.containerMountPath }}
+      volumes:
+      - name: postgres-data
+        nfs:
+          server: {{ .Values.volumes.db.server }}
+          path: {{ .Values.volumes.db.path }}

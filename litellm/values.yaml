@@ -1,9 +1,9 @@
-# volumes:
-#   config:
-#     name: litellm-config
-#     server: 192.168.2.50
-#     path: /volume2/docker/litellm/config
-#     containerMountPath: /config
+volumes:
+  db:
+    name: litellm-db
+    server: 192.168.2.50
+    path: /volume2/docker-data/litellm/db
+    containerMountPath: /var/lib/postgresql/data
 
 
 pods:
@@ -30,4 +30,16 @@ pods:
     # nodeSelector:
     #   silent: fanless
 
-ANTHROPIC_API_KEY: 
+    environment:
+      - name: LITELLM_MASTER_KEY
+        value: "sk-master-Sw4WaS4bkMMCNaYeTYa9"
+  
+  postgres:
+    image: postgres:13.3
+    replicas: 1
+
+    database: litellm
+    username: litellm
+    password: litellm
+
+ANTHROPIC_API_KEY: TBD

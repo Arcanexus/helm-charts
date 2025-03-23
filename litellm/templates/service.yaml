@@ -18,3 +18,17 @@ spec:
   selector:
     app: {{ include "app.name" . }}
 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: litellm-postgres
+  labels:
+    app: litellm
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+      protocol: TCP
+  selector:
+    app: litellm-postgres
