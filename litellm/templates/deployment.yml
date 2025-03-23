@@ -38,6 +38,11 @@ spec:
             value: "Europe/Paris"
           - name: DATABASE_URL
             value: "postgresql://{{ .Values.pods.postgres.username }}:{{ .Values.pods.postgres.password }}@litellm-postgres:5432/{{ .Values.pods.postgres.database }}"
+          - name: LITELLM_MASTER_KEY
+            valuefrom:
+              secretKeyRef:
+                name: litellm-secrets
+                key: LITELLM_MASTER_KEY
           {{- if .Values.pods.litellm.environment }}
             {{- toYaml .Values.pods.litellm.environment | nindent 10 }}
           {{- end }}
@@ -102,3 +107,53 @@ spec:
         nfs:
           server: {{ .Values.volumes.db.server }}
           path: {{ .Values.volumes.db.path }}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: open-webui
+  labels:
+    app: open-webui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: open-webui
+  template:
+    metadata:
+      labels:
+        app: open-webui
+        app.kubernetes.io/name: open-webui
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      containers:
+      - name: open-webui
+        image: ghcr.io/open-webui/open-webui:main
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: open-webui-http
+        volumeMounts:
+        - name: open-webui-data
+          mountPath: 
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+          {{- if .Values.pods.litellm.environment }}
+            {{- toYaml .Values.pods.litellm.environment | nindent 10 }}
+          {{- end }}
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: litellm-secrets
+              key: LITELLM_MASTER_KEY
+        - name: OPENAI_API_BASE_URL
+          value: "https://{{ .Values.pods.litellm.ingress.host }}/v1"
+      volumes:
+      - name: open-webui-data
+        nfs:
+          server: {{ .Values.volumes.openwebui.server }}
+          path: {{ .Values.volumes.openwebui.path }}

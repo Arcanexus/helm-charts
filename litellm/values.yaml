@@ -5,6 +5,11 @@ volumes:
     path: /volume2/docker-data/litellm/db
     containerMountPath: /var/lib/postgresql/data
 
+  open-webui:
+    name: open-webui
+    server: 192.168.2.50
+    path: /volume2/docker-data/open-webui
+    containerMountPath: /app/backend/data
 
 pods:
   litellm:
@@ -30,6 +35,8 @@ pods:
     # nodeSelector:
     #   silent: fanless
 
+    litellm_master_key: "sk-master-Sw4WaS4bkMMCNaYeTYa9"
+
     environment:
       - name: LITELLM_MASTER_KEY
         value: "sk-master-Sw4WaS4bkMMCNaYeTYa9"
@@ -44,4 +51,32 @@ pods:
     username: litellm
     password: litellm
 
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    replicas: 1
+
+    httpContainerPort: 8080
+    # httpsContainerPort: 8443
+    # httpExposedPort: 30011
+
+    # security:
+    #   runAsUser: 0
+    #   runAsGroup: 0
+
+    ingress:
+      enabled: true
+      tls: true
+      host: openwebui.arcanexus.com
+      ingressClassName: traefik
+      annotations:
+        cert-manager.io/cluster-issuer: le-wildcard-issuer
+    
+    # nodeSelector:
+    #   silent: fanless
+
+    environment:
+      - name: WEBUI_AUTH
+        value: "False"
+
 ANTHROPIC_API_KEY: TBD
+OPENAI_API_KEY: TBD
