@@ -19,7 +19,7 @@ spec:
   tls:
     - hosts:
         - {{ .Values.pods.litellm.ingress.host }}
-      secretName: {{ include "app.name" . }}-tls
+      secretName: litellm-tls
   {{- end }}
   rules:
     - host: {{ .Values.pods.litellm.ingress.host }}
@@ -55,7 +55,7 @@ spec:
   tls:
     - hosts:
         - {{ .Values.pods.openwebui.ingress.host }}
-      secretName: {{ include "app.name" . }}-tls
+      secretName: openwebui-tls
   {{- end }}
   rules:
     - host: {{ .Values.pods.openwebui.ingress.host }}
