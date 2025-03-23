@@ -142,16 +142,16 @@ spec:
         env:
           - name: TZ
             value: "Europe/Paris"
+          - name: OPENAI_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: litellm-secrets
+                key: LITELLM_MASTER_KEY
+          - name: OPENAI_API_BASE_URL
+            value: "https://{{ .Values.pods.openwebui.ingress.host }}/v1"
           {{- if .Values.pods.openwebui.environment }}
             {{- toYaml .Values.pods.openwebui.environment | nindent 10 }}
           {{- end }}
-        - name: OPENAI_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: litellm-secrets
-              key: LITELLM_MASTER_KEY
-        - name: OPENAI_API_BASE_URL
-          value: "https://{{ .Values.pods.openwebui.ingress.host }}/v1"
       volumes:
       - name: openwebui-data
         nfs:
