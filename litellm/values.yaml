@@ -39,7 +39,9 @@ pods:
 
     environment:
       - name: STORE_MODEL_IN_DB
-        value: "true"
+        value: "TRUE"
+      - name: STORE_PROMPTS_IN_SPEND_LOGS
+        value: "TRUE"
   
   postgres:
     image: postgres:13.3
