@@ -48,7 +48,7 @@ spec:
           {{- end }}
         volumeMounts:
         - name: config-volume
-          mountPath: /app/proxy_server_config2.yaml
+          mountPath: /app/config.yaml
           subPath: config.yaml
         envFrom:
         - secretRef:
