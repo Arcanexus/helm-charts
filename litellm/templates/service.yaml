@@ -16,7 +16,7 @@ spec:
     targetPort: {{ .Values.pods.litellm.httpContainerPort }}
     # nodePort: {{ .Values.pods.litellm.httpExposedPort }}
   selector:
-    app: {{ include "app.name" . }}
+    app: litellm
 
 ---
 apiVersion: v1
@@ -52,4 +52,4 @@ spec:
     targetPort: {{ .Values.pods.openwebui.httpContainerPort }}
     # nodePort: {{ .Values.pods.litellm.httpExposedPort }}
   selector:
-    app: {{ include "app.name" . }}
+    app: openwebui
