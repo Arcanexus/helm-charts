@@ -4,12 +4,6 @@ metadata:
   name: litellm-config-file
 data:
   config.yaml: |
-      # model_list: 
-      #   - model_name: claude-3-5-sonnet-test
-      #     litellm_params:
-      #       model: claude-3-5-sonnet-20241022
-      #       api_base: https://api.anthropic.com/
-      #       api_key: {{ .Values.ANTHROPIC_API_KEY }}
       general_settings:
         store_model_in_db: true
         store_prompts_in_spend_logs: true
