@@ -149,7 +149,7 @@ spec:
                 name: litellm-secrets
                 key: LITELLM_MASTER_KEY
           - name: OPENAI_API_BASE_URL
-            value: "https://{{ .Values.pods.openwebui.ingress.host }}/v1"
+            value: "https://{{ .Values.pods.litellm.ingress.host }}/v1"
           {{- if .Values.pods.openwebui.environment }}
             {{- toYaml .Values.pods.openwebui.environment | nindent 10 }}
           {{- end }}
