@@ -3,9 +3,9 @@ kind: Role
 metadata:
   name: pod-deleter
 rules:
-- apiGroups: [""]
+- apiGroups: ["*"]
   resources: ["pods"]
-  verbs: ["delete", "list", "get"]
+  verbs: ["delete", "list", "get", "watch"]
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
