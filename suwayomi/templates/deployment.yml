@@ -36,7 +36,7 @@ spec:
           name: suwayomi-http
         volumeMounts:
         - name: suwayomi-data
-          mountPath: {{ .Values.volumes.suwayomi-data.containerMountPath }}
+          mountPath: {{ .Values.volumes.suwayomidata.containerMountPath }}
         env:
           - name: TZ
             value: "Europe/Paris"
@@ -60,5 +60,5 @@ spec:
       volumes:
       - name: suwayomi-data
         nfs:
-          server: {{ .Values.volumes.suwayomi-data.server }}
-          path: {{ .Values.volumes.suwayomi-data.path }}
+          server: {{ .Values.volumes.suwayomidata.server }}
+          path: {{ .Values.volumes.suwayomidata.path }}
