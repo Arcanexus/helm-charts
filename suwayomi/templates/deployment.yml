@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "app.name" . }}
+  name: suwayomi
 spec:
   selector:
     matchLabels:
-      app: {{ include "app.name" . }} # has to match .spec.template.metadata.labels
+      app: suwayomi # has to match .spec.template.metadata.labels
   replicas: {{ .Values.pods.suwayomi.replicas }}
   revisionHistoryLimit: 0
   template:
     metadata:
       labels:
-        app: {{ include "app.name" . }} # has to match .spec.selector.matchLabels
+        app: suwayomi # has to match .spec.selector.matchLabels
         # date: "{{ now | unixEpoch }}"
         app.kubernetes.io/name: {{ include "app.name" . }}
         helm.sh/chart: {{ include "app.chart" . }}
@@ -44,6 +44,43 @@ spec:
             {{- toYaml .Values.pods.suwayomi.environment | nindent 10 }}
           {{- end }}
 
+      volumes:
+      - name: suwayomi-data
+        nfs:
+          server: {{ .Values.volumes.suwayomidata.server }}
+          path: {{ .Values.volumes.suwayomidata.path }}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flaresolverr
+spec:
+  selector:
+    matchLabels:
+      app: flaresolverr # has to match .spec.template.metadata.labels
+  replicas: {{ .Values.pods.suwayomi.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: flaresolverr # has to match .spec.selector.matchLabels
+        # date: "{{ now | unixEpoch }}"
+        app.kubernetes.io/name: {{ include "app.name" . }}
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: {{ .Values.pods.suwayomi.security.runAsUser }}
+        runAsGroup: {{ .Values.pods.suwayomi.security.runAsGroup }}
+      {{- if .Values.pods.suwayomi.nodeSelector }}
+      nodeSelector:
+        {{- toYaml .Values.pods.suwayomi.nodeSelector | nindent 8 }}
+      {{- end }}
+      containers:
       - name: flaresolverr
         image: {{ .Values.pods.flaresolverr.image }}
         imagePullPolicy: Always
@@ -56,9 +93,3 @@ spec:
           {{- if .Values.pods.flaresolverr.environment }}
             {{- toYaml .Values.pods.flaresolverr.environment | nindent 10 }}
           {{- end }}
-
-      volumes:
-      - name: suwayomi-data
-        nfs:
-          server: {{ .Values.volumes.suwayomidata.server }}
-          path: {{ .Values.volumes.suwayomidata.path }}
