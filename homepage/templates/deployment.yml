@@ -30,6 +30,8 @@ spec:
           volumeMounts:
             - name: {{ include "app.name" . }}-{{ .Values.volumes.config.name }}
               mountPath: {{ .Values.volumes.config.containerMountPath }}
+            - name: {{ include "app.name" . }}-{{ .Values.volumes.images.name }}
+              mountPath: {{ .Values.volumes.images.containerMountPath }}
           env:
             - name: TZ
               value: "Europe/Paris"
@@ -40,3 +42,7 @@ spec:
         nfs:
           server: {{ .Values.volumes.config.server }}
           path: {{ .Values.volumes.config.path }}
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.images.name }}
+        nfs:
+          server: {{ .Values.volumes.images.server }}
+          path: {{ .Values.volumes.images.path }}
