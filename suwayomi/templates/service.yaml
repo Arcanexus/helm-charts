@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: suwayomi
+  labels:
+    app.kubernetes.io/name: {{ include "app.name" . }}
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: suwayomi
+    port: {{ .Values.pods.suwayomi.httpContainerPort }}
+    targetPort: {{ .Values.pods.suwayomi.httpContainerPort }}
+  selector:
+    app: suwayomi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flaresolverr
+  labels:
+    app.kubernetes.io/name: {{ include "app.name" . }}
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: flaresolverr
+    port: {{ .Values.pods.flaresolverr.httpContainerPort }}
+    targetPort: {{ .Values.pods.flaresolverr.httpContainerPort }}
+  selector:
+    app: flaresolverr

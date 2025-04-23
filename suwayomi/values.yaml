@@ -1,0 +1,45 @@
+volumes:
+  downloads:
+    name: suwayomi-data
+    server: 192.168.2.50
+    path: /volume2/docker-data/suwayomi
+    containerMountPath: /home/suwayomi/.local/share/Tachidesk
+
+pods:
+  suwayomi:
+    image: ghcr.io/suwayomi/suwayomi-server:stable
+    replicas: 1
+
+    httpContainerPort: 4567
+
+    security:
+      runAsUser: 0
+      runAsGroup: 0
+
+    ingress:
+      enabled: true
+      host: suwayomi.arcanexus.com
+      ingressClassName: traefik
+      annotations:
+        cert-manager.io/cluster-issuer: le-wildcard-issuer
+
+    environment:
+      - name: FLARESOLVERR_ENABLED
+        value: "true"
+      - name: FLARESOLVERR_URL
+        value: "http://flaresolverr:8191"
+      - name: DOWNLOAD_AS_CBZ
+        value: "true"
+      - name: EXTENSION_REPOS
+        value: '["https://raw.githubusercontent.com/keiyoushi/extensions/repo/index.min.json", "https://raw.githubusercontent.com/kitsumed/mihonyomi-extensions/releases/index.min.json"]'
+
+  flaresolverr:
+    image: ghcr.io/thephaseless/byparr:latest
+    container_name: flaresolverr
+    replicas: 1
+
+    httpContainerPort: 8191
+    
+    security:
+      runAsUser: 0
+      runAsGroup: 0

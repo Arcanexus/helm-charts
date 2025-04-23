@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: suwayomi
+  annotations:
+    {{- if .Values.pods.suwayomi.ingress.annotations }}
+    {{- toYaml .Values.pods.suwayomi.ingress.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: traefik
+  {{- if .Values.pods.suwayomi.ingress.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.pods.suwayomi.ingress.host }}
+      secretName: suwayomi-tls
+  {{- end }}
+  rules:
+    - host: {{ .Values.pods.suwayomi.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: suwayomi
+                port:
+                  number: {{ .Values.pods.suwayomi.httpContainerPort }}
