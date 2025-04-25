@@ -1,0 +1,78 @@
+volumes:
+  dbdata:
+    name: dbdata
+    server: 192.168.2.50
+    path: /volume2/docker-data/linkwarden/dbdata
+    containerMountPath: /var/lib/postgresql/data
+  linkwardendata:
+    name: linkwardendata
+    server: 192.168.2.50
+    path: /volume2/docker-data/linkwarden/linkwardendata
+    containerMountPath: /data/data
+  meilisearchdata:
+    name: meilisearchdata
+    server: 192.168.2.50
+    path: /volume2/docker-data/linkwarden/meilisearchdata
+    containerMountPath: /meili_data
+
+pods:
+  linkwarden:
+    image: ghcr.io/linkwarden/linkwarden:v2.10.0
+    replicas: 1
+
+    httpContainerPort: 3000
+
+    security:
+      runAsUser: 0
+      runAsGroup: 0
+
+    ingress:
+      enabled: true
+      host: linkwarden.arcanexus.com
+      ingressClassName: traefik
+      annotations:
+        cert-manager.io/cluster-issuer: le-wildcard-issuer
+
+    environment:
+      - name: DATABASE_URL
+        value: postgresql://linkwarden:linkwarden@postgres:5432/postgres
+      - name: NEXTAUTH_URL
+        value: http://linkwarden.arcanexus.com/api/v1/auth
+      - name: NEXTAUTH_SECRET
+        value: VERY_SENSITIVE_SECRET
+      - name: POSTGRES_PASSWORD
+        value: linkwarden
+      - name: MEILI_HOST
+        value: http://meilisearch:7700
+        
+  postgres:
+    image: postgres:16-alpine
+    replicas: 1
+
+    security:
+      runAsUser: 0
+      runAsGroup: 0
+    
+    environment:
+      - name: POSTGRES_USER
+        value: linkwarden
+      - name: POSTGRES_PASSWORD
+        value: linkwarden
+      - name: POSTGRES_DB
+        value: postgres
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.12.8
+    replicas: 1
+
+    httpContainerPort: 7700
+
+    security:
+      runAsUser: 0
+      runAsGroup: 0
+
+    # environment:
+    # - name: MEILI_HOST
+    #   value: http://meilisearch:7700
+    # - name: MEILI_MASTER_KEY
+    #   value: YOUR_MEILI_MASTER_KEY

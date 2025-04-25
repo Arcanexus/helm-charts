@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: linkwarden
+  annotations:
+    {{- if .Values.pods.linkwarden.ingress.annotations }}
+    {{- toYaml .Values.pods.linkwarden.ingress.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: traefik
+  {{- if .Values.pods.linkwarden.ingress.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.pods.linkwarden.ingress.host }}
+      secretName: linkwarden-tls
+  {{- end }}
+  rules:
+    - host: {{ .Values.pods.linkwarden.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: linkwarden
+                port:
+                  number: {{ .Values.pods.linkwarden.httpContainerPort }}

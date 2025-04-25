@@ -1,0 +1,140 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: linkwarden
+spec:
+  selector:
+    matchLabels:
+      app: linkwarden # has to match .spec.template.metadata.labels
+  replicas: {{ .Values.pods.linkwarden.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: linkwarden # has to match .spec.selector.matchLabels
+        # date: "{{ now | unixEpoch }}"
+        app.kubernetes.io/name: {{ include "app.name" . }}
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: {{ .Values.pods.linkwarden.security.runAsUser }}
+        runAsGroup: {{ .Values.pods.linkwarden.security.runAsGroup }}
+      {{- if .Values.pods.linkwarden.nodeSelector }}
+      nodeSelector:
+        {{- toYaml .Values.pods.linkwarden.nodeSelector | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: linkwarden
+        image: {{ .Values.pods.linkwarden.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.pods.linkwarden.httpContainerPort }}
+          name: linkwarden-http
+        volumeMounts:
+        - name: linkwarden-data
+          mountPath: {{ .Values.volumes.linkwardendata.containerMountPath }}
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+          {{- if .Values.pods.linkwarden.environment }}
+            {{- toYaml .Values.pods.linkwarden.environment | nindent 10 }}
+          {{- end }}
+
+      volumes:
+      - name: linkwarden-data
+        nfs:
+          server: {{ .Values.volumes.linkwardendata.server }}
+          path: {{ .Values.volumes.linkwardendata.path }}
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: linkwarden-postgres
+  labels:
+    app: linkwarden-postgres
+spec:
+  replicas: {{ .Values.pods.postgres.replicas }}
+  selector:
+    matchLabels:
+      app: linkwarden-postgres
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: linkwarden-postgres
+        app.kubernetes.io/name: linkwarden-postgres
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      containers:
+      - name: postgres
+        image: {{ .Values.pods.postgres.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5432
+        env:
+        - name: TZ
+          value: "Europe/Paris"
+        {{- if .Values.pods.linkwarden.environment }}
+          {{- toYaml .Values.pods.linkwarden.environment | nindent 8 }}
+        {{- end }}
+        volumeMounts:
+        - name: postgres-data
+          mountPath: {{ .Values.volumes.dbdata.containerMountPath }}
+      volumes:
+      - name: postgres-data
+        nfs:
+          server: {{ .Values.volumes.dbdata.server }}
+          path: {{ .Values.volumes.dbdata.path }}
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: meilisearch
+  labels:
+    app: meilisearch
+spec:
+  replicas: {{ .Values.pods.postgres.replicas }}
+  selector:
+    matchLabels:
+      app: meilisearch
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: meilisearch
+        app.kubernetes.io/name: linkwarden-meilisearch
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      containers:
+      - name: meilisearch
+        image: {{ .Values.pods.meilisearch.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.pods.meilisearch.httpContainerPort }}
+          name: meilisearch-http
+        env:
+        - name: TZ
+          value: "Europe/Paris"
+          {{- if .Values.pods.meilisearch.environment }}
+            {{- toYaml .Values.pods.meilisearch.environment | nindent 10 }}
+          {{- end }}
+        volumeMounts:
+        - name: postgres-data
+          mountPath: {{ .Values.volumes.meilisearchdata.containerMountPath }}
+      volumes:
+      - name: postgres-data
+        nfs:
+          server: {{ .Values.volumes.meilisearchdata.server }}
+          path: {{ .Values.volumes.meilisearchdata.path }}
