@@ -55,20 +55,20 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: linkwarden-postgres
+  name: postgres
   labels:
-    app: linkwarden-postgres
+    app: postgres
 spec:
   replicas: {{ .Values.pods.postgres.replicas }}
   selector:
     matchLabels:
-      app: linkwarden-postgres
+      app: postgres
   revisionHistoryLimit: 0
   template:
     metadata:
       labels:
-        app: linkwarden-postgres
-        app.kubernetes.io/name: linkwarden-postgres
+        app: postgres
+        app.kubernetes.io/name: postgres
         helm.sh/chart: {{ include "app.chart" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -82,8 +82,8 @@ spec:
         env:
         - name: TZ
           value: "Europe/Paris"
-        {{- if .Values.pods.linkwarden.environment }}
-          {{- toYaml .Values.pods.linkwarden.environment | nindent 8 }}
+        {{- if .Values.pods.postgres.environment }}
+          {{- toYaml .Values.pods.postgres.environment | nindent 8 }}
         {{- end }}
         volumeMounts:
         - name: postgres-data
@@ -123,7 +123,7 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: {{ .Values.pods.meilisearch.httpContainerPort }}
-          name: meilisearch-http
+          name: meilisearch
         env:
         - name: TZ
           value: "Europe/Paris"
