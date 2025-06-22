@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: {{ template "app.name" . }}
   name: {{ include "app.name" . }}
 spec:
   selector:
@@ -40,12 +39,14 @@ spec:
             value: "Europe/Paris"
       volumes:
       - name: {{ include "app.name" . }}-{{ .Values.volumes.komgaconfig.name }}
-        persistentVolumeClaim:
-          claimName: {{ include "app.name" . }}-{{ .Values.volumes.komgaconfig.name }}-pvc
+        nfs:
+          server: {{ .Values.volumes.komgaconfig.server }}
+          path: {{ .Values.volumes.komgaconfig.path }}
       - name: {{ include "app.name" . }}-{{ .Values.volumes.komgadata.name }}
         nfs:
           server: {{ .Values.volumes.komgadata.server }}
           path: {{ .Values.volumes.komgadata.path }}
       - name: {{ include "app.name" . }}-{{ .Values.volumes.komgadata2.name }}
-        persistentVolumeClaim:
-          claimName: {{ include "app.name" . }}-{{ .Values.volumes.komgadata2.name }}-pvc
+        nfs:
+          server: {{ .Values.volumes.komgadata2.server }}
+          path: {{ .Values.volumes.komgadata2.path }}
