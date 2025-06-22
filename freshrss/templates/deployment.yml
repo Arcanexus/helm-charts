@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: {{ template "app.name" . }}
   name: {{ include "app.name" . }}
 spec:
   selector:
@@ -39,8 +38,11 @@ spec:
             value: "1,31"
       volumes:
       - name: {{ include "app.name" . }}-{{ .Values.volumes.freshrssextensions.name }}
-        persistentVolumeClaim:
-          claimName: {{ include "app.name" . }}-{{ .Values.volumes.freshrssextensions.name }}-pvc
+        nfs:
+          server: {{ .Values.volumes.freshrssextensions.server }}
+          path: {{ .Values.volumes.freshrssextensions.path }}
+
       - name: {{ include "app.name" . }}-{{ .Values.volumes.freshrssdata.name }}
-        persistentVolumeClaim:
-          claimName: {{ include "app.name" . }}-{{ .Values.volumes.freshrssdata.name }}-pvc
+        nfs:
+          server: {{ .Values.volumes.freshrssdata.server }}
+          path: {{ .Values.volumes.freshrssdata.path }}

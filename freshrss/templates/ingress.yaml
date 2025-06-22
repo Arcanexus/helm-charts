@@ -1,0 +1,30 @@
+{{- if .Values.pods.freshrss.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "app.name" . }}-freshrssingress
+  annotations:
+    {{- if .Values.pods.freshrss.ingress.annotations }}
+    {{- toYaml .Values.pods.freshrss.ingress.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: traefik
+  {{- if .Values.pods.freshrss.ingress.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.pods.freshrss.ingress.host }}
+      secretName: {{ include "app.name" . }}-freshrssingress-tls
+  {{- end }}
+  rules:
+    - host: {{ .Values.pods.freshrss.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ include "app.name" . }}-freshrsshttpservice
+                port:
+                  number: {{ .Values.pods.freshrss.httpContainerPort }}
+{{- end }}
