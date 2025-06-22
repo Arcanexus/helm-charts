@@ -1,30 +1,30 @@
-{{- if .Values.pods.ctbrec.ingress.enabled }}
+{{- if .Values.pods.komga.ingress.enabled }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "app.name" . }}-ctbrecingress
+  name: {{ include "app.name" . }}-komgaingress
   annotations:
-    {{- if .Values.pods.ctbrec.ingress.annotations }}
-    {{- toYaml .Values.pods.ctbrec.ingress.annotations | nindent 4 }}
+    {{- if .Values.pods.komga.ingress.annotations }}
+    {{- toYaml .Values.pods.komga.ingress.annotations | nindent 4 }}
     {{- end }}
 spec:
   ingressClassName: traefik
-  {{- if .Values.pods.ctbrec.ingress.enabled }}
+  {{- if .Values.pods.komga.ingress.enabled }}
   tls:
     - hosts:
-        - {{ .Values.pods.ctbrec.ingress.host }}
-      secretName: {{ include "app.name" . }}-ctbrecingress-tls
+        - {{ .Values.pods.komga.ingress.host }}
+      secretName: {{ include "app.name" . }}-komgaingress-tls
   {{- end }}
   rules:
-    - host: {{ .Values.pods.ctbrec.ingress.host }}
+    - host: {{ .Values.pods.komga.ingress.host }}
       http:
         paths:
           - path: /
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ include "app.name" . }}-ctbrechttpservice
+                name: {{ include "app.name" . }}-komgahttpservice
                 port:
-                  number: {{ .Values.pods.ctbrec.httpContainerPort }}
+                  number: {{ .Values.pods.komga.httpContainerPort }}
 {{- end }}
