@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: {{ template "app.name" . }}
   name: {{ include "app.name" . }}
 spec:
   replicas: {{ .Values.pods.lokiexporter.replicas }}
@@ -34,6 +33,7 @@ spec:
               value: "Europe/Paris"
       volumes:
       - name: {{ include "app.name" . }}-{{ .Values.volumes.config.name }}
-        persistentVolumeClaim:
-          claimName: {{ include "app.name" . }}-{{ .Values.volumes.config.name }}-pvc
+        nfs:
+          server: {{ .Values.volumes.config.nfs.server }}
+          path: {{ .Values.volumes.config.nfs.path }}
 

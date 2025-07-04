@@ -1,10 +1,6 @@
-namespace:
-  name: 
-
 volumes:
   config:
     name: config
-    size: 10Mi
     path: /volume2/docker/loki-exporter/loki-exporter-config-k8s-nfs-pv
     server: 192.168.2.50
     containerMountPath: /config
