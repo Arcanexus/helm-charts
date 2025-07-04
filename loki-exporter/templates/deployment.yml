@@ -34,6 +34,6 @@ spec:
       volumes:
       - name: {{ include "app.name" . }}-{{ .Values.volumes.config.name }}
         nfs:
-          server: {{ .Values.volumes.config.nfs.server }}
-          path: {{ .Values.volumes.config.nfs.path }}
+          server: {{ .Values.volumes.config.server }}
+          path: {{ .Values.volumes.config.path }}
 
