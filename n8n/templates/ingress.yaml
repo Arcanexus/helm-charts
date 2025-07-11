@@ -1,23 +1,23 @@
-{{- if .Values.pods.n8n.ingress.enabled }}
+{{- if .Values.n8n.ingress.enabled }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "app.name" . }}-n8ningress
   annotations:
-    {{- if .Values.pods.n8n.ingress.annotations }}
-    {{- toYaml .Values.pods.n8n.ingress.annotations | nindent 4 }}
+    {{- if .Values.n8n.ingress.annotations }}
+    {{- toYaml .Values.n8n.ingress.annotations | nindent 4 }}
     {{- end }}
 spec:
   ingressClassName: traefik
-  {{- if .Values.pods.n8n.ingress.enabled }}
+  {{- if .Values.n8n.ingress.enabled }}
   tls:
     - hosts:
-        - {{ .Values.pods.n8n.ingress.host }}
+        - {{ .Values.n8n.ingress.host }}
       secretName: {{ include "app.name" . }}-n8n-tls
   {{- end }}
   rules:
-    - host: {{ .Values.pods.n8n.ingress.host }}
+    - host: {{ .Values.n8n.ingress.host }}
       http:
         paths:
           - path: /
