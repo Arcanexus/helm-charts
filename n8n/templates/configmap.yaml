@@ -8,6 +8,7 @@ data:
   N8N_ENCRYPTION_KEY: {{ .Values.n8n.encryptionKey }}
   N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "false"
   N8N_RUNNERS_ENABLED: "true"
+  OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS: "true"
   {{- if eq .Values.n8n.deploymentMode "scale" }}
   EXECUTIONS_MODE: queue
   N8N_DISABLE_PRODUCTION_MAIN_PROCESS: "true"
