@@ -1,0 +1,26 @@
+volumes:
+  n8ndata:
+    name: n8n-data
+    server: 192.168.2.50
+    path: /volume2/docker-data/n8n
+    containerMountPath: /var/lib/postgresql/data
+
+n8n:
+  imageTag: latest
+  deploymentMode: scale # single or scale
+  encryptionKey: change-this
+  db:
+    name: n8n
+    user: n8n
+    password: change-this
+  concurrency: 20
+  
+  ingress:
+    enabled: true
+    host: n8n.arcanexus.com
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: le-wildcard-issuer
+
+resources:
+  memoryLimit: 1Gi

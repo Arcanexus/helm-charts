@@ -1,0 +1,57 @@
+{{- if eq .Values.n8n.deploymentMode "scale" }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: postgres
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        service: postgres
+    spec:
+      restartPolicy: Always
+      containers:
+        - image: postgres:13-alpine
+          name: postgres
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgresql-storage
+              mountPath: {{ .Values.volumes.n8ndata.containerMountPath }}
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+            - name: POSTGRES_DB
+              value: {{ .Values.n8n.db.name }}
+            - name: POSTGRES_USER
+              value: {{ .Values.n8n.db.user }}
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.n8n.db.password }}
+      volumes:
+        - name: postgresql-storage
+          nfs:
+            server: {{ .Values.volumes.n8ndata.server }}
+            path: {{ .Values.volumes.n8ndata.path }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  clusterIP: None
+  ports:
+    - port: 5432
+  selector:
+    service: postgres
+{{- end }}
