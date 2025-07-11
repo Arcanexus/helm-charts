@@ -2,8 +2,8 @@ volumes:
   n8ndata:
     name: n8n-data
     server: 192.168.2.50
-    path: /volume2/docker-data/n8n
-    containerMountPath: /var/lib/postgresql/data
+    path: /volume2/docker-data/n8n/pgdata
+    containerMountPath: /var/lib/postgresql/data/pgdata
 
 n8n:
   imageTag: latest
