@@ -1,0 +1,30 @@
+{{- if .Values.pods.erugo.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "app.name" . }}-erugoingress
+  annotations:
+    {{- if .Values.pods.erugo.ingress.annotations }}
+    {{- toYaml .Values.pods.erugo.ingress.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: traefik
+  {{- if .Values.pods.erugo.ingress.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.pods.erugo.ingress.host }}
+      secretName: {{ include "app.name" . }}-erugoingress-tls
+  {{- end }}
+  rules:
+    - host: {{ .Values.pods.erugo.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ include "app.name" . }}-erugohttpservice
+                port:
+                  number: {{ .Values.pods.erugo.httpContainerPort }}
+{{- end }}

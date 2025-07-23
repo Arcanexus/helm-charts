@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }} # has to match .spec.template.metadata.labels
+  replicas: {{ .Values.pods.erugo.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }} # has to match .spec.selector.matchLabels
+        # date: "{{ now | unixEpoch }}"
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: {{ .Values.pods.erugo.security.runAsUser }}
+        runAsGroup: {{ .Values.pods.erugo.security.runAsGroup }}
+      nodeSelector:
+        silent: fanless
+      containers:
+      - name: {{ include "app.name" . }}
+        image: {{ .Values.pods.erugo.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.pods.erugo.httpContainerPort }}
+          name: erugo-http
+        volumeMounts:
+        - name: {{ include "app.name" . }}-{{ .Values.volumes.erugodata.name }}
+          mountPath: {{ .Values.volumes.erugodata.containerMountPath }}
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+          - name: PGID
+            value: "{{ .Values.pods.erugo.security.runAsGroup }}"
+          - name: PUID
+            value: "{{ .Values.pods.erugo.security.runAsUser }}"
+
+      volumes:
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.erugodata.name }}
+        nfs:
+          server: {{ .Values.volumes.erugodata.server }}
+          path: {{ .Values.volumes.erugodata.path }}

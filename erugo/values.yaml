@@ -1,0 +1,26 @@
+volumes:
+  erugodata:
+    name: erugo-data
+    server: 192.168.2.50
+    path: /volume2/docker-data/erugo/
+    containerMountPath: /var/www/html/storage
+
+pods:
+  erugo:
+    image: wardy784/erugo:latest 
+    replicas: 1
+
+    httpContainerPort: 80
+    # httpsContainerPort: 8443
+    # httpExposedPort: 30011
+
+    security:
+      runAsUser: 0 #1000
+      runAsGroup: 0 #1000
+
+    ingress:
+      enabled: true
+      host: erugo.arcanexus.com
+      ingressClassName: traefik
+      annotations:
+        cert-manager.io/cluster-issuer: le-wildcard-issuer
