@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "app.name" . }}-ctbrechttpservice
+  name: {{ include "app.name" . }}-erugohttpservice
   labels:
-    app.kubernetes.io/name: {{ include "app.name" . }}-ctbrechttpservice
+    app.kubernetes.io/name: {{ include "app.name" . }}-erugohttpservice
     helm.sh/chart: {{ include "app.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -12,9 +12,9 @@ spec:
   type: ClusterIP
   ports:
   - name: {{ include "app.name" . }}
-    port: {{ .Values.pods.ctbrec.httpContainerPort }}
-    targetPort: {{ .Values.pods.ctbrec.httpContainerPort }}
-    # nodePort: {{ .Values.pods.ctbrec.httpExposedPort }}
+    port: {{ .Values.pods.erugo.httpContainerPort }}
+    targetPort: {{ .Values.pods.erugo.httpContainerPort }}
+    # nodePort: {{ .Values.pods.erugo.httpExposedPort }}
   selector:
     app: {{ include "app.name" . }}
 
