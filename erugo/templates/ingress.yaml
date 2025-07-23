@@ -27,4 +27,14 @@ spec:
                 name: {{ include "app.name" . }}-erugohttpservice
                 port:
                   number: {{ .Values.pods.erugo.httpContainerPort }}
+    - host: share.arcanexus.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: erugo-erugohttpservice
+                port:
+                  number: 80
+            path: /
+            pathType: ImplementationSpecific
 {{- end }}
