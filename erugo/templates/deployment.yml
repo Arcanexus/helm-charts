@@ -16,9 +16,9 @@ spec:
     spec:
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
-      securityContext:
-        runAsUser: {{ .Values.pods.erugo.security.runAsUser }}
-        runAsGroup: {{ .Values.pods.erugo.security.runAsGroup }}
+      # securityContext:
+      #   runAsUser: {{ .Values.pods.erugo.security.runAsUser }}
+      #   runAsGroup: {{ .Values.pods.erugo.security.runAsGroup }}
       nodeSelector:
         silent: fanless
       containers:
