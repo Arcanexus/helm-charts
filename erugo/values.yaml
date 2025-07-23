@@ -15,8 +15,8 @@ pods:
     # httpExposedPort: 30011
 
     security:
-      runAsUser: 1000
-      runAsGroup: 1000
+      runAsUser: 0
+      runAsGroup: 0
 
     ingress:
       enabled: true
