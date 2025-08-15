@@ -37,6 +37,9 @@ spec:
         env:
           - name: TZ
             value: "Europe/Paris"
+          {{- if .Values.pods.suwayomi.environment }}
+            {{- toYaml .Values.pods.suwayomi.environment | nindent 10 }}
+          {{- end }}
       volumes:
       - name: {{ include "app.name" . }}-{{ .Values.volumes.komgaconfig.name }}
         nfs:

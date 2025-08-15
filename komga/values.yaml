@@ -28,3 +28,9 @@ pods:
       ingressClassName: traefik
       annotations:
         cert-manager.io/cluster-issuer: le-wildcard-issuer
+
+    environment:
+      - name: KOMGA_DATABASE_CHECKLOCALFILESYSTEM
+        value: "FALSE"
+      - name: KOMGA_TASKSDB_CHECKLOCALFILESYSTEM
+        value: "FALSE"
