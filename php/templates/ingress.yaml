@@ -18,7 +18,7 @@ spec:
     {{- if .Values.pods.php.ingress.wwwhost }}
     - hosts:
         - www.{{ .Values.pods.php.ingress.host }}
-      secretName: www.{{ .Release.Name }}-tls
+      secretName: www-{{ .Release.Name }}-tls
     {{- end }}
 
   {{- end }}
