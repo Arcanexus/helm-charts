@@ -14,7 +14,11 @@ spec:
   tls:
     - hosts:
         - {{ .Values.pods.php.ingress.host }}
+        {{- if .Values.pods.php.ingress.wwwhost }}
+        - www.{{ .Values.pods.php.ingress.host }}
+        {{- end }}
       secretName: {{ .Release.Name }}-tls
+
   {{- end }}
   rules:
     - host: {{ .Values.pods.php.ingress.host }}
