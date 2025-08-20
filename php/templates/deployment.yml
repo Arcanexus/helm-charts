@@ -12,7 +12,6 @@ spec:
     metadata:
       labels:
         app: {{ include "app.name" . }}-{{ .Release.Name }} # has to match .spec.selector.matchLabels
-        date: "{{ now | unixEpoch }}"
         app.kubernetes.io/name: {{ include "app.name" . }}-{{ .Release.Name }}
         helm.sh/chart: {{ include "app.chart" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}

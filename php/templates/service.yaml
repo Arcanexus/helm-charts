@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "app.name" . }}-{{ .Release.Name }}-phphttpservice
+  name: {{ .Release.Name }}-serviceold
   labels:
-    app.kubernetes.io/name: {{ include "app.name" . }}-{{ .Release.Name }}-phphttpservice
+    app.kubernetes.io/name: {{ .Release.Name }}-serviceold
     helm.sh/chart: {{ include "app.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -14,5 +14,23 @@ spec:
     targetPort: {{ .Values.pods.php.httpContainerPort }}
     name: {{ include "app.name" . }}-{{ .Release.Name }}
     nodePort: {{ .Values.pods.php.httpExposedPort }}
+  selector:
+    app: {{ include "app.name" . }}-{{ .Release.Name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-service
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}-service
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: {{ include "app.name" . }}-{{ .Release.Name }}
+    port: {{ .Values.pods.php.httpContainerPort }}
+    targetPort: {{ .Values.pods.php.httpContainerPort }}
   selector:
     app: {{ include "app.name" . }}-{{ .Release.Name }}
