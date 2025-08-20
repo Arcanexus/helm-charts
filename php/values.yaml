@@ -19,6 +19,7 @@ pods:
     ingress:
       enabled: true
       host: php.arcanexus.com
+      wwwhost: false
       ingressClassName: traefik
       annotations:
         cert-manager.io/cluster-issuer: le-wildcard-issuer

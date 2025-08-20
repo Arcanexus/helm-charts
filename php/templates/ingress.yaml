@@ -27,6 +27,7 @@ spec:
                 name: {{ .Release.Name }}-service
                 port:
                   number: {{ .Values.pods.php.httpContainerPort }}
+    {{- if .Values.pods.php.ingress.wwwhost }}
     - host: www.{{ .Values.pods.php.ingress.host }}
       http:
         paths:
@@ -37,4 +38,5 @@ spec:
                 name: {{ .Release.Name }}-service
                 port:
                   number: {{ .Values.pods.php.httpContainerPort }}
+    {{- end }}
 {{- end }}
