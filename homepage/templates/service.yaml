@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "app.name" . }}-service
+  name: {{ include "app.name" . }}-serviceold
   labels:
     app.kubernetes.io/name: {{ include "app.name" . }}-service
     helm.sh/chart: {{ include "app.chart" . }}
@@ -17,3 +17,21 @@ spec:
   selector:
     app: {{ include "app.name" . }}
 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "app.name" . }}-service
+  labels:
+    app.kubernetes.io/name: {{ include "app.name" . }}-service
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: homepage
+    port: {{ .Values.pods.homepage.containerPort }}
+    targetPort: {{ .Values.pods.homepage.containerPort }}
+  selector:
+    app: homepage

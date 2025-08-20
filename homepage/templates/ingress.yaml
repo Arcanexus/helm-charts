@@ -3,7 +3,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "app.name" . }}-homepageingress
+  name: homepage
   annotations:
     {{- if .Values.pods.homepage.ingress.annotations }}
     {{- toYaml .Values.pods.homepage.ingress.annotations | nindent 4 }}
@@ -14,7 +14,7 @@ spec:
   tls:
     - hosts:
         - {{ .Values.pods.homepage.ingress.host }}
-      secretName: {{ include "app.name" . }}-homepageingress-tls
+      secretName: homepage-tls
   {{- end }}
   rules:
     - host: {{ .Values.pods.homepage.ingress.host }}
@@ -24,7 +24,7 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ include "app.name" . }}-homepagehttpservice
+                name: {{ include "app.name" . }}-service
                 port:
-                  number: {{ .Values.pods.homepage.httpContainerPort }}
+                  number: {{ .Values.pods.homepage.containerPort }}
 {{- end }}
