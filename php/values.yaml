@@ -11,7 +11,7 @@ volumes:
 
 pods:
   php:
-    image: ghcr.io/arcanexus/docker-php:latest
+    image: ghcr.io/arcanexus/docker-php:v1.0.0
     replicas: 1
     httpContainerPort: 80
     httpExposedPort: 30013
