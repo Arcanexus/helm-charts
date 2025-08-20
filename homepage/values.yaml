@@ -13,6 +13,17 @@ pods:
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     replicas: 1
+    
     containerPort: 3000
     exposedPort: 30001
-    allowedHosts: "*"
+        
+    ingress:
+      enabled: true
+      host: ctbrec.arcanexus.com
+      ingressClassName: traefik
+      annotations:
+        cert-manager.io/cluster-issuer: le-wildcard-issuer
+
+    environment:
+      - name: HOMEPAGE_ALLOWED_HOSTS
+        value: "*"

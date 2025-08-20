@@ -1,0 +1,30 @@
+{{- if .Values.pods.homepage.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "app.name" . }}-homepageingress
+  annotations:
+    {{- if .Values.pods.homepage.ingress.annotations }}
+    {{- toYaml .Values.pods.homepage.ingress.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: traefik
+  {{- if .Values.pods.homepage.ingress.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.pods.homepage.ingress.host }}
+      secretName: {{ include "app.name" . }}-homepageingress-tls
+  {{- end }}
+  rules:
+    - host: {{ .Values.pods.homepage.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ include "app.name" . }}-homepagehttpservice
+                port:
+                  number: {{ .Values.pods.homepage.httpContainerPort }}
+{{- end }}

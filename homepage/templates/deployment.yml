@@ -13,7 +13,10 @@ spec:
     metadata:
       labels:
         app: {{ include "app.name" . }}
-        date: "{{ now | unixEpoch }}"
+        app.kubernetes.io/name: {{ include "app.name" . }}
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       # terminationGracePeriodSeconds: 10
       serviceAccountName: {{ include "app.name" . }}
@@ -33,10 +36,11 @@ spec:
             - name: {{ include "app.name" . }}-{{ .Values.volumes.images.name }}
               mountPath: {{ .Values.volumes.images.containerMountPath }}
           env:
-            - name: TZ
-              value: "Europe/Paris"
-            - name: HOMEPAGE_ALLOWED_HOSTS
-              value: "{{ .Values.pods.homepage.allowedHosts }}"
+          - name: TZ
+            value: "Europe/Paris"
+          {{- if .Values.pods.homepage.environment }}
+            {{- toYaml .Values.pods.homepage.environment | nindent 10 }}
+          {{- end }}
       volumes:
       - name: {{ include "app.name" . }}-{{ .Values.volumes.config.name }}
         nfs:
