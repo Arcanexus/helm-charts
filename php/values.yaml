@@ -16,6 +16,12 @@ pods:
     httpContainerPort: 80
     httpExposedPort: 30013
 
+    ingress:
+      enabled: true
+      host: php.arcanexus.com
+      ingressClassName: traefik
+      annotations:
+        cert-manager.io/cluster-issuer: le-wildcard-issuer
 
 
 
