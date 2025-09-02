@@ -20,6 +20,9 @@ pods:
     image: stashapp/stash:v0.27.2
     replicas: 1
 
+    nodeSelector:
+      silent: fanless
+
     httpContainerPort: 9999
     # httpExposedPort: 30011
 
