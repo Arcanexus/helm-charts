@@ -20,8 +20,8 @@ spec:
         runAsUser: {{ .Values.pods.stash.security.runAsUser }}
         runAsGroup: {{ .Values.pods.stash.security.runAsGroup }}
       {{- if .Values.pods.stash.nodeSelector }}
-        nodeSelector:
-      {{ toYaml .Values.pods.stash.nodeSelector | indent 8 }}
+      nodeSelector:
+      {{ toYaml .Values.pods.stash.nodeSelector | indent 6 }}
       {{- end }}
       containers:
       - name: {{ include "app.name" . }}
