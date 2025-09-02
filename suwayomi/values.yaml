@@ -10,6 +10,9 @@ pods:
     image: ghcr.io/suwayomi/suwayomi-server:stable
     replicas: 1
 
+    nodeSelector:
+      silent: fanless
+
     httpContainerPort: 4567
 
     security:
