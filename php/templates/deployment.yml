@@ -6,7 +6,7 @@ spec:
   selector:
     matchLabels:
       app: {{ include "app.name" . }}-{{ .Release.Name }} # has to match .spec.template.metadata.labels
-  replicas: {{ .Values.pods.php.replicas }}
+  replicas: {{ .Values.php.replicas }}
   revisionHistoryLimit: 0
   template:
     metadata:
@@ -20,23 +20,102 @@ spec:
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
       securityContext:
-        runAsUser: {{ .Values.security.runAsUser }}
-        runAsGroup: {{ .Values.security.runAsGroup }}
+        runAsUser: {{ .Values.php.security.runAsUser }}
+        runAsGroup: {{ .Values.php.security.runAsGroup }}
       containers:
       - name: {{ include "app.name" . }}-{{ .Release.Name }}
-        image: {{ .Values.pods.php.image }}
+        image: {{ .Values.php.image }}
         imagePullPolicy: Always
         ports:
-        - containerPort: {{ .Values.pods.php.httpContainerPort }}
+        - containerPort: {{ .Values.php.httpContainerPort }}
           name: php-http
         volumeMounts:
-        - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.volumes.phpdata.name }}
-          mountPath: {{ .Values.volumes.phpdata.containerMountPath }}
+        - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.php.volumes.phpdata.name }}
+          mountPath: {{ .Values.php.volumes.phpdata.containerMountPath }}
         env:
           - name: TZ
             value: "Europe/Paris"
+          {{- if .Values.mariadb.enabled }}
+          - name: MARIADB_DATABASE
+            value: {{ .Values.mariadb.database | quote }}
+          - name: MARIADB_USER
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "app.fullname" . }}-mariadb-user
+                key: username
+          - name: MARIADB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "app.fullname" . }}-mariadb-user
+                key: password
+          {{- end }}
       volumes:
-      - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.volumes.phpdata.name }}
+      - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.php.volumes.phpdata.name }}
         nfs:
-          server: {{ .Values.volumes.phpdata.server }}
-          path: {{ .Values.volumes.phpdata.path }}
+          server: {{ .Values.php.volumes.phpdata.server }}
+          path: {{ .Values.php.volumes.phpdata.path }}
+
+---
+{{- if .Values.mariadb.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}-{{ .Release.Name }}-mariadb
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}-{{ .Release.Name }}-mariadb
+  replicas: {{ .Values.mariadb.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-{{ .Release.Name }}-mariadb
+        app.kubernetes.io/name: {{ include "app.name" . }}-{{ .Release.Name }}-mariadb
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: {{ .Values.mariadb.security.runAsUser }}
+        runAsGroup: {{ .Values.mariadb.security.runAsGroup }}
+      containers:
+      - name: {{ include "app.name" . }}-{{ .Release.Name }}-mariadb
+        image: {{ .Values.mariadb.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.mariadb.port }}
+          name: mariadb
+        volumeMounts:
+        - name: {{ include "app.name" . }}-{{ .Release.Name }}-mariadb
+          mountPath: {{ .Values.mariadb.volumes.datas.containerMountPath }}
+        env:
+          - name: MARIADB_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "app.fullname" . }}-mariadb-root
+                key: root-password
+          - name: MARIADB_DATABASE
+            value: {{ .Values.mariadb.database | quote }}
+          - name: MARIADB_USER
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "app.fullname" . }}-mariadb-user
+                key: username
+          - name: MARIADB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "app.fullname" . }}-mariadb-user
+                key: password
+          - name: TZ
+            value: "Europe/Paris"
+      {{- if .Values.mariadb.volumes }}
+      volumes:
+      - name: {{ include "app.name" . }}-{{ .Release.Name }}-mariadb
+        nfs:
+          server: {{ .Values.mariadb.volumes.datas.server }}
+          path: {{ .Values.mariadb.volumes.datas.path }}
+      {{- end }}
+{{- end }}

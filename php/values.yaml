@@ -1,28 +1,47 @@
-security:
-  runAsUser: 0
-  runAsGroup: 0
+php:
+  image: ghcr.io/arcanexus/docker-php:v1.0.0
+  replicas: 1
+  httpContainerPort: 80
+  httpExposedPort: 30013
 
-volumes:
-  phpdata:
-    name: php-data
-    server: 192.168.2.50
-    path: /volume2/docker/php/data
-    containerMountPath: /var/www/html/
+  security:
+    runAsUser: 0
+    runAsGroup: 0
 
-pods:
-  php:
-    image: ghcr.io/arcanexus/docker-php:v1.0.0
-    replicas: 1
-    httpContainerPort: 80
-    httpExposedPort: 30013
+  ingress:
+    enabled: true
+    host: php.arcanexus.com
+    wwwhost: false
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: le-wildcard-issuer
 
-    ingress:
-      enabled: true
-      host: php.arcanexus.com
-      wwwhost: false
-      ingressClassName: traefik
-      annotations:
-        cert-manager.io/cluster-issuer: le-wildcard-issuer
-
+  volumes:
+    phpdata:
+      name: php-data
+      server: 192.168.2.50
+      path: /volume2/docker/php/data
+      containerMountPath: /var/www/html/
 
 
+mariadb:
+  enabled: false
+  image: mariadb:12-ubi
+  replicas: 1
+  port: 3306
+
+  security:
+    runAsUser: 0
+    runAsGroup: 0
+
+  rootPassword: changeme
+  database: phpdb
+  user: phpuser
+  password: changeme
+
+  volumes:
+    datas:
+      name: mariadb-data
+      server: 192.168.2.50
+      path: /volume2/docker-data/php/mariadb
+      containerMountPath: /var/lib/mysql/

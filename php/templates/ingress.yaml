@@ -1,29 +1,29 @@
-{{- if .Values.pods.php.ingress.enabled }}
+{{- if .Values.php.ingress.enabled }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ .Release.Name }}-ingress
   annotations:
-    {{- if .Values.pods.php.ingress.annotations }}
-    {{- toYaml .Values.pods.php.ingress.annotations | nindent 4 }}
+    {{- if .Values.php.ingress.annotations }}
+    {{- toYaml .Values.php.ingress.annotations | nindent 4 }}
     {{- end }}
 spec:
   ingressClassName: traefik
-  {{- if .Values.pods.php.ingress.enabled }}
+  {{- if .Values.php.ingress.enabled }}
   tls:
     - hosts:
-        - {{ .Values.pods.php.ingress.host }}
+        - {{ .Values.php.ingress.host }}
       secretName: {{ .Release.Name }}-tls
-    {{- if .Values.pods.php.ingress.wwwhost }}
+    {{- if .Values.php.ingress.wwwhost }}
     - hosts:
-        - www.{{ .Values.pods.php.ingress.host }}
+        - www.{{ .Values.php.ingress.host }}
       secretName: www-{{ .Release.Name }}-tls
     {{- end }}
 
   {{- end }}
   rules:
-    - host: {{ .Values.pods.php.ingress.host }}
+    - host: {{ .Values.php.ingress.host }}
       http:
         paths:
           - path: /
@@ -32,9 +32,9 @@ spec:
               service:
                 name: {{ .Release.Name }}-service
                 port:
-                  number: {{ .Values.pods.php.httpContainerPort }}
-    {{- if .Values.pods.php.ingress.wwwhost }}
-    - host: www.{{ .Values.pods.php.ingress.host }}
+                  number: {{ .Values.php.httpContainerPort }}
+    {{- if .Values.php.ingress.wwwhost }}
+    - host: www.{{ .Values.php.ingress.host }}
       http:
         paths:
           - path: /
@@ -43,6 +43,6 @@ spec:
               service:
                 name: {{ .Release.Name }}-service
                 port:
-                  number: {{ .Values.pods.php.httpContainerPort }}
+                  number: {{ .Values.php.httpContainerPort }}
     {{- end }}
 {{- end }}

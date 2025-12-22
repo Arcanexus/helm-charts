@@ -10,10 +10,10 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - port: {{ .Values.pods.php.httpContainerPort }}
-    targetPort: {{ .Values.pods.php.httpContainerPort }}
+  - port: {{ .Values.php.httpContainerPort }}
+    targetPort: {{ .Values.php.httpContainerPort }}
     name: {{ include "app.name" . }}-{{ .Release.Name }}
-    nodePort: {{ .Values.pods.php.httpExposedPort }}
+    nodePort: {{ .Values.php.httpExposedPort }}
   selector:
     app: {{ include "app.name" . }}-{{ .Release.Name }}
 ---
@@ -30,7 +30,28 @@ spec:
   type: ClusterIP
   ports:
   - name: {{ include "app.name" . }}-{{ .Release.Name }}
-    port: {{ .Values.pods.php.httpContainerPort }}
-    targetPort: {{ .Values.pods.php.httpContainerPort }}
+    port: {{ .Values.php.httpContainerPort }}
+    targetPort: {{ .Values.php.httpContainerPort }}
   selector:
     app: {{ include "app.name" . }}-{{ .Release.Name }}
+
+---
+{{- if .Values.mariadb.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-mariadb
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}-mariadb
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: mysql
+    port: {{ .Values.mariadb.port }}
+    targetPort: {{ .Values.mariadb.port }}
+  selector:
+    app: {{ include "app.name" . }}-mariadb-{{ .Release.Name }}
+{{- end }}
