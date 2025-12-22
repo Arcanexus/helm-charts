@@ -81,6 +81,10 @@ spec:
       securityContext:
         runAsUser: {{ .Values.mariadb.security.runAsUser }}
         runAsGroup: {{ .Values.mariadb.security.runAsGroup }}
+      {{- if .Values.mariadb.nodeSelector }}
+      nodeSelector:
+      {{ toYaml .Values.mariadb.nodeSelector | indent 6 }}
+      {{- end }}
       containers:
       - name: {{ include "app.name" . }}-{{ .Release.Name }}-mariadb
         image: {{ .Values.mariadb.image }}
