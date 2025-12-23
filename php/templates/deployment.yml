@@ -169,7 +169,7 @@ spec:
               secretKeyRef:
                 name: {{ include "app.fullname" . }}-mariadb-user
                 key: password
-            - name: PMA_ROOT_PASSWORD
+          - name: PMA_ROOT_PASSWORD
             valueFrom:
               secretKeyRef:
               name: {{ include "app.fullname" . }}-mariadb-root
