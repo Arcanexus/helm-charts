@@ -156,7 +156,7 @@ spec:
           name: phpmyadmin
         env:
           - name: PMA_HOST
-            value: {{ include "app.name" . }}-{{ .Release.Name }}-mariadb
+            value: {{ .Release.Name }}-mariadb
           - name: PMA_PORT
             value: {{ .Values.mariadb.port | quote }}
           - name: PMA_USER
