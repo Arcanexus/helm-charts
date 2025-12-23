@@ -74,5 +74,5 @@ spec:
     port: {{ .Values.phpmyadmin.port }}
     targetPort: {{ .Values.phpmyadmin.port }}
   selector:
-    app: {{ include "app.name" . }}-phpmyadmin-{{ .Release.Name }}
+    app: {{ include "app.name" . }}-{{ .Release.Name }}-phpmyadmin
 {{- end }}
