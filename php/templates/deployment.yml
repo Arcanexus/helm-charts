@@ -101,7 +101,7 @@ spec:
               secretKeyRef:
                 name: {{ include "app.fullname" . }}-mariadb-root
                 key: root-password
-          - name: MARIADB_DATABASE
+          - name: MARIADB_DATABASE 
             value: {{ .Values.mariadb.database | quote }}
           - name: MARIADB_USER
             valueFrom:
@@ -122,4 +122,53 @@ spec:
           server: {{ .Values.mariadb.volumes.datas.server }}
           path: {{ .Values.mariadb.volumes.datas.path }}
       {{- end }}
+{{- end }}
+
+---
+{{- if .Values.phpmyadmin.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}-{{ .Release.Name }}-phpmyadmin
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}-{{ .Release.Name }}-phpmyadmin
+  replicas: {{ .Values.phpmyadmin.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-{{ .Release.Name }}-phpmyadmin
+        app.kubernetes.io/name: {{ include "app.name" . }}-{{ .Release.Name }}-phpmyadmin
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      containers:
+      - name: {{ include "app.name" . }}-{{ .Release.Name }}-phpmyadmin
+        image: {{ .Values.phpmyadmin.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.phpmyadmin.port }}
+          name: phpmyadmin
+        env:
+          - name: PMA_HOST
+            value: {{ include "app.name" . }}-{{ .Release.Name }}-mariadb
+          - name: PMA_PORT
+            value: {{ .Values.mariadb.port | quote }}
+          - name: PMA_USER
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "app.fullname" . }}-mariadb-user
+                key: username
+          - name: PMA_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "app.fullname" . }}-mariadb-user
+                key: password
+          - name: TZ
+            value: "Europe/Paris"
 {{- end }}

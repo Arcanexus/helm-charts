@@ -55,3 +55,24 @@ spec:
   selector:
     app: {{ include "app.name" . }}-mariadb-{{ .Release.Name }}
 {{- end }}
+
+---
+{{- if .Values.phpmyadmin.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-phpmyadmin
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}-phpmyadmin
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: {{ .Values.phpmyadmin.port }}
+    targetPort: {{ .Values.phpmyadmin.port }}
+  selector:
+    app: {{ include "app.name" . }}-phpmyadmin-{{ .Release.Name }}
+{{- end }}

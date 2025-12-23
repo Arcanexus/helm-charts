@@ -33,6 +33,15 @@ spec:
                 name: {{ .Release.Name }}-service
                 port:
                   number: {{ .Values.php.httpContainerPort }}
+          {{- if .Values.phpmyadmin.enabled }}
+          - path: /pma
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ .Release.Name }}-phpmyadmin
+                port:
+                  number: {{ .Values.phpmyadmin.port | default 80 }}
+          {{- end }}
     {{- if .Values.php.ingress.wwwhost }}
     - host: www.{{ .Values.php.ingress.host }}
       http:
@@ -44,5 +53,15 @@ spec:
                 name: {{ .Release.Name }}-service
                 port:
                   number: {{ .Values.php.httpContainerPort }}
+          {{- if .Values.phpmyadmin.enabled }}
+          - path: /pma
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ .Release.Name }}-phpmyadmin
+                port:
+                  number: {{ .Values.phpmyadmin.port | default 80 }}
+          {{- end }}
     {{- end }}
+
 {{- end }}
