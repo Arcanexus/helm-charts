@@ -178,6 +178,8 @@ spec:
               secretKeyRef:
                 name: {{ include "app.fullname" . }}-mariadb-root
                 key: root-password
+          - name: PMA_ABSOLUTE_URI
+            value: {{ .Values.php.ingress.host }}/pma
           - name: TZ
             value: "Europe/Paris"
 {{- end }}
