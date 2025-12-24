@@ -163,16 +163,16 @@ spec:
             value: {{ .Release.Name }}-mariadb
           - name: PMA_PORT
             value: {{ .Values.mariadb.port | quote }}
-          - name: PMA_USER
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "app.fullname" . }}-mariadb-user
-                key: username
-          - name: PMA_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "app.fullname" . }}-mariadb-user
-                key: password
+          # - name: PMA_USER
+          #   valueFrom:
+          #     secretKeyRef:
+          #       name: {{ include "app.fullname" . }}-mariadb-user
+          #       key: username
+          # - name: PMA_PASSWORD
+          #   valueFrom:
+          #     secretKeyRef:
+          #       name: {{ include "app.fullname" . }}-mariadb-user
+          #       key: password
           - name: PMA_ROOT_PASSWORD
             valueFrom:
               secretKeyRef:
