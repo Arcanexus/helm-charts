@@ -36,6 +36,10 @@ spec:
           - name: TZ
             value: "Europe/Paris"
           {{- if .Values.mariadb.enabled }}
+          - name: MARIADB_HOST
+            value: {{ .Release.Name }}-mariadb
+          - name: MARIADB_PORT
+            value: {{ .Values.mariadb.port | quote }}
           - name: MARIADB_DATABASE
             value: {{ .Values.mariadb.database | quote }}
           - name: MARIADB_USER

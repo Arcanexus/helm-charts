@@ -53,7 +53,7 @@ spec:
     port: {{ .Values.mariadb.port }}
     targetPort: {{ .Values.mariadb.port }}
   selector:
-    app: {{ include "app.name" . }}-mariadb-{{ .Release.Name }}
+    app: {{ include "app.name" . }}-{{ .Release.Name }}-mariadb
 {{- end }}
 
 ---

@@ -53,3 +53,4 @@ phpmyadmin:
   enabled: false
   image: phpmyadmin:latest
   port: 80
+  replicas: 1
