@@ -1,16 +1,25 @@
-{{- if .Values.php.ingress.enabled }}
+{{- if and .Values.php.ingress.enabled .Values.phpmyadmin.enabled }}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ .Release.Name }}-pma-stripprefix
+spec:
+  stripPrefix:
+    prefixes:
+      - /pma
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ .Release.Name }}-ingress
+  name: {{ .Release.Name }}-pma-ingress
   annotations:
     {{- if .Values.php.ingress.annotations }}
     {{- toYaml .Values.php.ingress.annotations | nindent 4 }}
     {{- end }}
+    traefik.ingress.kubernetes.io/rule.type: PathPrefix
+    traefik.ingress.kubernetes.io/middleware: {{ .Release.Name }}-pma-stripprefix@kubernetescrd
 spec:
   ingressClassName: traefik
-  {{- if .Values.php.ingress.enabled }}
   tls:
     - hosts:
         - {{ .Values.php.ingress.host }}
@@ -20,30 +29,27 @@ spec:
         - www.{{ .Values.php.ingress.host }}
       secretName: www-{{ .Release.Name }}-tls
     {{- end }}
-
-  {{- end }}
   rules:
     - host: {{ .Values.php.ingress.host }}
       http:
         paths:
-          - path: /
-            pathType: ImplementationSpecific
+          - path: /pma
+            pathType: Prefix
             backend:
               service:
-                name: {{ .Release.Name }}-service
+                name: {{ .Release.Name }}-phpmyadmin
                 port:
-                  number: {{ .Values.php.httpContainerPort }}
+                  number: {{ .Values.phpmyadmin.port | default 80 }}
     {{- if .Values.php.ingress.wwwhost }}
     - host: www.{{ .Values.php.ingress.host }}
       http:
         paths:
-          - path: /
-            pathType: ImplementationSpecific
+          - path: /pma
+            pathType: Prefix
             backend:
               service:
-                name: {{ .Release.Name }}-service
+                name: {{ .Release.Name }}-phpmyadmin
                 port:
-                  number: {{ .Values.php.httpContainerPort }}
+                  number: {{ .Values.phpmyadmin.port | default 80 }}
     {{- end }}
-
 {{- end }}
