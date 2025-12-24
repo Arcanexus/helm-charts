@@ -1,5 +1,16 @@
 {{- if .Values.php.ingress.enabled }}
 ---
+{{- if .Values.phpmyadmin.enabled }}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ .Release.Name }}-pma-stripprefix
+spec:
+  stripPrefix:
+    prefixes:
+      - /pma
+---
+{{- end }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -7,6 +18,10 @@ metadata:
   annotations:
     {{- if .Values.php.ingress.annotations }}
     {{- toYaml .Values.php.ingress.annotations | nindent 4 }}
+    {{- end }}
+    {{- if .Values.phpmyadmin.enabled }}
+    traefik.ingress.kubernetes.io/rule.type: PathPrefix
+    traefik.ingress.kubernetes.io/middleware: {{ .Release.Name }}-pma-stripprefix
     {{- end }}
 spec:
   ingressClassName: traefik
@@ -35,7 +50,7 @@ spec:
                   number: {{ .Values.php.httpContainerPort }}
           {{- if .Values.phpmyadmin.enabled }}
           - path: /pma
-            pathType: ImplementationSpecific
+            pathType: Prefix
             backend:
               service:
                 name: {{ .Release.Name }}-phpmyadmin
@@ -55,7 +70,7 @@ spec:
                   number: {{ .Values.php.httpContainerPort }}
           {{- if .Values.phpmyadmin.enabled }}
           - path: /pma
-            pathType: ImplementationSpecific
+            pathType: Prefix
             backend:
               service:
                 name: {{ .Release.Name }}-phpmyadmin
