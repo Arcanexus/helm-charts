@@ -42,14 +42,14 @@ spec:
                 name: {{ include "app.fullname" . }}-users
                 key: USERS
         livenessProbe:
-              httpGet:
-              path: /api/healthz
-              port: {{ .Values.tinyauth.port }}
-              initialDelaySeconds: 10
-              periodSeconds: 10
-            readinessProbe:
-              httpGet:
-              path: /api/healthz
-              port: {{ .Values.tinyauth.port }}
-              initialDelaySeconds: 5
-              periodSeconds: 5
+          httpGet:
+            path: /api/healthz
+            port: {{ .Values.tinyauth.port }}
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /api/healthz
+            port: {{ .Values.tinyauth.port }}
+          initialDelaySeconds: 5
+          periodSeconds: 5
