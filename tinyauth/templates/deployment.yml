@@ -32,14 +32,10 @@ spec:
         env:
           - name: TZ
             value: "Europe/Paris"
-          - name: APP_URL
-            value: {{ .Values.tinyauth.environment.APP_URL | quote }}
-          - name: APP_TITLE
-            value: {{ .Values.tinyauth.environment.APP_TITLE | quote }}
-          - name: DISABLE_ANALYTICS
-            value: "true"
-          - name: LOG_LEVEL
-            value: {{ .Values.tinyauth.environment.LOG_LEVEL | quote }}
+          {{- range $key, $value := .Values.tinyauth.environment }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
           - name: USERS
             valueFrom:
               secretKeyRef:
