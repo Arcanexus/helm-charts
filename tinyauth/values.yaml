@@ -8,8 +8,7 @@ tinyauth:
     runAsGroup: 0
 
   environment:
-    - name: APP_URL
-      value: "http://auth.arcanexus.com"
+    APP_URL: "http://auth.arcanexus.com"
 
   USERS: 
     - username: admin
