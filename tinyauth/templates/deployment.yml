@@ -37,7 +37,7 @@ spec:
           - name: USERS
             valueFrom:
               secretKeyRef:
-                name: {{ include "app.fullname" . }}-USERS
+                name: {{ include "app.fullname" . }}-users
                 key: USERS
         livenessProbe:
           httpGet:
