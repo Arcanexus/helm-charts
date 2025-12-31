@@ -39,17 +39,17 @@ spec:
               secretKeyRef:
                 name: {{ include "app.fullname" . }}-users
                 key: USERS
-        livenessProbe:
-          httpGet:
-            path: /api/healthcheck
-            port: {{ .Values.tinyauth.port }}
-            scheme: HTTP
-          initialDelaySeconds: 30
-          timeoutSeconds: 5
-        readinessProbe:
-          httpGet:
-            path: /api/healthcheck
-            port: {{ .Values.tinyauth.port }}
-            scheme: HTTP
-          initialDelaySeconds: 10
-          timeoutSeconds: 5
+        # livenessProbe:
+        #   httpGet:
+        #     path: /api/healthcheck
+        #     port: {{ .Values.tinyauth.port }}
+        #     scheme: HTTP
+        #   initialDelaySeconds: 30
+        #   timeoutSeconds: 5
+        # readinessProbe:
+        #   httpGet:
+        #     path: /api/healthcheck
+        #     port: {{ .Values.tinyauth.port }}
+        #     scheme: HTTP
+        #   initialDelaySeconds: 10
+        #   timeoutSeconds: 5
