@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "app.name" . }}
+  annotations:
+    {{- if .Values.tinyauth.ingress.annotations }}
+    {{- toYaml .Values.tinyauth.ingress.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: traefik
+  {{- if .Values.tinyauth.ingress.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.tinyauth.ingress.host }}
+      secretName: {{ include "app.name" . }}-tls
+  {{- end }}
+  rules:
+    - host: {{ .Values.tinyauth.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ .Release.Name }}
+                port:
+                  number: {{ .Values.tinyauth.port }}

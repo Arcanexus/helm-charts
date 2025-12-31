@@ -13,3 +13,10 @@ tinyauth:
   USERS: 
     - username: admin
       password: $$2a$$10$$UdLYoJ5lgPsC0RKqYH/jMua7zIn0g9kPqWmhYayJYLaZQ/FTmH2/u
+
+  ingress:
+    enabled: true
+    host: auth.arcanexus.com
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: le-wildcard-issuer
