@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}-{{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}-{{ .Release.Name }} # has to match .spec.template.metadata.labels
+  replicas: {{ .Values.tinyauth.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-{{ .Release.Name }} # has to match .spec.selector.matchLabels
+        app.kubernetes.io/name: {{ include "app.name" . }}-{{ .Release.Name }}
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: {{ .Values.tinyauth.security.runAsUser }}
+        runAsGroup: {{ .Values.tinyauth.security.runAsGroup }}
+      containers:
+      - name: {{ include "app.name" . }}-{{ .Release.Name }}
+        image: {{ .Values.tinyauth.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.tinyauth.port }}
+          name: tinyauth-port
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+          - name: APP_URL
+            value: {{ .Values.tinyauth.environment.APP_URL | quote }}
+          - name: USERS
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "app.fullname" . }}-USERS
+                key: USERS
+        livenessProbe:
+          httpGet:
+            path: /api/healthcheck
+            port: {{ .Values.tinyauth.port }}
+            scheme: HTTP
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /api/healthcheck
+            port: {{ .Values.tinyauth.port }}
+            scheme: HTTP
+          initialDelaySeconds: 10
+          timeoutSeconds: 5

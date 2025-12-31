@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: {{ include "app.name" . }}-{{ .Release.Name }}
+    port: {{ .Values.tinyauth.port }}
+    targetPort: {{ .Values.tinyauth.port }}
+  selector:
+    app: {{ include "app.name" . }}-{{ .Release.Name }}

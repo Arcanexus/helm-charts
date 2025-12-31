@@ -1,0 +1,14 @@
+tinyauth:
+  image: ghcr.io/steveiliop56/tinyauth:v4
+  replicas: 1
+  port: 3000
+
+  security:
+    runAsUser: 0
+    runAsGroup: 0
+
+  environment:
+    - name: APP_URL
+      value: "http://auth.arcanexus.com"
+
+  USERS: user:$$2a$$10$$UdLYoJ5lgPsC0RKqYH/jMua7zIn0g9kPqWmhYayJYLaZQ/FTmH2/u
