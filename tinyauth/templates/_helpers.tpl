@@ -30,3 +30,10 @@ Create chart name and version as used by the chart label.
 {{- define "app.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{- define "app.formatUsers" -}}
+{{- range $index, $user := .Values.tinyauth.USERS -}}
+{{- if gt $index 0 }},{{ end -}}
+{{ $user.username }}:{{ $user.password }}
+{{- end -}}
+{{- end -}}
