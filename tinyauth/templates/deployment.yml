@@ -34,22 +34,14 @@ spec:
             value: "Europe/Paris"
           - name: APP_URL
             value: {{ .Values.tinyauth.environment.APP_URL | quote }}
+          - name: APP_TITLE
+            value: {{ .Values.tinyauth.environment.APP_TITLE | quote }}
+          - name: DISABLE_ANALYTICS
+            value: "true"
+          - name: LOG_LEVEL
+            value: {{ .Values.tinyauth.environment.LOG_LEVEL | quote }}
           - name: USERS
             valueFrom:
               secretKeyRef:
                 name: {{ include "app.fullname" . }}-users
                 key: USERS
-        # livenessProbe:
-        #   httpGet:
-        #     path: /api/healthcheck
-        #     port: {{ .Values.tinyauth.port }}
-        #     scheme: HTTP
-        #   initialDelaySeconds: 30
-        #   timeoutSeconds: 5
-        # readinessProbe:
-        #   httpGet:
-        #     path: /api/healthcheck
-        #     port: {{ .Values.tinyauth.port }}
-        #     scheme: HTTP
-        #   initialDelaySeconds: 10
-        #   timeoutSeconds: 5

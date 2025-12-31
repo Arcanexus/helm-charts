@@ -9,10 +9,14 @@ tinyauth:
 
   environment:
     APP_URL: "http://auth.arcanexus.com"
+    APP_TITLE: "Arcanexus Login"
+    LOG_LEVEL: "info"
 
   USERS: 
     - username: admin
       password: $$2a$$10$$UdLYoJ5lgPsC0RKqYH/jMua7zIn0g9kPqWmhYayJYLaZQ/FTmH2/u
+    - username: nexus
+      password: $$2a$$10$$je72GS/ws0iCOQVlfWZ2Ge5wRim3.ATWq3c7vOnd7SS2kciYCj6I2
 
   ingress:
     enabled: true
