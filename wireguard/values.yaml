@@ -1,0 +1,31 @@
+iperf3:
+  image: networkstatic/iperf3:latest
+  replicas: 1
+
+  security:
+    runAsUser: 0
+    runAsGroup: 0
+
+  environment: 
+    enable: "wg0"
+    public_ip: "192.168.2.70"
+
+  volumes:
+    config:
+      name: config
+      containerMountPath: /etc/wireguard
+      server: 192.168.2.50
+      path: /volume2/docker/wireguard
+    data:
+      name: data
+      containerMountPath: /data
+      server: 192.168.2.50
+      path: /volume2/docker-data/wireguard
+
+  ingress:
+    enabled: true
+    host: wg.arcanexus.com
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: le-wildcard-issuer
+      # traefik.ingress.kubernetes.io/router.middlewares: tinyauth-tinyauth@kubernetescrd

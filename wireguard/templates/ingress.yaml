@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "app.name" . }}-wireguardingress
+  annotations:
+    {{- if .Values.wireguard.ingress.annotations }}
+    {{- toYaml .Values.wireguard.ingress.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: traefik
+  {{- if .Values.wireguard.ingress.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.wireguard.ingress.host }}
+      secretName: {{ include "app.name" . }}-wireguardingress-tls
+  {{- end }}
+  rules:
+    - host: {{ .Values.wireguard.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ include "app.name" . }}-wireguardhttpservice
+                port:
+                  number: 10086

@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}-{{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}-{{ .Release.Name }} # has to match .spec.template.metadata.labels
+  replicas: {{ .Values.wireguard.replicas | default 1 }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-{{ .Release.Name }} # has to match .spec.selector.matchLabels
+        app.kubernetes.io/name: {{ include "app.name" . }}-{{ .Release.Name }}
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      dnsPolicy: ClusterFirst
+      securityContext:
+        runAsUser: 0
+      containers:
+      - name: {{ include "app.name" . }}-{{ .Release.Name }}
+        image: {{ .Values.wireguard.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 10086
+          name: dashboard
+          protocol: TCP
+        - containerPort: 51900
+          name: wireguard
+          protocol: UDP
+        env:
+          - name: tz
+            value: "Europe/Paris"
+          {{- range $key, $value := .Values.wireguard.environment }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+        volumeMounts:
+          - name: {{ include "app.name" . }}-{{ .Values.wireguard.volumes.config.name }}
+            mountPath: {{ .Values.wireguard.volumes.config.containerMountPath }}
+          - name: {{ include "app.name" . }}-{{ .Values.wireguard.volumes.data.name }}
+            mountPath: {{ .Values.wireguard.volumes.data.containerMountPath }}
+        securityContext:
+          capabilities:
+            add:
+              - NET_ADMIN
+        resources:
+          limits:
+            memory: 1Gi
+      volumes:
+        - name: {{ include "app.name" . }}-{{ .Values.wireguard.volumes.config.name }}
+          nfs:
+            server: {{ .Values.wireguard.volumes.config.nfs.server }}
+            path: {{ .Values.wireguard.volumes.config.nfs.path }}
+        - name: {{ include "app.name" . }}-{{ .Values.wireguard.volumes.data.name }}
+          nfs:
+            server: {{ .Values.wireguard.volumes.data.nfs.server }}
+            path: {{ .Values.wireguard.volumes.data.nfs.path }}
