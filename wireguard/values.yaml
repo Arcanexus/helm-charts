@@ -1,5 +1,5 @@
-iperf3:
-  image: networkstatic/iperf3:latest
+wireguard:
+  image: donaldzou/wgdashboard:v4.2.5
   replicas: 1
 
   security:
