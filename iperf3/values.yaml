@@ -2,7 +2,7 @@ iperf3:
   image: networkstatic/iperf3:latest
   replicas: 1
   containerPort: 5201
-  nodePort: 35201
+  nodePort: 30521
 
   security:
     runAsUser: 0
