@@ -26,7 +26,8 @@ spec:
       - name: {{ include "app.name" . }}-{{ .Release.Name }}
         image: {{ .Values.iperf3.image }}
         imagePullPolicy: Always
-        command: ['-s']
+        command: ['iperf3']
+        args: ['-s']
         ports:
         - containerPort: {{ .Values.iperf3.containerPort }}
           name: iperf3-port
