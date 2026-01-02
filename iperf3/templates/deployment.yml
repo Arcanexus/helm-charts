@@ -28,7 +28,7 @@ spec:
         imagePullPolicy: Always
         command: ['-s']
         ports:
-        - containerPort: {{ .Values.iperf3.port }}
+        - containerPort: {{ .Values.iperf3.containerPort }}
           name: iperf3-port
         env:
           - name: TZ
