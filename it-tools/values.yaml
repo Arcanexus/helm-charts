@@ -1,0 +1,18 @@
+ittools:
+  image: corentinth/it-tools:2024.10.22-7ca5933
+  replicas: 1
+  port: 8080
+
+  security:
+    runAsUser: 0
+    runAsGroup: 0
+
+  environment:
+
+  ingress:
+    enabled: true
+    host: it-tools.arcanexus.com
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: le-wildcard-issuer
+      traefik.ingress.kubernetes.io/router.middlewares: tinyauth-tinyauth@kubernetescrd

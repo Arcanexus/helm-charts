@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A Helm chart for IT-Tools application
+name: it-tools
+version: 0.0.1
