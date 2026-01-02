@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}-{{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}-{{ .Release.Name }} # has to match .spec.template.metadata.labels
+  replicas: {{ .Values.iperf3.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-{{ .Release.Name }} # has to match .spec.selector.matchLabels
+        app.kubernetes.io/name: {{ include "app.name" . }}-{{ .Release.Name }}
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: {{ .Values.iperf3.security.runAsUser }}
+        runAsGroup: {{ .Values.iperf3.security.runAsGroup }}
+      containers:
+      - name: {{ include "app.name" . }}-{{ .Release.Name }}
+        image: {{ .Values.iperf3.image }}
+        imagePullPolicy: Always
+        command: ['-s']
+        ports:
+        - containerPort: {{ .Values.iperf3.port }}
+          name: iperf3-port
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+          {{- range $key, $value := .Values.iperf3.environment }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
