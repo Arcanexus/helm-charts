@@ -36,3 +36,4 @@ pods:
       ingressClassName: traefik
       annotations:
         cert-manager.io/cluster-issuer: le-wildcard-issuer
+        traefik.ingress.kubernetes.io/router.middlewares: tinyauth-tinyauth@kubernetescrd
