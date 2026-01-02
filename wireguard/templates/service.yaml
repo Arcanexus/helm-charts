@@ -11,8 +11,8 @@ spec:
   type: NodePort
   ports:
   - name: {{ include "app.name" . }}-{{ .Release.Name }}
-    port: {{ .Values.iperf3.containerPort }}
-    targetPort: {{ .Values.iperf3.containerPort }}
-    nodePort: {{ .Values.iperf3.nodePort }}
+    port: {{ .Values.wireguard.containerPort }}
+    targetPort: {{ .Values.wireguard.containerPort }}
+    nodePort: {{ .Values.wireguard.nodePort }}
   selector:
     app: {{ include "app.name" . }}-{{ .Release.Name }}
