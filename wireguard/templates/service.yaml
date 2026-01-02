@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ .Release.Name }}-wireguard
   labels:
     app.kubernetes.io/name: {{ .Release.Name }}
     helm.sh/chart: {{ include "app.chart" . }}
@@ -10,9 +10,30 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - name: {{ include "app.name" . }}-{{ .Release.Name }}
-    port: {{ .Values.wireguard.containerPort }}
-    targetPort: {{ .Values.wireguard.containerPort }}
-    nodePort: {{ .Values.wireguard.nodePort }}
+  - name: wireguard
+    port: 51900
+    targetPort: 51900
+    protocol: UDP
+    nodePort: 31900
+  selector:
+    app: {{ include "app.name" . }}-{{ .Release.Name }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-dashboard
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: dashboard
+    port: 10086
+    targetPort: 10086
+    protocol: TCP
   selector:
     app: {{ include "app.name" . }}-{{ .Release.Name }}

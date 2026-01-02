@@ -22,6 +22,6 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ include "app.name" . }}-wireguardhttpservice
+                name: {{ .Release.Name }}-dashboard
                 port:
                   number: 10086
