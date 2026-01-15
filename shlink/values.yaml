@@ -9,10 +9,11 @@ shlink:
 
   environment:
     DEFAULT_DOMAIN: arcanex.us
+    INITIAL_API_KEY: b68a46dd-9293-474b-9723-229fc7033352
     TIMEZONE: Europe/Paris
     IS_HTTPS_ENABLED: "true"
     SKIP_INITIAL_GEOLITE_DOWNLOAD: "true"
-    
+
   ingress:
     enabled: true
     host: arcanex.us
