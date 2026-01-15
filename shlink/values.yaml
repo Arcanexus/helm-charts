@@ -23,7 +23,7 @@ shlink:
       cert-manager.io/cluster-issuer: le-wildcard-issuer
       # traefik.ingress.kubernetes.io/router.middlewares: tinyauth-tinyauth@kubernetescrd
 
-shlink-web-client:
+shlinkweb:
   image: shlinkio/shlink-web-client:4.6
   replicas: 1
   port: 8080

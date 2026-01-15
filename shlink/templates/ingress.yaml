@@ -31,19 +31,19 @@ kind: Ingress
 metadata:
   name: {{ include "app.name" . }}-web
   annotations:
-    {{- if .Values.shlink-web-client.ingress.annotations }}
-    {{- toYaml .Values.shlink-web-client.ingress.annotations | nindent 4 }}
+    {{- if .Values.shlinkweb.ingress.annotations }}
+    {{- toYaml .Values.shlinkweb.ingress.annotations | nindent 4 }}
     {{- end }}
 spec:
   ingressClassName: traefik
-  {{- if .Values.shlink-web-client.ingress.enabled }}
+  {{- if .Values.shlinkweb.ingress.enabled }}
   tls:
     - hosts:
-        - {{ .Values.shlink-web-client.ingress.host }}
+        - {{ .Values.shlinkweb.ingress.host }}
       secretName: {{ include "app.name" . }}-tls
   {{- end }}
   rules:
-    - host: {{ .Values.shlink-web-client.ingress.host }}
+    - host: {{ .Values.shlinkweb.ingress.host }}
       http:
         paths:
           - path: /
@@ -52,4 +52,4 @@ spec:
               service:
                 name: {{ .Release.Name }}-web
                 port:
-                  number: {{ .Values.shlink-web-client.port }}
+                  number: {{ .Values.shlinkweb.port }}

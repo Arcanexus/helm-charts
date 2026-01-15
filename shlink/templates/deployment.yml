@@ -53,7 +53,7 @@ spec:
   selector:
     matchLabels:
       app: {{ include "app.name" . }}-{{ .Release.Name }}-web # has to match .spec.template.metadata.labels
-  replicas: {{ .Values.shlink-web-client.replicas }}
+  replicas: {{ .Values.shlinkweb.replicas }}
   revisionHistoryLimit: 0
   template:
     metadata:
@@ -67,20 +67,20 @@ spec:
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
       securityContext:
-        runAsUser: {{ .Values.shlink-web-client.security.runAsUser }}
-        runAsGroup: {{ .Values.shlink-web-client.security.runAsGroup }}
+        runAsUser: {{ .Values.shlinkweb.security.runAsUser }}
+        runAsGroup: {{ .Values.shlinkweb.security.runAsGroup }}
       containers:
       - name: {{ include "app.name" . }}-{{ .Release.Name }}
-        image: {{ .Values.shlink-web-client.image }}
+        image: {{ .Values.shlinkweb.image }}
         imagePullPolicy: Always
         ports:
-        - containerPort: {{ .Values.shlink-web-client.port }}
-          name: shlink-web-client-port
+        - containerPort: {{ .Values.shlinkweb.port }}
+          name: shlinkweb-port
         env:
           - name: TZ
             value: "Europe/Paris"
           - name: PORT
-            value: "{{ .Values.shlink-web-client.port }}"
+            value: "{{ .Values.shlinkweb.port }}"
           - name: SHLINK_SERVER_API_KEY
             valueFrom:
               secretKeyRef:
@@ -88,7 +88,7 @@ spec:
                 key: admin-apikey
           - name: SHLINK_SERVER_URL
             value: "https://{{ .Values.shlink.ingress.host }}"
-          {{- range $key, $value := .Values.shlink-web-client.environment }}
+          {{- range $key, $value := .Values.shlinkweb.environment }}
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{- end }}

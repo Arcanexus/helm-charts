@@ -29,7 +29,7 @@ spec:
   type: ClusterIP
   ports:
   - name: {{ include "app.name" . }}-{{ .Release.Name }}-web
-    port: {{ .Values.shlink-web-client.port }}
-    targetPort: {{ .Values.shlink-web-client.port }}
+    port: {{ .Values.shlinkweb.port }}
+    targetPort: {{ .Values.shlinkweb.port }}
   selector:
     app: {{ include "app.name" . }}-{{ .Release.Name }}-web
