@@ -15,3 +15,21 @@ spec:
     targetPort: {{ .Values.shlink.port }}
   selector:
     app: {{ include "app.name" . }}-{{ .Release.Name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-web
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: {{ include "app.name" . }}-{{ .Release.Name }}-web
+    port: {{ .Values.shlink-web-client.port }}
+    targetPort: {{ .Values.shlink-web-client.port }}
+  selector:
+    app: {{ include "app.name" . }}-{{ .Release.Name }}-web

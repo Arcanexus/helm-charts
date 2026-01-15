@@ -34,7 +34,61 @@ spec:
             value: "Europe/Paris"
           - name: PORT
             value: "{{ .Values.shlink.port }}"
+          - name: INITIAL_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "app.fullname" . }}-shlink-admin-apikey
+                key: admin-apikey
           {{- range $key, $value := .Values.shlink.environment }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}-{{ .Release.Name }}-web
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}-{{ .Release.Name }}-web # has to match .spec.template.metadata.labels
+  replicas: {{ .Values.shlink-web-client.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-{{ .Release.Name }}-web # has to match .spec.selector.matchLabels
+        app.kubernetes.io/name: {{ include "app.name" . }}-{{ .Release.Name }}
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: {{ .Values.shlink-web-client.security.runAsUser }}
+        runAsGroup: {{ .Values.shlink-web-client.security.runAsGroup }}
+      containers:
+      - name: {{ include "app.name" . }}-{{ .Release.Name }}
+        image: {{ .Values.shlink-web-client.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.shlink-web-client.port }}
+          name: shlink-web-client-port
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+          - name: PORT
+            value: "{{ .Values.shlink-web-client.port }}"
+          - name: SHLINK_SERVER_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "app.fullname" . }}-shlink-admin-apikey
+                key: admin-apikey
+          - name: SHLINK_SERVER_URL
+            value: "https://{{ .Values.shlink.ingress.host }}"
+          {{- range $key, $value := .Values.shlink-web-client.environment }}
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{- end }}

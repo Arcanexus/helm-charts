@@ -9,10 +9,11 @@ shlink:
 
   environment:
     DEFAULT_DOMAIN: arcanex.us
-    INITIAL_API_KEY: b68a46dd-9293-474b-9723-229fc7033352
     TIMEZONE: Europe/Paris
     IS_HTTPS_ENABLED: "true"
     SKIP_INITIAL_GEOLITE_DOWNLOAD: "true"
+
+  initial_api_key: b68a46dd-9293-474b-9723-229fc7033352
 
   ingress:
     enabled: true
@@ -22,3 +23,23 @@ shlink:
       cert-manager.io/cluster-issuer: le-wildcard-issuer
       # traefik.ingress.kubernetes.io/router.middlewares: tinyauth-tinyauth@kubernetescrd
 
+shlink-web-client:
+  image: shlinkio/shlink-web-client:4.6
+  replicas: 1
+  port: 8080
+
+  security:
+    runAsUser: 0
+    runAsGroup: 0
+
+  environment:
+    SHLINK_SERVER_NAME: Arcanexus
+    # SHLINK_SERVER_FORWARD_CREDENTIALS: 
+
+  ingress:
+    enabled: true
+    host: short.arcanexus.com
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: le-wildcard-issuer
+      traefik.ingress.kubernetes.io/router.middlewares: tinyauth-tinyauth@kubernetescrd
