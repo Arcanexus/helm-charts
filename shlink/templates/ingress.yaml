@@ -40,7 +40,7 @@ spec:
   tls:
     - hosts:
         - {{ .Values.shlinkweb.ingress.host }}
-      secretName: {{ include "app.name" . }}-tls
+      secretName: {{ include "app.name" . }}-web-tls
   {{- end }}
   rules:
     - host: {{ .Values.shlinkweb.ingress.host }}
