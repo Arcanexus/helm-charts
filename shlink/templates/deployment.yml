@@ -43,6 +43,16 @@ spec:
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{- end }}
+        volumeMounts:
+        - name: {{ include "app.name" . }}-{{ .Release.Name }}-shlink
+          mountPath: {{ .Values.shlink.volumes.dbdata.containerMountPath }}
+      {{- if .Values.shlink.volumes }}
+      volumes:
+      - name: {{ include "app.name" . }}-{{ .Release.Name }}-shlink
+        nfs:
+          server: {{ .Values.shlink.volumes.dbdata.server }}
+          path: {{ .Values.shlink.volumes.dbdata.path }}
+      {{- end }}
 
 ---
 apiVersion: apps/v1

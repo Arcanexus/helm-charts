@@ -15,6 +15,14 @@ shlink:
 
   initial_api_key: b68a46dd-9293-474b-9723-229fc7033352
 
+  volumes:
+    dbdata:
+      name: dbdata
+      server: 192.168.2.50
+      path: /volume2/docker-data/shlink/data
+      containerMountPath: /etc/shlink/data
+
+
   ingress:
     enabled: true
     host: arcanex.us
