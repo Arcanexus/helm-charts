@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}-{{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}-{{ .Release.Name }} # has to match .spec.template.metadata.labels
+  replicas: {{ .Values.shlink.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-{{ .Release.Name }} # has to match .spec.selector.matchLabels
+        app.kubernetes.io/name: {{ include "app.name" . }}-{{ .Release.Name }}
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: {{ .Values.shlink.security.runAsUser }}
+        runAsGroup: {{ .Values.shlink.security.runAsGroup }}
+      containers:
+      - name: {{ include "app.name" . }}-{{ .Release.Name }}
+        image: {{ .Values.shlink.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.shlink.port }}
+          name: shlink-port
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+          - name: PORT
+            value: "{{ .Values.shlink.port }}"
+          {{- range $key, $value := .Values.shlink.environment }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}

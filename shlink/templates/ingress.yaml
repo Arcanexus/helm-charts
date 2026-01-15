@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "app.name" . }}
+  annotations:
+    {{- if .Values.shlink.ingress.annotations }}
+    {{- toYaml .Values.shlink.ingress.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: traefik
+  {{- if .Values.shlink.ingress.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.shlink.ingress.host }}
+      secretName: {{ include "app.name" . }}-tls
+  {{- end }}
+  rules:
+    - host: {{ .Values.shlink.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ .Release.Name }}
+                port:
+                  number: {{ .Values.shlink.port }}

@@ -1,0 +1,23 @@
+shlink:
+  image: shlinkio/shlink:5.0
+  replicas: 1
+  port: 8080
+
+  security:
+    runAsUser: 0
+    runAsGroup: 0
+
+  environment:
+    DEFAULT_DOMAIN: arcanex.us
+    TIMEZONE: Europe/Paris
+    IS_HTTPS_ENABLED: "true"
+    SKIP_INITIAL_GEOLITE_DOWNLOAD: "true"
+    
+  ingress:
+    enabled: true
+    host: arcanex.us
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: le-wildcard-issuer
+      # traefik.ingress.kubernetes.io/router.middlewares: tinyauth-tinyauth@kubernetescrd
+
