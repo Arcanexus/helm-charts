@@ -31,10 +31,10 @@ spec:
             - containerPort: {{ .Values.tesladash.containerPort }}
               name: web
           volumeMounts:
-            # - name: {{ include "app.name" . }}-{{ .Values.volumes.bookmarks.name }}
-            #   mountPath: {{ .Values.volumes.bookmarks.containerMountPath }}
-            - name: {{ include "app.name" . }}-{{ .Values.volumes.images.name }}
-              mountPath: {{ .Values.volumes.images.containerMountPath }}
+            # - name: {{ include "app.name" . }}-{{ .Values.tesladash.volumes.bookmarks.name }}
+            #   mountPath: {{ .Values.tesladash.volumes.bookmarks.containerMountPath }}
+            - name: {{ include "app.name" . }}-{{ .Values.tesladash.volumes.images.name }}
+              mountPath: {{ .Values.tesladash.volumes.images.containerMountPath }}
             - name: {{ include "app.name" . }}-bookmarks
               mountPath: /app/public/
               subPath: bookmarks.json
@@ -45,14 +45,14 @@ spec:
             {{- toYaml .Values.tesladash.environment | nindent 10 }}
           {{- end }}
       volumes:
-      # - name: {{ include "app.name" . }}-{{ .Values.volumes.bookmarks.name }}
+      # - name: {{ include "app.name" . }}-{{ .Values.tesladash.volumes.bookmarks.name }}
       #   nfs:
-      #     server: {{ .Values.volumes.bookmarks.server }}
-      #     path: {{ .Values.volumes.bookmarks.path }}
-      - name: {{ include "app.name" . }}-{{ .Values.volumes.images.name }}
+      #     server: {{ .Values.tesladash.volumes.bookmarks.server }}
+      #     path: {{ .Values.tesladash.volumes.bookmarks.path }}
+      - name: {{ include "app.name" . }}-{{ .Values.tesladash.volumes.images.name }}
         nfs:
-          server: {{ .Values.volumes.images.server }}
-          path: {{ .Values.volumes.images.path }}
+          server: {{ .Values.tesladash.volumes.images.server }}
+          path: {{ .Values.tesladash.volumes.images.path }}
       - name: {{ include "app.name" . }}-bookmarks
         configMap:
           name: tesladash-bookmarks
