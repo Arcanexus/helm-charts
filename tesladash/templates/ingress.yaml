@@ -1,0 +1,30 @@
+{{- if .Values.tesladash.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "app.name" . }}-tesladashingress
+  annotations:
+    {{- if .Values.tesladash.ingress.annotations }}
+    {{- toYaml .Values.tesladash.ingress.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: traefik
+  {{- if .Values.tesladash.ingress.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.tesladash.ingress.host }}
+      secretName: {{ include "app.name" . }}-tesladash-tls
+  {{- end }}
+  rules:
+    - host: {{ .Values.tesladash.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ .Release.Name }}-service
+                port:
+                  number: {{ .Values.tesladash.port }}
+{{- end }}

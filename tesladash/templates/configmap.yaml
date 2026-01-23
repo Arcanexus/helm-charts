@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tesladash-bookmarks
+data:
+  bookmarks.json: |
+    {{ .Values.tesladash.bookmarks | toPrettyJson | indent 4 }}

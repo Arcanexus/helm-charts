@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}
+spec:
+  replicas: {{ .Values.pods.tesladash.replicas }}
+  #minReadySeconds: 10
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}
+        app.kubernetes.io/name: {{ include "app.name" . }}
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      # terminationGracePeriodSeconds: 10
+      serviceAccountName: {{ include "app.name" . }}
+      automountServiceAccountToken: true
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      containers:
+        - name: {{ include "app.name" . }}
+          image: {{ .Values.pods.tesladash.image }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: {{ .Values.pods.tesladash.containerPort }}
+              name: web
+          volumeMounts:
+            # - name: {{ include "app.name" . }}-{{ .Values.volumes.bookmarks.name }}
+            #   mountPath: {{ .Values.volumes.bookmarks.containerMountPath }}
+            - name: {{ include "app.name" . }}-{{ .Values.volumes.images.name }}
+              mountPath: {{ .Values.volumes.images.containerMountPath }}
+            - name: {{ include "app.name" . }}-bookmarks
+              mountPath: /app/public/
+              subPath: bookmarks.json
+          env:
+          - name: TZ
+            value: "Europe/Paris"
+          {{- if .Values.pods.tesladash.environment }}
+            {{- toYaml .Values.pods.tesladash.environment | nindent 10 }}
+          {{- end }}
+      volumes:
+      # - name: {{ include "app.name" . }}-{{ .Values.volumes.bookmarks.name }}
+      #   nfs:
+      #     server: {{ .Values.volumes.bookmarks.server }}
+      #     path: {{ .Values.volumes.bookmarks.path }}
+      - name: {{ include "app.name" . }}-{{ .Values.volumes.images.name }}
+        nfs:
+          server: {{ .Values.volumes.images.server }}
+          path: {{ .Values.volumes.images.path }}
+      - name: {{ include "app.name" . }}-bookmarks
+        configMap:
+          name: tesladash-bookmarks
+          items:
+            - key: bookmarks.json
+              path: bookmarks.json
