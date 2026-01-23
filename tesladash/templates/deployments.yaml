@@ -18,7 +18,8 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/managed-by: {{ .Release.Service }}
         annotations:
-        bookmarks-hash: {{ .Values.tesladash.bookmarks | toJson | sha256sum }}
+        checksum/bookmarks: {{ .Values.tesladash.bookmarks | toJson | md5sum }}
+
     spec:
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
