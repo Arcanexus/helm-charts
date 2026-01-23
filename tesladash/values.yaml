@@ -203,58 +203,6 @@ tesladash:
               ]
           },
           {
-              "category":"Live Television",
-              "bookmarks":[
-                {
-                    "name":"YouTube TV",
-                    "url":"https://tv.youtube.com",
-                    "image":"https://play-lh.googleusercontent.com/HPyYXe-ToibRPGtFd4Ni4gi7RVfpkj4s8HwtC6fhDPqO7JfkF1-ld2SYFdzOQh-9zXU",
-                    "background": "white"
-                },
-                {
-                    "name":"Sling",
-                    "url":"https://sling.com/",
-                    "image":"https://play-lh.googleusercontent.com/paUnk-CcCLS-AvbzZw7xdVGU8hpYqRvn_y7aI3r1WMbsW2oCXezFE15Rf4dQgqr3nYe2"
-                },
-                {
-                    "name":"Direct TV",
-                    "url":"https://stream.directv.com",
-                    "image":"https://is4-ssl.mzstatic.com/image/thumb/Purple114/v4/43/c3/37/43c33742-e1db-4aab-6b75-c5069232838a/source/512x512bb.jpg"
-                },
-                {
-                    "name":"Xfinity",
-                    "url":"https://xfinity.com/stream",
-                    "image":"https://downloadr2.apkmirror.com/wp-content/uploads/2020/11/79/5fb711cedf29d.png"
-                },
-                {
-                    "name":"Fubo TV",
-                    "url":"https://fubo.tv",
-                    "image":"https://play-lh.googleusercontent.com/vavMBJSI7EFlAtZiFPOJA5szF4jpPI9f2LPtD2cDp8GcWM5krXCkioE_loS5grOdP6Y"
-                },
-                {
-                    "name":"Philo",
-                    "url":"https://philo.com",
-                    "image":"https://play-lh.googleusercontent.com/r81hFLsXf2oKaS0WomEtublNDhI00ohXH0QEiog1ASeU9GXdepXH6LsgQ0gT4iyHKg"
-                },
-                {
-                    "name":"Tubi",
-                    "url":"https://tubitv.com/",
-                    "image":"https://upload.wikimedia.org/wikipedia/commons/2/2b/Tubi_icon.jpg"
-                },
-                {
-                    "name":"Pluto TV",
-                    "url":"https://pluto.tv/",
-                    "image":"https://play-lh.googleusercontent.com/gIiZK9ZUU7tt8N08ozfe8OPBnW-KPREAHdbN1WDvqqSscVdAQuuP2_i2c1Gm2zHJ_S9x",
-                    "border":"1px solid rgba(255, 255, 255, .25)"
-                },
-                {
-                    "name":"Locast",
-                    "url":"https://locast.org/",
-                    "image":"https://www.dispatch.com/gcdn/presto/2021/07/02/NCOD/4b173731-780c-45b6-b1ba-4d20a3e27b5b-locast_logo_icon_1000x1000.png?width=660&height=660&fit=crop&format=pjpg&auto=webp"
-                }
-              ]
-          },
-          {
               "category":"Personal Media",
               "bookmarks":[
                 {
