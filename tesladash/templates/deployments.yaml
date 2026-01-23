@@ -42,7 +42,7 @@ spec:
           - name: TZ
             value: "Europe/Paris"
           {{- if .Values.tesladash.environment }}
-            {{- toYaml .Values.tesladash.environment | nindent 12 }}
+            {{- toYaml .Values.tesladash.environment | nindent 10 }}
           {{- end }}
       volumes:
       # - name: {{ include "app.name" . }}-{{ .Values.tesladash.volumes.bookmarks.name }}
