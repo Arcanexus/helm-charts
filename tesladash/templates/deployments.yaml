@@ -17,10 +17,9 @@ spec:
         helm.sh/chart: {{ include "app.chart" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/managed-by: {{ .Release.Service }}
+        annotations:
+        bookmarks-hash: {{ .Values.tesladash.bookmarks | toJson | sha256sum }}
     spec:
-      # terminationGracePeriodSeconds: 10
-      # serviceAccountName: {{ include "app.name" . }}
-      automountServiceAccountToken: true
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
       containers:
