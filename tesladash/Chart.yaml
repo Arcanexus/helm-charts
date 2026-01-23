@@ -1,5 +1,5 @@
 apiVersion: v2
-name: tesla-dashboard
+name: tesladash
 version: 1.0.0
 description: A Helm chart to deploy tesla-dashboard
 type: application
