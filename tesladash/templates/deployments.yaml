@@ -36,7 +36,7 @@ spec:
             - name: {{ include "app.name" . }}-{{ .Values.tesladash.volumes.images.name }}
               mountPath: {{ .Values.tesladash.volumes.images.containerMountPath }}
             - name: {{ include "app.name" . }}-bookmarks
-              mountPath: /app/public/
+              mountPath: /app/public/bookmarks.json
               subPath: bookmarks.json
           env:
           - name: TZ
