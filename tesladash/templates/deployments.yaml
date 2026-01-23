@@ -28,7 +28,7 @@ spec:
           image: {{ .Values.tesladash.image }}
           imagePullPolicy: Always
           ports:
-            - containerPort: {{ .Values.tesladash.containerPort }}
+            - containerPort: {{ .Values.tesladash.port }}
               name: web
           volumeMounts:
             # - name: {{ include "app.name" . }}-{{ .Values.tesladash.volumes.bookmarks.name }}
