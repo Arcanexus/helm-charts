@@ -4,4 +4,4 @@ metadata:
   name: tesladash-bookmarks
 data:
   bookmarks.json: |
-    {{ .Values.tesladash.bookmarks | fromJson | toPrettyJson | indent 4 }}
+    {{- .Values.tesladash.bookmarks | toPrettyJson | nindent 4 }}
