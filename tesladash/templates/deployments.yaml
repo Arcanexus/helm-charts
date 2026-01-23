@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ include "app.name" . }}
 spec:
-  replicas: {{ .Values.pods.tesladash.replicas }}
+  replicas: {{ .Values.tesladash.replicas }}
   #minReadySeconds: 10
   selector:
     matchLabels:
@@ -25,10 +25,10 @@ spec:
       enableServiceLinks: true
       containers:
         - name: {{ include "app.name" . }}
-          image: {{ .Values.pods.tesladash.image }}
+          image: {{ .Values.tesladash.image }}
           imagePullPolicy: Always
           ports:
-            - containerPort: {{ .Values.pods.tesladash.containerPort }}
+            - containerPort: {{ .Values.tesladash.containerPort }}
               name: web
           volumeMounts:
             # - name: {{ include "app.name" . }}-{{ .Values.volumes.bookmarks.name }}
@@ -41,8 +41,8 @@ spec:
           env:
           - name: TZ
             value: "Europe/Paris"
-          {{- if .Values.pods.tesladash.environment }}
-            {{- toYaml .Values.pods.tesladash.environment | nindent 10 }}
+          {{- if .Values.tesladash.environment }}
+            {{- toYaml .Values.tesladash.environment | nindent 10 }}
           {{- end }}
       volumes:
       # - name: {{ include "app.name" . }}-{{ .Values.volumes.bookmarks.name }}
