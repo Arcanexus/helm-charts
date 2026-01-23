@@ -17,8 +17,8 @@ spec:
         helm.sh/chart: {{ include "app.chart" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/managed-by: {{ .Release.Service }}
-        annotations:
-        checksum/bookmarks: {{ .Values.tesladash.bookmarks | toJson | md5sum }}
+      annotations:
+        checksum/bookmarks: {{ .Values.tesladash.bookmarks | toJson | sha256sum | truncate 62 }}
 
     spec:
       dnsPolicy: ClusterFirst
