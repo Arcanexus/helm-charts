@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}-bentopdf
+spec:
+  replicas: {{ .Values.bentopdf.replicas }}
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}-bentopdf
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-bentopdf
+        app.kubernetes.io/name: {{ include "app.name" . }}-bentopdf
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: {{ .Values.bentopdf.security.runAsUser }}
+        runAsGroup: {{ .Values.bentopdf.security.runAsGroup }}
+      containers:
+        - name: bentopdf
+          image: {{ .Values.bentopdf.image }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: {{ .Values.bentopdf.port }}
+              name: web
+          env:
+          - name: TZ
+            value: "Europe/Paris"
+          {{- if .Values.bentopdf.environment }}
+          {{- range $key, $value := .Values.bentopdf.environment }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+          {{- end }}

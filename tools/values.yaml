@@ -1,0 +1,34 @@
+# Shared ingress configuration
+ingress:
+  enabled: true
+  host: tools.arcanexus.com
+  ingressClassName: traefik
+  annotations:
+    cert-manager.io/cluster-issuer: le-wildcard-issuer
+    traefik.ingress.kubernetes.io/router.middlewares: tinyauth-tinyauth@kubernetescrd
+
+# BentoPDF configuration
+bentopdf:
+  image: ghcr.io/alam00000/bentopdf-simple:v1.16.1
+  replicas: 1
+  port: 8080
+  path: /pdf
+
+  security:
+    runAsUser: 0
+    runAsGroup: 0
+
+  # environment:
+
+# IT-Tools configuration
+ittools:
+  image: corentinth/it-tools:2024.10.22-7ca5933
+  replicas: 1
+  port: 80
+  path: /ittools
+
+  security:
+    runAsUser: 0
+    runAsGroup: 0
+
+  # environment:

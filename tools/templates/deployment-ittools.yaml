@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}-ittools
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}-ittools
+  replicas: {{ .Values.ittools.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-ittools
+        app.kubernetes.io/name: {{ include "app.name" . }}-ittools
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: {{ .Values.ittools.security.runAsUser }}
+        runAsGroup: {{ .Values.ittools.security.runAsGroup }}
+      containers:
+      - name: ittools
+        image: {{ .Values.ittools.image }}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: {{ .Values.ittools.port }}
+          name: web
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+          {{- if .Values.ittools.environment }}
+          {{- range $key, $value := .Values.ittools.environment }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+          {{- end }}
