@@ -1,0 +1,30 @@
+{{- if .Values.bentopdf.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "app.name" . }}-bentopdfingress
+  annotations:
+    {{- if .Values.bentopdf.ingress.annotations }}
+    {{- toYaml .Values.bentopdf.ingress.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: traefik
+  {{- if .Values.bentopdf.ingress.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.bentopdf.ingress.host }}
+      secretName: {{ include "app.name" . }}-bentopdf-tls
+  {{- end }}
+  rules:
+    - host: {{ .Values.bentopdf.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ .Release.Name }}-service
+                port:
+                  number: {{ .Values.bentopdf.port }}
+{{- end }}

@@ -1,0 +1,18 @@
+bentopdf:
+  image: ghcr.io/alam00000/bentopdf:v1.16.1
+  replicas: 1
+  port: 8080
+
+  security:
+    runAsUser: 0
+    runAsGroup: 0
+
+  # environment:
+
+  ingress:
+    enabled: true
+    host: pdf.arcanexus.com
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: le-wildcard-issuer
+      traefik.ingress.kubernetes.io/router.middlewares: tinyauth-tinyauth@kubernetescrd
