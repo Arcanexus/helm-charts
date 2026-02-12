@@ -62,11 +62,12 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  type: ClusterIP
+  type: NodePort
   ports:
   - name: udp
     port: {{ .Values.syslogng.udpport }}
     targetPort: {{ .Values.syslogng.udpport }}
+    nodePort: {{ .Values.syslogng.nodePortUdp }}
     protocol: UDP
   selector:
     app: {{ include "app.name" . }}-{{ .Release.Name }}-syslog-ng
@@ -81,11 +82,12 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  type: ClusterIP
+  type: NodePort
   ports:
   - name: tcp
     port: {{ .Values.syslogng.tcpport }}
     targetPort: {{ .Values.syslogng.tcpport }}
+    nodePort: {{ .Values.syslogng.nodePortTcp }}
     protocol: TCP
   selector:
     app: {{ include "app.name" . }}-{{ .Release.Name }}-syslog-ng

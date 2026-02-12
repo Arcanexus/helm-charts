@@ -102,6 +102,8 @@ syslogng:
   replicas: 1
   udpport: 514
   tcpport: 601
+  nodePortUdp: 30514
+  nodePortTcp: 30601
 
   security:
     runAsUser: 0
