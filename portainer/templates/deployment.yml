@@ -36,13 +36,6 @@ spec:
         env:
           - name: TZ
             value: "Europe/Paris"
-          - name: PORT
-            value: "{{ .Values.portainer.port }}"
-          - name: INITIAL_API_KEY
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "app.fullname" . }}-portainer-admin-apikey
-                key: admin-apikey
           {{- range $key, $value := .Values.portainer.environment }}
           - name: {{ $key }}
             value: {{ $value | quote }}
