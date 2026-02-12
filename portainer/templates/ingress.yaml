@@ -22,6 +22,6 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ .Release.Name }}-http
+                name: http
                 port:
                   number: {{ .Values.portainer.port }}
