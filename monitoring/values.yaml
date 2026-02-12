@@ -97,7 +97,7 @@ grafana:
     annotations:
       cert-manager.io/cluster-issuer: le-wildcard-issuer
 
-syslog-ng:
+syslogng:
   image: balabit/syslog-ng:latest
   replicas: 1
   udpport: 514

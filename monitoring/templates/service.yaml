@@ -65,8 +65,8 @@ spec:
   type: ClusterIP
   ports:
   - name: udp
-    port: {{ index .Values "syslog-ng" "udpport" }}
-    targetPort: {{ index .Values "syslog-ng" "udpport" }}
+    port: {{ .Values.syslogng.udpport }}
+    targetPort: {{ .Values.syslogng.udpport }}
     protocol: UDP
   selector:
     app: {{ include "app.name" . }}-{{ .Release.Name }}-syslog-ng
@@ -84,8 +84,8 @@ spec:
   type: ClusterIP
   ports:
   - name: tcp
-    port: {{ index .Values "syslog-ng" "tcpport" }}
-    targetPort: {{ index .Values "syslog-ng" "tcpport" }}
+    port: {{ .Values.syslogng.tcpport }}
+    targetPort: {{ .Values.syslogng.tcpport }}
     protocol: TCP
   selector:
     app: {{ include "app.name" . }}-{{ .Release.Name }}-syslog-ng

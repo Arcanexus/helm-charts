@@ -161,7 +161,7 @@ spec:
   selector:
     matchLabels:
       app: {{ include "app.name" . }}-{{ .Release.Name }}-syslog-ng
-  replicas: {{ .Values.syslog-ng.replicas }}
+  replicas: {{ .Values.syslogng.replicas }}
   revisionHistoryLimit: 0
   template:
     metadata:
@@ -175,36 +175,36 @@ spec:
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
       securityContext:
-        runAsUser: {{ index .Values "syslog-ng" "security" "runAsUser" }}
-        runAsGroup: {{ index .Values "syslog-ng" "security" "runAsGroup" }}
+        runAsUser: {{ .Values.syslogng.security.runAsUser }}
+        runAsGroup: {{ .Values.syslogng.security.runAsGroup }}
       containers:
       - name: syslog-ng
-        image: {{ index .Values "syslog-ng" "image" }}
+        image: {{ .Values.syslogng.image }}
         imagePullPolicy: Always
         args:
-          {{- range (split " " (index .Values "syslog-ng" "command")) }}
+          {{- range (split " " .Values.syslogng.command) }}
           - {{ . }}
           {{- end }}
         ports:
-        - containerPort: {{ index .Values "syslog-ng" "udpport" }}
+        - containerPort: {{ .Values.syslogng.udpport }}
           name: udp
           protocol: UDP
-        - containerPort: {{ index .Values "syslog-ng" "tcpport" }}
+        - containerPort: {{ .Values.syslogng.tcpport }}
           name: tcp
           protocol: TCP
         env:
           - name: TZ
             value: "Europe/Paris"
-          {{- range $key, $value := (index .Values "syslog-ng" "environment") }}
+          {{- range $key, $value := .Values.syslogng.environment }}
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{- end }}
         volumeMounts:
         - name: syslog-ng-config
-          mountPath: {{ index .Values "syslog-ng" "volumes" "config" "containerMountPath" }}
+          mountPath: {{ .Values.syslogng.volumes.config.containerMountPath }}
           readOnly: true
       volumes:
       - name: syslog-ng-config
         nfs:
-          server: {{ index .Values "syslog-ng" "volumes" "config" "server" }}
-          path: {{ index .Values "syslog-ng" "volumes" "config" "path" }}
+          server: {{ .Values.syslogng.volumes.config.server }}
+          path: {{ .Values.syslogng.volumes.config.path }}
