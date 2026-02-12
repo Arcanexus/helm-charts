@@ -27,8 +27,12 @@ spec:
         image: {{ .Values.portainer.image }}
         imagePullPolicy: Always
         ports:
-        - containerPort: {{ .Values.portainer.port }}
-          name: portainer-port
+        - containerPort: {{ .Values.portainer.tcpport }}
+          name: portainer-port-tcp 
+        - containerPort: {{ .Values.portainer.httpport }}
+          name: portainer-port-http
+        - containerPort: {{ .Values.portainer.httpsport }}
+          name: portainer-port-https
         env:
           - name: TZ
             value: "Europe/Paris"
