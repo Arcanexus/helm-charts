@@ -1,0 +1,83 @@
+{{- if .Values.prometheus.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "app.name" . }}-prometheus
+  annotations:
+    {{- if .Values.prometheus.ingress.annotations }}
+    {{- toYaml .Values.prometheus.ingress.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.prometheus.ingress.ingressClassName }}
+  tls:
+    - hosts:
+        - {{ .Values.prometheus.ingress.host }}
+      secretName: {{ include "app.name" . }}-prometheus-tls
+  rules:
+    - host: {{ .Values.prometheus.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-prometheus
+                port:
+                  number: {{ .Values.prometheus.httpport }}
+{{- end }}
+---
+{{- if .Values.pushgateway.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "app.name" . }}-pushgateway
+  annotations:
+    {{- if .Values.pushgateway.ingress.annotations }}
+    {{- toYaml .Values.pushgateway.ingress.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.pushgateway.ingress.ingressClassName }}
+  tls:
+    - hosts:
+        - {{ .Values.pushgateway.ingress.host }}
+      secretName: {{ include "app.name" . }}-pushgateway-tls
+  rules:
+    - host: {{ .Values.pushgateway.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-pushgateway
+                port:
+                  number: {{ .Values.pushgateway.httpport }}
+{{- end }}
+---
+{{- if .Values.grafana.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "app.name" . }}-grafana
+  annotations:
+    {{- if .Values.grafana.ingress.annotations }}
+    {{- toYaml .Values.grafana.ingress.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.grafana.ingress.ingressClassName }}
+  tls:
+    - hosts:
+        - {{ .Values.grafana.ingress.host }}
+      secretName: {{ include "app.name" . }}-grafana-tls
+  rules:
+    - host: {{ .Values.grafana.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-grafana
+                port:
+                  number: {{ .Values.grafana.httpport }}
+{{- end }}

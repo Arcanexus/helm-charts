@@ -1,0 +1,210 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}-{{ .Release.Name }}-prometheus
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}-{{ .Release.Name }}-prometheus
+  replicas: {{ .Values.prometheus.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-{{ .Release.Name }}-prometheus
+        app.kubernetes.io/name: {{ include "app.name" . }}-{{ .Release.Name }}-prometheus
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: {{ .Values.prometheus.security.runAsUser }}
+        runAsGroup: {{ .Values.prometheus.security.runAsGroup }}
+      containers:
+      - name: prometheus
+        image: {{ .Values.prometheus.image }}
+        imagePullPolicy: Always
+        args:
+          {{- range (split " " .Values.prometheus.command) }}
+          - {{ . }}
+          {{- end }}
+        ports:
+        - containerPort: {{ .Values.prometheus.httpport }}
+          name: http
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+          {{- range $key, $value := .Values.prometheus.environment }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+        volumeMounts:
+        - name: prometheus-data
+          mountPath: {{ .Values.prometheus.volumes.data.containerMountPath }}
+        - name: prometheus-config
+          mountPath: {{ .Values.prometheus.volumes.config.containerMountPath }}
+      volumes:
+      - name: prometheus-data
+        nfs:
+          server: {{ .Values.prometheus.volumes.data.server }}
+          path: {{ .Values.prometheus.volumes.data.path }}
+      - name: prometheus-config
+        nfs:
+          server: {{ .Values.prometheus.volumes.config.server }}
+          path: {{ .Values.prometheus.volumes.config.path }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}-{{ .Release.Name }}-pushgateway
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}-{{ .Release.Name }}-pushgateway
+  replicas: {{ .Values.pushgateway.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-{{ .Release.Name }}-pushgateway
+        app.kubernetes.io/name: {{ include "app.name" . }}-{{ .Release.Name }}-pushgateway
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: {{ .Values.pushgateway.security.runAsUser }}
+        runAsGroup: {{ .Values.pushgateway.security.runAsGroup }}
+      containers:
+      - name: pushgateway
+        image: {{ .Values.pushgateway.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.pushgateway.httpport }}
+          name: http
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+          {{- range $key, $value := .Values.pushgateway.environment }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}-{{ .Release.Name }}-grafana
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}-{{ .Release.Name }}-grafana
+  replicas: {{ .Values.grafana.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-{{ .Release.Name }}-grafana
+        app.kubernetes.io/name: {{ include "app.name" . }}-{{ .Release.Name }}-grafana
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: {{ .Values.grafana.security.runAsUser }}
+        runAsGroup: {{ .Values.grafana.security.runAsGroup }}
+      containers:
+      - name: grafana
+        image: {{ .Values.grafana.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.grafana.httpport }}
+          name: http
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+          {{- range $key, $value := .Values.grafana.environment }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+        volumeMounts:
+        - name: grafana-config
+          mountPath: {{ .Values.grafana.volumes.config.containerMountPath }}
+        - name: grafana-data
+          mountPath: {{ .Values.grafana.volumes.data.containerMountPath }}
+        - name: grafana-logs
+          mountPath: {{ .Values.grafana.volumes.logs.containerMountPath }}
+      volumes:
+      - name: grafana-config
+        nfs:
+          server: {{ .Values.grafana.volumes.config.server }}
+          path: {{ .Values.grafana.volumes.config.path }}
+      - name: grafana-data
+        nfs:
+          server: {{ .Values.grafana.volumes.data.server }}
+          path: {{ .Values.grafana.volumes.data.path }}
+      - name: grafana-logs
+        nfs:
+          server: {{ .Values.grafana.volumes.logs.server }}
+          path: {{ .Values.grafana.volumes.logs.path }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}-{{ .Release.Name }}-syslog-ng
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}-{{ .Release.Name }}-syslog-ng
+  replicas: {{ .Values.syslog-ng.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-{{ .Release.Name }}-syslog-ng
+        app.kubernetes.io/name: {{ include "app.name" . }}-{{ .Release.Name }}-syslog-ng
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: {{ index .Values "syslog-ng" "security" "runAsUser" }}
+        runAsGroup: {{ index .Values "syslog-ng" "security" "runAsGroup" }}
+      containers:
+      - name: syslog-ng
+        image: {{ index .Values "syslog-ng" "image" }}
+        imagePullPolicy: Always
+        args:
+          {{- range (split " " (index .Values "syslog-ng" "command")) }}
+          - {{ . }}
+          {{- end }}
+        ports:
+        - containerPort: {{ index .Values "syslog-ng" "udpport" }}
+          name: udp
+          protocol: UDP
+        - containerPort: {{ index .Values "syslog-ng" "tcpport" }}
+          name: tcp
+          protocol: TCP
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+          {{- range $key, $value := (index .Values "syslog-ng" "environment") }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+        volumeMounts:
+        - name: syslog-ng-config
+          mountPath: {{ index .Values "syslog-ng" "volumes" "config" "containerMountPath" }}
+          readOnly: true
+      volumes:
+      - name: syslog-ng-config
+        nfs:
+          server: {{ index .Values "syslog-ng" "volumes" "config" "server" }}
+          path: {{ index .Values "syslog-ng" "volumes" "config" "path" }}

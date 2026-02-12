@@ -1,0 +1,120 @@
+prometheus:
+  image: prom/prometheus:v2.53.2
+  replicas: 1
+  httpport: 9090
+
+  security:
+    runAsUser: 0
+    runAsGroup: 0
+
+  environment:
+    TIMEZONE: Europe/Paris
+
+  command: "--web.enable-lifecycle --config.file=/etc/prometheus/prometheus.yml"
+
+  volumes:
+    data:
+      name: data
+      server: 192.168.2.50
+      path: /volume2/docker-data/prometheus
+      containerMountPath: /prometheus
+    config:
+      name: config
+      server: 192.168.2.50
+      path: /volume2/docker/prometheus/config
+      containerMountPath: /etc/prometheus
+
+
+  ingress:
+    enabled: true
+    host: prometheus.arcanexus.com
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: le-wildcard-issuer
+      # traefik.ingress.kubernetes.io/router.middlewares: tinyauth-tinyauth@kubernetescrd
+
+pushgateway:
+  image: prom/pushgateway:v1.11.0
+  replicas: 1
+  httpport: 9091
+
+  security:
+    runAsUser: 0
+    runAsGroup: 0
+
+  environment:
+    TIMEZONE: Europe/Paris
+
+  ingress:
+    enabled: true
+    host: pushgateway.arcanexus.com
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: le-wildcard-issuer
+      # traefik.ingress.kubernetes.io/router.middlewares: tinyauth-tinyauth@kubernetescrd
+
+
+grafana:
+  image: grafana/grafana-oss:11.4.0
+  replicas: 1
+  httpport: 3000
+
+  security:
+    runAsUser: 0
+    runAsGroup: 0
+
+  environment:
+    TIMEZONE: Europe/Paris
+    GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource,grafana-piechart-panel,grafana-worldmap-panel,grafana-kubernetes-app,simpod-json-datasource,camptocamp-prometheus-alertmanager-datasource,grafana-github-datasource
+    GF_PATHS_CONFIG: /etc/grafana/grafana.ini
+    GF_PATHS_DATA: /var/lib/grafana
+    GF_PATHS_HOME: /usr/share/grafana
+    GF_PATHS_LOGS: /var/log/grafana
+    GF_PATHS_PLUGINS: /var/lib/grafana/plugins
+    GF_PATHS_PROVISIONING: /etc/grafana/provisioning
+
+  volumes:
+    config:
+      name: config
+      server: 192.168.2.50
+      path: /volume2/docker/grafana/config
+      containerMountPath: /etc/grafana
+    data:
+      name: data
+      server: 192.168.2.50
+      path: /volume2/docker-data/grafana/data
+      containerMountPath: /var/lib/grafana
+    logs:
+      name: logs
+      server: 192.168.2.50
+      path: /volume2/docker-data/grafana/logs
+      containerMountPath: /var/log/grafana
+
+  ingress:
+    enabled: true
+    host: grafana.arcanexus.com
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: le-wildcard-issuer
+
+syslog-ng:
+  image: balabit/syslog-ng:latest
+  replicas: 1
+  udpport: 514
+  tcpport: 601
+
+  security:
+    runAsUser: 0
+    runAsGroup: 0
+
+  environment:
+    TIMEZONE: Europe/Paris
+
+  command: "-edv"
+
+  volumes:
+    config:
+      name: config
+      server: 192.168.2.50
+      path: /volume2/docker/loki/config-syslog-ng
+      containerMountPath: /etc/syslog-ng
