@@ -1,0 +1,29 @@
+portainer:
+  image: portainer/portainer-ee:2.38.1
+  replicas: 1
+  tcpport: 8000
+  httpport: 9000
+  httpsport: 9443
+
+  security:
+    runAsUser: 0
+    runAsGroup: 0
+
+  environment:
+    TIMEZONE: Europe/Paris
+
+  volumes:
+    data:
+      name: data
+      server: 192.168.2.50
+      path: /volume2/docker/portainer
+      containerMountPath: /data
+
+
+  ingress:
+    enabled: true
+    host: portainer.arcanexus.com
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: le-wildcard-issuer
+      # traefik.ingress.kubernetes.io/router.middlewares: tinyauth-tinyauth@kubernetescrd

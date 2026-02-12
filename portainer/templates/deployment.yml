@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}-{{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}-{{ .Release.Name }} # has to match .spec.template.metadata.labels
+  replicas: {{ .Values.portainer.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-{{ .Release.Name }} # has to match .spec.selector.matchLabels
+        app.kubernetes.io/name: {{ include "app.name" . }}-{{ .Release.Name }}
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: {{ .Values.portainer.security.runAsUser }}
+        runAsGroup: {{ .Values.portainer.security.runAsGroup }}
+      containers:
+      - name: {{ include "app.name" . }}-{{ .Release.Name }}
+        image: {{ .Values.portainer.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.portainer.port }}
+          name: portainer-port
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+          - name: PORT
+            value: "{{ .Values.portainer.port }}"
+          - name: INITIAL_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "app.fullname" . }}-portainer-admin-apikey
+                key: admin-apikey
+          {{- range $key, $value := .Values.portainer.environment }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+        volumeMounts:
+        - name: {{ include "app.name" . }}-{{ .Release.Name }}-portainer
+          mountPath: {{ .Values.portainer.volumes.data.containerMountPath }}
+      {{- if .Values.portainer.volumes }}
+      volumes:
+      - name: {{ include "app.name" . }}-{{ .Release.Name }}-portainer
+        nfs:
+          server: {{ .Values.portainer.volumes.data.server }}
+          path: {{ .Values.portainer.volumes.data.path }}
+      {{- end }}
