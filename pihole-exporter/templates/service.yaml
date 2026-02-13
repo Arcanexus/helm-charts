@@ -11,10 +11,10 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - port: {{ .Values.pods.piholeexporter.containerPort }}
-    targetPort: {{ .Values.pods.piholeexporter.containerPort }}
+  - port: {{ .Values.piholeexporter.containerPort }}
+    targetPort: {{ .Values.piholeexporter.containerPort }}
     name: {{ include "app.name" . }}
-    nodePort: {{ .Values.pods.piholeexporter.exposedPort }}
+    nodePort: {{ .Values.piholeexporter.exposedPort }}
   selector:
     app: {{ include "app.name" . }}
 

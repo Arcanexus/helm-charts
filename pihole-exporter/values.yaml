@@ -1,11 +1,14 @@
-namespace:
-  name: 
+piholeexporter:
+  image: ekofr/pihole-exporter:latest
+  replicas: 1
+  containerPort: 9617
+  exposedPort: 30003
 
-volumes:
+  security:
+    runAsUser: 0
+    runAsGroup: 0
 
-pods:
-  piholeexporter:
-    image: ekofr/pihole-exporter:latest
-    replicas: 1
-    containerPort: 9617
-    exposedPort: 30003
+  environment:
+
+  pihole_hostname: "192.168.2.52"
+  pihole_api_token: ""
