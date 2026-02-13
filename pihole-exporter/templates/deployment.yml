@@ -34,7 +34,7 @@ spec:
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{- end }}
-          - name: PIHOLE_API_TOKEN
+          - name: PIHOLE_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: pihole-exporter-secrets
