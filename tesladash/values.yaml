@@ -232,6 +232,11 @@ tesladash:
                     "url":"https://fb.gg"
                 },
                 {
+                    "name": "Parsec",
+                    "image": "https://upload.wikimedia.org/wikipedia/commons/5/59/Parsec_Vertical_Logo_Light_Background.png"
+                    "url": "https://web.parsec.app/"
+                },
+                {
                     "name":"Caffeine",
                     "url":"https://caffeine.tv/",
                     "image":"https://play-lh.googleusercontent.com/uIs50DZc_Wun-tXMjGT8TR9HlNM17NyGpzpJ_jKp2LDi2WmfvtQlELjZhyHP_Py0Mw"
