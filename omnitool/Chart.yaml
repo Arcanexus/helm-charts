@@ -1,0 +1,5 @@
+apiVersion: v2
+name: omnitool
+version: 1.0.0
+description: A Helm chart to deploy omnitool application
+type: application
