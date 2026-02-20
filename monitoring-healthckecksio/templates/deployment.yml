@@ -12,7 +12,7 @@ spec:
     metadata:
       labels:
         app: {{ include "app.name" . }}-{{ .Release.Name }} # has to match .spec.selector.matchLabels
-        date: "{{ now | unixEpoch }}"
+        # date: "{{ now | unixEpoch }}"
     spec:
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
