@@ -5,7 +5,7 @@ volumes:
 
 pods:
   speedtestexporter:
-    image: miguelndecarvalho/speedtest-exporter:latest
+    image: miguelndecarvalho/speedtest-exporter:v3.5.4
     replicas: 1
     containerPort: 9798
     exposedPort: 30005
