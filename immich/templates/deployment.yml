@@ -54,19 +54,20 @@ spec:
             - name: IMMICH_MACHINE_LEARNING_URL
               value: http://{{ include "app.fullname" . }}-ml:{{ .Values.immich.machineLearning.service.port }}
           volumeMounts:
-            - name: uploads
-              mountPath: {{ .Values.immich.volumes.uploads.containerMountPath }}
-            - name: images
-              mountPath: {{ .Values.immich.volumes.images.containerMountPath }}
+            {{- range .Values.immich.server.volumes }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              {{- if hasKey . "readOnly" }}
+              readOnly: {{ .readOnly }}
+              {{- end }}
+            {{- end }}
       volumes:
-        - name: uploads
+        {{- range .Values.immich.server.volumes }}
+        - name: {{ .name }}
           nfs:
-            server: {{ .Values.immich.volumes.uploads.server }}
-            path: {{ .Values.immich.volumes.uploads.path }}
-        - name: images
-          nfs:
-            server: {{ .Values.immich.volumes.images.server }}
-            path: {{ .Values.immich.volumes.images.path }}
+            server: {{ .server }}
+            path: {{ .path }}
+        {{- end }}
 ---
 apiVersion: apps/v1
 kind: Deployment

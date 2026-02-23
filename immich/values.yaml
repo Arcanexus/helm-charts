@@ -11,6 +11,16 @@ immich:
       pullPolicy: IfNotPresent
     service:
       port: 2283
+    volumes:
+      - name: uploads
+        server: 192.168.2.50
+        path: /volume2/docker-data/immich/uploads
+        mountPath: /data
+      - name: images
+        server: 192.168.2.50
+        path: /volume1/Sauvegardes/OD_perso/Images
+        mountPath: /OD_images
+        readOnly: true
 
   machineLearning:
     replicas: 1
@@ -44,14 +54,6 @@ immich:
     DB_PASSWORD: postgres
 
   volumes:
-    uploads:
-      server: 192.168.2.50
-      path: /volume2/docker-data/immich/uploads
-      containerMountPath: /data
-    images:
-      server: 192.168.2.50
-      path: /volume1/Sauvegardes/OD_perso/Images
-      containerMountPath: /OD_images
     database:
       server: 192.168.2.50
       path: /volume2/docker-data/immich/db
