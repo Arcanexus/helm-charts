@@ -1,0 +1,27 @@
+{{- if .Values.immich.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "app.fullname" . }}
+  annotations:
+    {{- if .Values.immich.ingress.annotations }}
+    {{- toYaml .Values.immich.ingress.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.immich.ingress.ingressClassName }}
+  tls:
+    - hosts:
+        - {{ .Values.immich.ingress.host }}
+      secretName: {{ include "app.name" . }}-tls
+  rules:
+    - host: {{ .Values.immich.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ include "app.fullname" . }}-server
+                port:
+                  number: {{ .Values.immich.server.service.port }}
+{{- end }}
