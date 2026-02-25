@@ -3,7 +3,7 @@ immich:
   nodeSelector:
     silent: fanless
 
-  server:
+  apiserver:
     replicas: 1
     image:
       repository: ghcr.io/immich-app/immich-server
@@ -11,6 +11,33 @@ immich:
       pullPolicy: IfNotPresent
     service:
       port: 2283
+    env:
+      DB_USERNAME: postgres
+      DB_DATABASE_NAME: immich
+      DB_PASSWORD: postgres
+    volumes:
+      - name: uploads
+        server: 192.168.2.50
+        path: /volume2/docker-data/immich/uploads
+        mountPath: /data
+      - name: images
+        server: 192.168.2.50
+        path: /volume1/Sauvegardes/OD_perso/Images
+        mountPath: /OD_images
+        readOnly: true
+
+  microservices:
+    replicas: 2
+    image:
+      repository: ghcr.io/immich-app/immich-server
+      tag: release
+      pullPolicy: IfNotPresent
+    service:
+      port: 2283
+    env:
+      DB_USERNAME: postgres
+      DB_DATABASE_NAME: immich
+      DB_PASSWORD: postgres
     volumes:
       - name: uploads
         server: 192.168.2.50
@@ -30,6 +57,12 @@ immich:
       pullPolicy: IfNotPresent
     service:
       port: 3003
+    volume:
+      modelCache:
+        enabled: false
+        server: 192.168.2.50
+        path: /volume2/docker-data/immich/model-cache
+        containerMountPath: /cache
 
   redis:
     image:
@@ -47,22 +80,11 @@ immich:
     service:
       port: 5432
     shmSize: 128Mi
-
-  env:
-    DB_USERNAME: postgres
-    DB_DATABASE_NAME: immich
-    DB_PASSWORD: postgres
-
-  volumes:
-    database:
-      server: 192.168.2.50
-      path: /volume2/docker-data/immich/db
-      containerMountPath: /var/lib/postgresql/data
-    modelCache:
-      enabled: false
-      server: 192.168.2.50
-      path: /volume2/docker-data/immich/model-cache
-      containerMountPath: /cache
+    volume:
+      database:
+        server: 192.168.2.50
+        path: /volume2/docker-data/immich/db
+        containerMountPath: /var/lib/postgresql/data
 
   ingress:
     enabled: true
