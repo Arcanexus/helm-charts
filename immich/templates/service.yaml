@@ -16,7 +16,7 @@ spec:
   selector:
     app.kubernetes.io/name: {{ include "app.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: server
+    immich-role: server
 ---
 apiVersion: v1
 kind: Service
