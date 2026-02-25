@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "app.fullname" . }}-apiserver
+  name: {{ include "app.fullname" . }}-server
   labels:
     app.kubernetes.io/name: {{ include "app.name" . }}
     helm.sh/chart: {{ include "app.chart" . }}
@@ -16,7 +16,7 @@ spec:
   selector:
     app.kubernetes.io/name: {{ include "app.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: apiserver
+    app.kubernetes.io/component: server
 ---
 apiVersion: v1
 kind: Service
