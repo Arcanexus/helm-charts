@@ -53,8 +53,8 @@ spec:
               value: {{ .Values.immich.redis.service.port | quote }}
             - name: IMMICH_MACHINE_LEARNING_URL
               value: http://{{ include "app.fullname" . }}-ml:{{ .Values.immich.machineLearning.service.port }}
-            - name: IMMICH_WORKERS_INCLUDE
-              value: 'api'
+            # - name: IMMICH_WORKERS_INCLUDE
+            #   value: 'api'
           volumeMounts:
             {{- range .Values.immich.externalvolumes }}
             - name: {{ .name }}
