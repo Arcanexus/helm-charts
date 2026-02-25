@@ -14,20 +14,7 @@ immich:
       readOnly: true
 
   apiserver:
-    replicas: 1
-    image:
-      repository: ghcr.io/immich-app/immich-server
-      tag: release
-      pullPolicy: IfNotPresent
-    service:
-      port: 2283
-    env:
-      DB_USERNAME: postgres
-      DB_DATABASE_NAME: immich
-      DB_PASSWORD: postgres
-
-  microservices:
-    replicas: 2
+    replicas: 3
     image:
       repository: ghcr.io/immich-app/immich-server
       tag: release
