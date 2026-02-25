@@ -21,7 +21,7 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ include "app.fullname" . }}-server
+                name: {{ include "app.fullname" . }}-apiserver
                 port:
-                  number: {{ .Values.immich.server.service.port }}
+                  number: {{ .Values.immich.apiserver.service.port }}
 {{- end }}
