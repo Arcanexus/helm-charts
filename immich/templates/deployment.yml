@@ -56,7 +56,7 @@ spec:
             - name: IMMICH_WORKERS_INCLUDE
               value: 'api'
           volumeMounts:
-            {{- range .Values.immich.apiserver.volumes }}
+            {{- range .Values.immich.externalvolumes }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
               {{- if hasKey . "readOnly" }}
@@ -64,7 +64,7 @@ spec:
               {{- end }}
             {{- end }}
       volumes:
-        {{- range .Values.immich.apiserver.volumes }}
+        {{- range .Values.immich.externalvolumes }}
         - name: {{ .name }}
           nfs:
             server: {{ .server }}
@@ -129,7 +129,7 @@ spec:
             - name: IMMICH_WORKERS_EXCLUDE
               value: 'api'
           volumeMounts:
-            {{- range .Values.immich.microservices.volumes }}
+            {{- range .Values.immich.externalvolumes }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
               {{- if hasKey . "readOnly" }}
@@ -137,7 +137,7 @@ spec:
               {{- end }}
             {{- end }}
       volumes:
-        {{- range .Values.immich.microservices.volumes }}
+        {{- range .Values.immich.externalvolumes }}
         - name: {{ .name }}
           nfs:
             server: {{ .server }}

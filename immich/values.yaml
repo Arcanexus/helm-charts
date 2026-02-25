@@ -2,6 +2,16 @@ immich:
   timezone: Europe/Paris
   nodeSelector:
     silent: fanless
+  externalvolumes:
+    - name: uploads
+      server: 192.168.2.50
+      path: /volume2/docker-data/immich/uploads
+      mountPath: /data
+    - name: images
+      server: 192.168.2.50
+      path: /volume1/Sauvegardes/OD_perso/Images
+      mountPath: /OD_images
+      readOnly: true
 
   apiserver:
     replicas: 1
@@ -15,16 +25,6 @@ immich:
       DB_USERNAME: postgres
       DB_DATABASE_NAME: immich
       DB_PASSWORD: postgres
-    volumes:
-      - name: uploads
-        server: 192.168.2.50
-        path: /volume2/docker-data/immich/uploads
-        mountPath: /data
-      - name: images
-        server: 192.168.2.50
-        path: /volume1/Sauvegardes/OD_perso/Images
-        mountPath: /OD_images
-        readOnly: true
 
   microservices:
     replicas: 2
@@ -38,16 +38,6 @@ immich:
       DB_USERNAME: postgres
       DB_DATABASE_NAME: immich
       DB_PASSWORD: postgres
-    volumes:
-      - name: uploads
-        server: 192.168.2.50
-        path: /volume2/docker-data/immich/uploads
-        mountPath: /data
-      - name: images
-        server: 192.168.2.50
-        path: /volume1/Sauvegardes/OD_perso/Images
-        mountPath: /OD_images
-        readOnly: true
 
   machineLearning:
     replicas: 1
