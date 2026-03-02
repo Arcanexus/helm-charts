@@ -28,6 +28,7 @@ immich:
       DB_PASSWORD: postgres
       UPLOAD_LOCATION: /data
       VIPS_NOVECTOR: "1"
+      IMMICH_PROCESS_INVALID_IMAGES: "false"
 
   machineLearning:
     replicas: 1
