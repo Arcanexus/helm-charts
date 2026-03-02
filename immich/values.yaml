@@ -27,6 +27,7 @@ immich:
       DB_DATABASE_NAME: immich
       DB_PASSWORD: postgres
       UPLOAD_LOCATION: /data
+      VIPS_NOVECTOR: "1"
 
   machineLearning:
     replicas: 1
