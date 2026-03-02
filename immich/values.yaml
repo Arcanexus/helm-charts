@@ -15,6 +15,7 @@ immich:
 
   apiserver:
     replicas: 1
+    worker_replicas: 2
     image:
       repository: ghcr.io/immich-app/immich-server
       tag: release
@@ -25,6 +26,7 @@ immich:
       DB_USERNAME: postgres
       DB_DATABASE_NAME: immich
       DB_PASSWORD: postgres
+      UPLOAD_LOCATION: /data
 
   machineLearning:
     replicas: 1
