@@ -130,7 +130,7 @@ immich:
       timeoutSeconds: 5
       failureThreshold: 3
     ingress:
-      enabled: false
+      enabled: true
       host: "p1.arcanexus.com"
       ingressClassName: traefik
       annotations: 
