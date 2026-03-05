@@ -30,6 +30,113 @@ immich:
       VIPS_NOVECTOR: "1"
       IMMICH_PROCESS_INVALID_IMAGES: "false"
 
+  kiosk:
+    enabled: true
+    replicas: 1
+    image: ghcr.io/damongolding/immich-kiosk:latest
+    imagePullPolicy: IfNotPresent
+    service:
+      port: 3000
+    env:
+      LANG: fr_FR
+      TZ: Europe/Paris
+      KIOSK_IMMICH_API_KEY: ""
+      KIOSK_IMMICH_URL: "https://immich.arcanexus.com"
+      KIOSK_IMMICH_EXTERNAL_URL: ""
+      KIOSK_SHOW_TIME: true
+      KIOSK_TIME_FORMAT: 24
+      KIOSK_SHOW_DATE: true
+      KIOSK_DATE_FORMAT: DD/MM/YYYY
+      KIOSK_CLOCK_SOURCE: client
+      KIOSK_DURATION: 60
+      KIOSK_DISABLE_SCREENSAVER: true
+      KIOSK_OPTIMIZE_IMAGES: true
+      KIOSK_USE_GPU: true
+      KIOSK_BURN_IN_INTERVAL: 0
+      KIOSK_BURN_IN_DURATION: 30
+      KIOSK_BURN_IN_OPACITY: 70
+      KIOSK_SHOW_ARCHIVED: false
+      # KIOSK_ALBUMS: ALBUM_ID,ALBUM_ID,ALBUM_ID
+      KIOSK_ALBUM_ORDER: random
+      # KIOSK_EXCLUDED_ALBUMS: ALBUM_ID,ALBUM_ID,ALBUM_ID
+      # KIOSK_PEOPLE: PERSON_ID,PERSON_ID,PERSON_ID
+      KIOSK_REQUIRE_ALL_PEOPLE: false
+      # KIOSK_EXCLUDED_PEOPLE: PERSON_ID,PERSON_ID,PERSON_ID
+      KIOSK_DATES: DATE_RANGE,DATE_RANGE,DATE_RANGE
+      # KIOSK_TAGS: TAG_VALUE,TAG_VALUE,TAG_VALUE
+      # KIOSK_EXCLUDED_TAGS: TAG_VALUE,TAG_VALUE,TAG_VALUE
+      KIOSK_RATING: -1
+      # KIOSK_EXCLUDED_PARTNERS: PARTNER_ID
+      KIOSK_MEMORIES: false
+      # KIOSK_BLACKLIST: ASSET_ID,ASSET_ID,ASSET_ID
+      KIOSK_DATE_FILTER: ""
+      KIOSK_SHOW_PROGRESS_BAR: true
+      KIOSK_DISABLE_NAVIGATION: false
+      KIOSK_DISABLE_UI: false
+      KIOSK_FRAMELESS: false
+      KIOSK_HIDE_CURSOR: true
+      KIOSK_FONT_SIZE: 100
+      KIOSK_BACKGROUND_BLUR: true
+      KIOSK_BACKGROUND_BLUR_AMOUNT: 10
+      KIOSK_THEME: fade
+      KIOSK_LAYOUT: single
+      KIOSK_SHOW_USER: false
+      KIOSK_TRANSITION: none
+      KIOSK_FADE_TRANSITION_DURATION: 1
+      KIOSK_CROSS_FADE_TRANSITION_DURATION: 1
+      KIOSK_IMAGE_FIT: contain
+      KIOSK_IMAGE_EFFECT: smart-zoom
+      KIOSK_IMAGE_EFFECT_AMOUNT: 120
+      KIOSK_USE_ORIGINAL_IMAGE: false
+      KIOSK_SHOW_VIDEOS: false
+      KIOSK_LIVE_PHOTOS: false
+      KIOSK_LIVE_PHOTO_LOOP_DELAY: 0
+      KIOSK_SHOW_OWNER: false
+      KIOSK_SHOW_ALBUM_NAME: false
+      KIOSK_SHOW_PERSON_NAME: false
+      KIOSK_SHOW_PERSON_AGE: false
+      KIOSK_SHOW_IMAGE_TIME: false
+      KIOSK_IMAGE_TIME_FORMAT: 24
+      KIOSK_SHOW_IMAGE_DATE: false
+      KIOSK_IMAGE_DATE_FORMAT: YYYY-MM-DD
+      KIOSK_SHOW_IMAGE_DESCRIPTION: false
+      KIOSK_SHOW_IMAGE_CAMERA: false
+      KIOSK_SHOW_IMAGE_EXIF: false
+      KIOSK_SHOW_IMAGE_LOCATION: false
+      # KIOSK_HIDE_COUNTRIES: HIDDEN_COUNTRY,HIDDEN_COUNTRY
+      KIOSK_SHOW_IMAGE_ID: false
+      KIOSK_SHOW_IMAGE_QR: false
+      KIOSK_SHOW_MORE_INFO: true
+      KIOSK_SHOW_MORE_INFO_IMAGE_LINK: true
+      KIOSK_SHOW_MORE_INFO_QR_CODE: true
+      KIOSK_LIKE_BUTTON_ACTION: favorite
+      KIOSK_HIDE_BUTTON_ACTION: tag
+      KIOSK_PORT: 3000
+      KIOSK_BEHIND_PROXY: false
+      KIOSK_DISABLE_URL_QUERIES: false
+      KIOSK_DISABLE_CONFIG_ENDPOINT: false
+      KIOSK_ENABLE_URL_BUILDER: false
+      KIOSK_WATCH_CONFIG: false
+      KIOSK_FETCHED_ASSETS_SIZE: 1000
+      KIOSK_HTTP_TIMEOUT: 20
+      KIOSK_PASSWORD: ""
+      KIOSK_CACHE: true
+      KIOSK_PREFETCH: true
+      KIOSK_ASSET_WEIGHTING: true
+    healthcheck:
+      path: /health
+      initialDelaySeconds: 10
+      periodSeconds: 30
+      timeoutSeconds: 5
+      failureThreshold: 3
+    ingress:
+      enabled: false
+      host: "p1.arcanexus.com"
+      ingressClassName: traefik
+      annotations: 
+        cert-manager.io/cluster-issuer: le-wildcard-issuer
+        traefik.ingress.kubernetes.io/router.middlewares: tinyauth-tinyauth@kubernetescrd
+
   machineLearning:
     replicas: 1
     image:

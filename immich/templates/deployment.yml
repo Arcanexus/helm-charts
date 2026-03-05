@@ -309,3 +309,63 @@ spec:
           nfs:
             server: {{ .Values.immich.database.volume.database.server }}
             path: {{ .Values.immich.database.volume.database.path }}
+{{- if .Values.immich.kiosk.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.fullname" . }}-kiosk
+  labels:
+    app.kubernetes.io/name: {{ include "app.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: kiosk
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.immich.kiosk.replicas }}
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "app.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: kiosk
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "app.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: kiosk
+    spec:
+      {{- with .Values.immich.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: immich-kiosk
+          image: {{ .Values.immich.kiosk.image | quote }}
+          imagePullPolicy: {{ .Values.immich.kiosk.imagePullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.immich.kiosk.service.port }}
+          env:
+            {{- range $key, $value := .Values.immich.kiosk.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.immich.kiosk.healthcheck.path }}
+              port: http
+            initialDelaySeconds: {{ .Values.immich.kiosk.healthcheck.initialDelaySeconds }}
+            periodSeconds: {{ .Values.immich.kiosk.healthcheck.periodSeconds }}
+            timeoutSeconds: {{ .Values.immich.kiosk.healthcheck.timeoutSeconds }}
+            failureThreshold: {{ .Values.immich.kiosk.healthcheck.failureThreshold }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.immich.kiosk.healthcheck.path }}
+              port: http
+            initialDelaySeconds: {{ .Values.immich.kiosk.healthcheck.initialDelaySeconds }}
+            periodSeconds: {{ .Values.immich.kiosk.healthcheck.periodSeconds }}
+            timeoutSeconds: {{ .Values.immich.kiosk.healthcheck.timeoutSeconds }}
+            failureThreshold: {{ .Values.immich.kiosk.healthcheck.failureThreshold }}
+{{- end }}
