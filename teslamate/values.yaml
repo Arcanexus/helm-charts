@@ -12,7 +12,6 @@ telsamate:
   pullPolicy: IfNotPresent
 
   env:
-    LANG: fr_FR
     TZ: Europe/Paris
     ENCRYPTION_KEY: "randomsecretkey" # replace with a secure key to encrypt your Tesla API tokens
     DATABASE_USER: teslamate
@@ -42,7 +41,6 @@ database:
   shmSize: 128Mi
 
   env:
-    LANG: fr_FR.UTF-8
     TZ: Europe/Paris
     POSTGRES_USER: teslamate
     POSTGRES_PASSWORD: "password" # insert your secure database password
@@ -63,7 +61,6 @@ grafana:
     port: 3000
   
   env:
-    LANG: fr_FR
     TZ: Europe/Paris
     DATABASE_USER: teslamate
     DATABASE_PASS: "password" # insert your secure database password
