@@ -52,7 +52,7 @@ database:
     database:
       server: 192.168.2.50
       path: /volume2/docker-data/teslamate/db
-      containerMountPath: /var/lib/postgresql/data
+      containerMountPath: /var/lib/postgresql
 
 grafana:
   image: teslamate/grafana:latest
