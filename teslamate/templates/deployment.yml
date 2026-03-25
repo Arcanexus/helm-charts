@@ -145,9 +145,15 @@ spec:
           env:
             - name: DATABASE_HOST
               value: database
+            {{- if .Values.telsamate.ingress.host }}
+            - name: GF_SERVER_DOMAIN
+              value: {{ .Values.telsamate.ingress.host | quote }}
+            {{- end }}
             {{- range $key, $value := .Values.grafana.env }}
+            {{- if ne $key "GF_SERVER_DOMAIN" }}
             - name: {{ $key }}
               value: {{ $value | quote }}
+            {{- end }}
             {{- end }}
           volumeMounts:
             {{- range .Values.grafana.volumes }}

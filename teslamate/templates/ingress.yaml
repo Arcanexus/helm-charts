@@ -17,6 +17,13 @@ spec:
     - host: {{ .Values.telsamate.ingress.host }}
       http:
         paths:
+          - path: /grafana
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "app.fullname" . }}-grafana
+                port:
+                  number: {{ .Values.grafana.service.port }}
           - path: /
             pathType: ImplementationSpecific
             backend:
