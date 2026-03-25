@@ -42,7 +42,7 @@ database:
   shmSize: 128Mi
 
   env:
-    LANG: fr_FR
+    LANG: fr_FR.UTF-8
     TZ: Europe/Paris
     POSTGRES_USER: teslamate
     POSTGRES_PASSWORD: "password" # insert your secure database password
