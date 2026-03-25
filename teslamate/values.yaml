@@ -17,6 +17,7 @@ telsamate:
     DATABASE_USER: teslamate
     DATABASE_PASS: "password" # insert your secure database password
     DATABASE_NAME: teslamate
+    DATABASE_PORT: 5432
     MQTT_HOST: mosquitto
 
   service:
@@ -65,6 +66,7 @@ grafana:
     DATABASE_USER: teslamate
     DATABASE_PASS: "password" # insert your secure database password
     DATABASE_NAME: teslamate
+    DATABASE_PORT: 5432
   
   volumes:
     - name: grafana
