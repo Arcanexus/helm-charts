@@ -1,0 +1,27 @@
+{{- if .Values.telsamate.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "app.fullname" . }}-teslamate
+  annotations:
+    {{- if .Values.telsamate.ingress.annotations }}
+    {{- toYaml .Values.telsamate.ingress.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.telsamate.ingress.ingressClassName }}
+  tls:
+    - hosts:
+        - {{ .Values.telsamate.ingress.host }}
+      secretName: {{ include "app.name" . }}-tls
+  rules:
+    - host: {{ .Values.telsamate.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ include "app.fullname" . }}-teslamate
+                port:
+                  number: {{ .Values.telsamate.service.port }}
+{{- end }}

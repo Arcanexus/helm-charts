@@ -1,0 +1,96 @@
+telsamate:
+  # nodeSelector:
+  #   silent: fanless
+  volumes:
+    - name: import
+      server: 192.168.2.50
+      path: /volume2/docker-data/teslamate/import
+      mountPath: /opt/app/import
+
+  replicas: 1
+  image: teslamate/teslamate:3.0
+  pullPolicy: IfNotPresent
+
+  env:
+    LANG: fr_FR
+    TZ: Europe/Paris
+    ENCRYPTION_KEY: "randomsecretkey" # replace with a secure key to encrypt your Tesla API tokens
+    DATABASE_USER: teslamate
+    DATABASE_PASS: "password" # insert your secure database password
+    DATABASE_NAME: teslamate
+    MQTT_HOST: mosquitto
+
+  service:
+    port: 4000
+
+  ingress:
+    enabled: true
+    host: teslamate.arcanexus.com
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: le-wildcard-issuer
+      traefik.ingress.kubernetes.io/router.middlewares: tinyauth-tinyauth@kubernetescrd
+
+database:
+  image: postgres:18-trixie
+  pullPolicy: IfNotPresent
+  replicas: 1
+  
+  service:
+    port: 5432
+  
+  shmSize: 128Mi
+
+  env:
+    LANG: fr_FR
+    TZ: Europe/Paris
+    POSTGRES_USER: teslamate
+    POSTGRES_PASSWORD: "password" # insert your secure database password
+    POSTGRES_DB: teslamate
+
+  volumes:
+    database:
+      server: 192.168.2.50
+      path: /volume2/docker-data/teslamate/db
+      containerMountPath: /var/lib/postgresql/data
+
+grafana:
+  image: teslamate/grafana:latest
+  pullPolicy: IfNotPresent
+  replicas: 1
+
+  service:
+    port: 3000
+  
+  env:
+    LANG: fr_FR
+    TZ: Europe/Paris
+    DATABASE_USER: teslamate
+    DATABASE_PASS: "password" # insert your secure database password
+    DATABASE_NAME: teslamate
+  
+  volumes:
+    - name: grafana
+      server: 192.168.2.50
+      path: /volume2/docker-data/teslamate/grafana
+      containerMountPath: /var/lib/grafana
+
+mosquitto:
+  image: eclipse-mosquitto:2
+  pullPolicy: IfNotPresent
+  replicas: 1
+
+  command: mosquitto -c /mosquitto-no-auth.conf
+
+  service:
+    port: 1883
+
+  volumes:
+    - name: mosquitto-conf
+      server: 192.168.2.50
+      path: /volume2/docker-data/teslamate/mosquitto/config
+      containerMountPath: /mosquitto/config
+    - name: mosquitto-data
+      server: 192.168.2.50
+      path: /volume2/docker-data/teslamate/mosquitto/data
+      containerMountPath: /mosquitto/data
