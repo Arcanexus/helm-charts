@@ -8,11 +8,12 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  type: ClusterIP
+  type: NodePort
   ports:
   - name: tcp
     port: {{ .Values.portainer.tcpport }}
     targetPort: {{ .Values.portainer.tcpport }}
+    nodePort: {{ .Values.portainer.tcpnodeport }}
   selector:
     app: {{ include "app.name" . }}-{{ .Release.Name }}
 ---
