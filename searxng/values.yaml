@@ -18,7 +18,9 @@ image:
 env:
   INSTANCE_NAME: "my-instance"
   BASE_URL: "http://localhost:8080/"
+  SEARXNG_BASE_URL: "http://localhost:8080/"
   AUTOCOMPLETE: "false"
+  SEARXNG_PORT: 8080
   # MORTY_URL: "http://morty:8080"
   # MORTY_KEY: "mysecretkey"
   # BIND_ADDRESS: "0.0.0.0:8080"
@@ -46,11 +48,23 @@ ingress:
   main:
     enabled: false
 
+# -- Custom ingress configuration (standalone Ingress resource).
+customIngress:
+  enabled: false
+  host: search.arcanexus.com
+  ingressClassName: traefik
+  annotations:
+    cert-manager.io/cluster-issuer: le-wildcard-issuer
+    # traefik.ingress.kubernetes.io/router.middlewares: tinyauth-tinyauth@kubernetescrd
+
+
+
+
 searxng:
   config:
     use_default_settings: true
     server:
-      secret_key: pleasechangeme
+      secret_key: pleasechangemequick
     # Uncomment when using the builtin rate limiter
     # See https://docs.searxng.org/src/searx.plugins.limiter.html#limiter-plugin
     # server.limiter: true

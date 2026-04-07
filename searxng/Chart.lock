@@ -1,0 +1,9 @@
+dependencies:
+- name: common
+  repository: https://library-charts.k8s-at-home.com
+  version: 4.4.2
+- name: redis
+  repository: https://charts.pascaliske.dev
+  version: 0.0.3
+digest: sha256:87dc5e590bf9c197467546fac9d0e9f718445abb682e7b1904148c6ed12796ec
+generated: "2026-04-07T15:01:44.991813+02:00"
