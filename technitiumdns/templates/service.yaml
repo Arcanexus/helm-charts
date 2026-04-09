@@ -34,7 +34,7 @@ spec:
   type: NodePort
   ports:
   {{- range .Values.technitiumdns.service.ports }}
-  {{- if or (eq .name "dns-udp") (eq .name "dns-tcp") }}
+  {{- if or (eq .name "dns-udp") (eq .name "dns-tcp") (eq .name "web-http") (eq .name "web-https") }}
   - name: {{ .name }}
     port: {{ .port }}
     targetPort: {{ .targetPort }}
