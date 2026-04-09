@@ -9,7 +9,7 @@ metadata:
     helm.sh/chart: {{ include "app.chart" . }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.telsamate.replicas }}
+  replicas: {{ .Values.teslamate.replicas }}
   revisionHistoryLimit: 0
   selector:
     matchLabels:
@@ -23,35 +23,35 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/component: teslamate
     spec:
-      {{- with .Values.telsamate.nodeSelector }}
+      {{- with .Values.teslamate.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
         - name: teslamate
-          image: {{ .Values.telsamate.image | quote }}
-          imagePullPolicy: {{ .Values.telsamate.pullPolicy }}
+          image: {{ .Values.teslamate.image | quote }}
+          imagePullPolicy: {{ .Values.teslamate.pullPolicy }}
           securityContext:
             capabilities:
               drop:
                 - ALL
           ports:
             - name: http
-              containerPort: {{ .Values.telsamate.service.port }}
+              containerPort: {{ .Values.teslamate.service.port }}
           env:
             - name: DATABASE_HOST
               value: database
-            {{- range $key, $value := .Values.telsamate.env }}
+            {{- range $key, $value := .Values.teslamate.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}
             {{- end }}
           volumeMounts:
-            {{- range .Values.telsamate.volumes }}
+            {{- range .Values.teslamate.volumes }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
             {{- end }}
       volumes:
-        {{- range .Values.telsamate.volumes }}
+        {{- range .Values.teslamate.volumes }}
         - name: {{ .name }}
           nfs:
             server: {{ .server | quote }}
@@ -145,9 +145,9 @@ spec:
           env:
             - name: DATABASE_HOST
               value: database
-            {{- if .Values.telsamate.ingress.host }}
+            {{- if .Values.teslamate.ingress.host }}
             - name: GF_SERVER_DOMAIN
-              value: {{ .Values.telsamate.ingress.host | quote }}
+              value: {{ .Values.teslamate.ingress.host | quote }}
             {{- end }}
             {{- range $key, $value := .Values.grafana.env }}
             {{- if ne $key "GF_SERVER_DOMAIN" }}

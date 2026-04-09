@@ -1,4 +1,4 @@
-telsamate:
+teslamate:
   # nodeSelector:
   #   silent: fanless
   volumes:

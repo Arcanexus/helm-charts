@@ -11,8 +11,8 @@ spec:
   type: ClusterIP
   ports:
   - name: http
-    port: {{ .Values.telsamate.service.port }}
-    targetPort: {{ .Values.telsamate.service.port }}
+    port: {{ .Values.teslamate.service.port }}
+    targetPort: {{ .Values.teslamate.service.port }}
   selector:
     app.kubernetes.io/name: {{ include "app.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
