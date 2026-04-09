@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "app.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "app.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: technitiumdns
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "app.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: technitiumdns
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "app.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: technitiumdns
+    spec:
+      {{- with .Values.technitiumdns.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: technitiumdns
+          image: {{ .Values.technitiumdns.image | quote }}
+          imagePullPolicy: {{ .Values.technitiumdns.pullPolicy }}
+          ports:
+            {{- range .Values.technitiumdns.service.ports }}
+            - name: {{ .name }}
+              containerPort: {{ .targetPort }}
+              hostPort: {{ .port | default .targetPort }}
+              protocol: {{ .protocol | default "TCP" }}
+            {{- end }}
+          env:
+            {{- range $key, $value := .Values.technitiumdns.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          volumeMounts:
+            {{- range .Values.technitiumdns.volumes }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+            {{- end }}
+      volumes:
+        {{- range .Values.technitiumdns.volumes }}
+        - name: {{ .name }}
+          nfs:
+            server: {{ .server | quote }}
+            path: {{ .path }}
+        {{- end }}

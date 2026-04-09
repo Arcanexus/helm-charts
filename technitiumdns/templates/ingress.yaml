@@ -1,0 +1,27 @@
+{{- if .Values.technitiumdns.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "app.fullname" . }}-technitiumdns
+  annotations:
+    {{- if .Values.technitiumdns.ingress.annotations }}
+    {{- toYaml .Values.technitiumdns.ingress.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.technitiumdns.ingress.ingressClassName }}
+  tls:
+    - hosts:
+        - {{ .Values.technitiumdns.ingress.host }}
+      secretName: {{ include "app.name" . }}-tls
+  rules:
+    - host: {{ .Values.technitiumdns.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "app.fullname" . }}-technitiumdns
+                port:
+                  name: web-http
+{{- end }}
