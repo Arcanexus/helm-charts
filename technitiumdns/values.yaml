@@ -50,14 +50,14 @@ technitiumdns:
         port: 54
         targetPort: 53
         protocol: TCP
-      - name: doq-udp
-        port: 853
-        targetPort: 853
-        protocol: UDP
-      - name: dot-tcp
-        port: 853
-        targetPort: 853
-        protocol: TCP
+      # - name: doq-udp
+      #   port: 853
+      #   targetPort: 853
+      #   protocol: UDP
+      # - name: dot-tcp
+      #   port: 853
+      #   targetPort: 853
+      #   protocol: TCP
       # - name: doh-udp
       #   port: 443
       #   targetPort: 443
@@ -70,10 +70,10 @@ technitiumdns:
       #   port: 80
       #   targetPort: 80
       #   protocol: TCP
-      - name: doh-proxy
-        port: 8053
-        targetPort: 8053
-        protocol: TCP
+      # - name: doh-proxy
+      #   port: 8053
+      #   targetPort: 8053
+      #   protocol: TCP
       # - name: dhcp
       #   port: 67
       #   targetPort: 67

@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: DaemonSet
+kind: Deployment
 metadata:
   name: {{ include "app.fullname" . }}
   labels:
@@ -9,6 +9,7 @@ metadata:
     helm.sh/chart: {{ include "app.chart" . }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
+  replicas: {{ .Values.technitiumdns.replicas }}
   revisionHistoryLimit: 0
   selector:
     matchLabels:
@@ -34,7 +35,6 @@ spec:
             {{- range .Values.technitiumdns.service.ports }}
             - name: {{ .name }}
               containerPort: {{ .targetPort }}
-              hostPort: {{ .port | default .targetPort }}
               protocol: {{ .protocol | default "TCP" }}
             {{- end }}
           env:
