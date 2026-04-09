@@ -58,26 +58,26 @@ technitiumdns:
         port: 853
         targetPort: 853
         protocol: TCP
-      - name: doh-udp
-        port: 443
-        targetPort: 443
-        protocol: UDP
-      - name: doh-tcp
-        port: 443
-        targetPort: 443
-        protocol: TCP
-      - name: doh-http
-        port: 80
-        targetPort: 80
-        protocol: TCP
+      # - name: doh-udp
+      #   port: 443
+      #   targetPort: 443
+      #   protocol: UDP
+      # - name: doh-tcp
+      #   port: 443
+      #   targetPort: 443
+      #   protocol: TCP
+      # - name: doh-http
+      #   port: 80
+      #   targetPort: 80
+      #   protocol: TCP
       - name: doh-proxy
         port: 8053
         targetPort: 8053
         protocol: TCP
-      - name: dhcp
-        port: 67
-        targetPort: 67
-        protocol: UDP
+      # - name: dhcp
+      #   port: 67
+      #   targetPort: 67
+      #   protocol: UDP
 
   ingress:
     enabled: true
