@@ -21,7 +21,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ include "app.fullname" . }}-technitiumdns
+                name: {{ include "app.fullname" . }}-technitiumdns-web
                 port:
                   name: web-http
 {{- end }}

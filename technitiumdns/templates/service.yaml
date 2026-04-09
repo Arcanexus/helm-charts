@@ -24,7 +24,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "app.fullname" . }}-technitiumdns-dns
+  name: {{ include "app.fullname" . }}-technitiumdns-dns-udp
   labels:
     app.kubernetes.io/name: {{ include "app.name" . }}
     helm.sh/chart: {{ include "app.chart" . }}
@@ -34,7 +34,59 @@ spec:
   type: NodePort
   ports:
   {{- range .Values.technitiumdns.service.ports }}
-  {{- if or (eq .name "dns-udp") (eq .name "dns-tcp") (eq .name "web-http") (eq .name "web-https") }}
+  {{- if eq .name "dns-udp" }}
+  - name: {{ .name }}
+    port: {{ .port }}
+    targetPort: {{ .targetPort }}
+    nodePort: {{ .nodePort }}
+    protocol: {{ .protocol | default "TCP" }}
+  {{- end }}
+  {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include "app.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: technitiumdns
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "app.fullname" . }}-technitiumdns-web
+  labels:
+    app.kubernetes.io/name: {{ include "app.name" . }}
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: NodePort
+  ports:
+  {{- range .Values.technitiumdns.service.ports }}
+  {{- if or (eq .name "web-http") (eq .name "web-https") }}
+  - name: {{ .name }}
+    port: {{ .port }}
+    targetPort: {{ .targetPort }}
+    nodePort: {{ .nodePort }}
+    protocol: {{ .protocol | default "TCP" }}
+  {{- end }}
+  {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include "app.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: technitiumdns
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "app.fullname" . }}-technitiumdns-dns-tcp
+  labels:
+    app.kubernetes.io/name: {{ include "app.name" . }}
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: NodePort
+  ports:
+  {{- range .Values.technitiumdns.service.ports }}
+  {{- if eq .name "dns-tcp" }}
   - name: {{ .name }}
     port: {{ .port }}
     targetPort: {{ .targetPort }}
