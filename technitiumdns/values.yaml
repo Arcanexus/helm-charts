@@ -37,18 +37,22 @@ technitiumdns:
       - name: web-http
         port: 5380
         targetPort: 5380
+        nodePort: 30080
         protocol: TCP
       - name: web-https
         port: 53443
         targetPort: 53443
+        nodePort: 30443
         protocol: TCP
       - name: dns-udp
         port: 54
         targetPort: 53
+        nodePort: 30054
         protocol: UDP
       - name: dns-tcp
         port: 54
         targetPort: 53
+        nodePort: 30055
         protocol: TCP
       # - name: doq-udp
       #   port: 853
