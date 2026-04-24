@@ -29,7 +29,7 @@ shlink:
     ingressClassName: traefik
     annotations:
       cert-manager.io/cluster-issuer: le-wildcard-issuer
-      # traefik.ingress.kubernetes.io/router.middlewares: tinyauth-tinyauth@kubernetescrd
+      # traefik.ingress.kubernetes.io/router.middlewares: authentik-ak-outpost-authentik-embedded-outpost@kubernetescrd
 
 shlinkweb:
   image: shlinkio/shlink-web-client:4.6
@@ -50,4 +50,4 @@ shlinkweb:
     ingressClassName: traefik
     annotations:
       cert-manager.io/cluster-issuer: le-wildcard-issuer
-      traefik.ingress.kubernetes.io/router.middlewares: tinyauth-tinyauth@kubernetescrd
+      traefik.ingress.kubernetes.io/router.middlewares: authentik-ak-outpost-authentik-embedded-outpost@kubernetescrd
