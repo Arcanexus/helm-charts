@@ -22,6 +22,8 @@ authentik:
       password: ThisIsNotASecurePassword
 
   global:
+    nodeSelector:
+      silent: fanless
     env:
       - name: AUTHENTIK_POSTGRESQL__HOST
         value: postgres
