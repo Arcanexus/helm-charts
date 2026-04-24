@@ -7,6 +7,9 @@ externalPostgreSQL:
   password: ThisIsNotASecurePassword
   database: authentik
   
+  nodeSelector:
+    silent: fanless
+
   volume:
     authentikData:
       server: 192.168.2.50

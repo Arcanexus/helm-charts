@@ -3,12 +3,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres
+  name: authentik-postgres
 spec:
   replicas: 1
   selector:
     matchLabels:
-      service: postgres
+      service: authentik-postgres
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -17,9 +17,13 @@ spec:
   template:
     metadata:
       labels:
-        service: postgres
+        service: authentik-postgres
     spec:
       restartPolicy: Always
+      {{- with .Values.externalPostgreSQL.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - image: {{ .Values.externalPostgreSQL.image }}
           name: postgres
@@ -59,5 +63,5 @@ spec:
     - port: {{ .Values.externalPostgreSQL.port }}
       targetPort: {{ .Values.externalPostgreSQL.port }}
   selector:
-    service: postgres
+    service: authentik-postgres
 {{- end }}
