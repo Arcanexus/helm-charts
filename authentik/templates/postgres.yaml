@@ -1,0 +1,63 @@
+{{- if .Values.externalPostgreSQL.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: postgres
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        service: postgres
+    spec:
+      restartPolicy: Always
+      containers:
+        - image: postgres:13-alpine
+          name: postgres
+          args:
+            - -c
+            - port={{ .Values.externalPostgreSQL.port }}
+          ports:
+            - containerPort: {{ .Values.externalPostgreSQL.port }}
+          volumeMounts:
+            - name: authentik-data
+              mountPath: {{ .Values.externalPostgreSQL.volume.authentikData.containerMountPath }}
+          env:
+            - name: PGDATA
+              value: {{ .Values.externalPostgreSQL.volume.authentikData.containerMountPath }}
+            - name: POSTGRES_DB
+              value: {{ .Values.externalPostgreSQL.database }}
+            - name: POSTGRES_USER
+              value: {{ .Values.externalPostgreSQL.username }}
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.externalPostgreSQL.password }}
+            - name: PGPORT
+              value: {{ .Values.externalPostgreSQL.port | quote }}
+      volumes:
+        - name: authentik-data
+          nfs:
+            server: {{ .Values.externalPostgreSQL.volume.authentikData.server }}
+            path: {{ .Values.externalPostgreSQL.volume.authentikData.path }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.externalPostgreSQL.host }}
+spec:
+  clusterIP: None
+  ports:
+    - port: {{ .Values.externalPostgreSQL.port }}
+      targetPort: {{ .Values.externalPostgreSQL.port }}
+  selector:
+    service: postgres
+{{- end }}

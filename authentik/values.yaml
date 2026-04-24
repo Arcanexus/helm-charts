@@ -1,0 +1,55 @@
+externalPostgreSQL:
+  enabled: true
+  
+  host: postgres
+  port: 5432
+  username: authentik
+  password: ThisIsNotASecurePassword
+  database: authentik
+  
+  volume:
+    authentikData:
+      server: 192.168.2.50
+      path: /volume2/docker-data/authentik/postgresql
+      containerMountPath: /var/lib/postgresql/data/pgdata
+
+authentik:
+  authentik:
+    secret_key: PleaseGenerateASecureKey
+    error_reporting:
+      enabled: true
+    postgresql:
+      password: ThisIsNotASecurePassword
+
+  global:
+    env:
+      - name: AUTHENTIK_POSTGRESQL__HOST
+        value: postgres
+      - name: AUTHENTIK_POSTGRESQL__PORT
+        value: "5432"
+      - name: AUTHENTIK_POSTGRESQL__USER
+        value: authentik
+      - name: AUTHENTIK_POSTGRESQL__PASSWORD
+        value: ThisIsNotASecurePassword
+      - name: AUTHENTIK_POSTGRESQL__NAME
+        value: authentik
+
+  server:
+    ingress:
+      ingressClassName: traefik
+      enabled: true
+      https: false
+      annotations:
+        cert-manager.io/cluster-issuer: le-wildcard-issuer
+      hosts:
+        - authentik.arcanexus.com
+      tls:
+        - secretName: authentik-arcanexus-com-tls
+          hosts:
+            - authentik.arcanexus.com
+
+  postgresql:
+    enabled: false
+    auth:
+      password: ThisIsNotASecurePassword
+
