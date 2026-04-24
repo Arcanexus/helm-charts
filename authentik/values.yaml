@@ -1,6 +1,6 @@
 externalPostgreSQL:
   enabled: true
-  
+  image: postgres:17-alpine
   host: postgres
   port: 5432
   username: authentik

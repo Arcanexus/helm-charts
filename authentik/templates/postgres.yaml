@@ -21,7 +21,7 @@ spec:
     spec:
       restartPolicy: Always
       containers:
-        - image: postgres:13-alpine
+        - image: {{ .Values.externalPostgreSQL.image }}
           name: postgres
           args:
             - -c
