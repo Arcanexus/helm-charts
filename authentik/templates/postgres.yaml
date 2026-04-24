@@ -33,13 +33,13 @@ spec:
               mountPath: {{ .Values.externalPostgreSQL.volume.authentikData.containerMountPath }}
           env:
             - name: PGDATA
-              value: {{ .Values.externalPostgreSQL.volume.authentikData.containerMountPath }}
+              value: {{ .Values.externalPostgreSQL.volume.authentikData.containerMountPath | quote }}
             - name: POSTGRES_DB
-              value: {{ .Values.externalPostgreSQL.database }}
+              value: {{ .Values.externalPostgreSQL.database | quote }}
             - name: POSTGRES_USER
-              value: {{ .Values.externalPostgreSQL.username }}
+              value: {{ .Values.externalPostgreSQL.username | quote }}
             - name: POSTGRES_PASSWORD
-              value: {{ .Values.externalPostgreSQL.password }}
+              value: {{ .Values.externalPostgreSQL.password | quote }}
             - name: PGPORT
               value: {{ .Values.externalPostgreSQL.port | quote }}
       volumes:
