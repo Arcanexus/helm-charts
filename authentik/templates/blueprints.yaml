@@ -1,0 +1,14 @@
+{{- if .Values.blueprintsInline }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: authentik-blueprints
+  namespace: {{ .Release.Namespace }}
+type: Opaque
+stringData:
+{{- range $fileName, $content := .Values.blueprintsInline }}
+  {{ $fileName }}: |
+{{ $content | nindent 4 }}
+{{- end }}
+{{- end }}

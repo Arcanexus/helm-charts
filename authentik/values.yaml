@@ -16,6 +16,8 @@ externalPostgreSQL:
       path: /volume2/docker-data/authentik/postgresql
       containerMountPath: /var/lib/postgresql/data/pgdata
 
+blueprintsInline: {}
+
 authentik:
   authentik:
     secret_key: PleaseGenerateASecureKey
@@ -52,6 +54,10 @@ authentik:
         - secretName: authentik-arcanexus-com-tls
           hosts:
             - authentik.arcanexus.com
+
+  blueprints:
+    secrets:
+      - authentik-blueprints
 
   postgresql:
     enabled: false
