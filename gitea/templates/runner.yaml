@@ -15,7 +15,7 @@ data:
   # The registration token can be obtained from the web UI, API or command-line.
   # You can also set a pre-defined global runner registration token for the Gitea instance via
   # `GITEA_RUNNER_REGISTRATION_TOKEN`/`GITEA_RUNNER_REGISTRATION_TOKEN_FILE` environment variable.
-  token: {{ .Values.gitea.deployment.env[1].value | b64enc | quote }}
+  token: {{ index (index .Values.gitea.deployment.env 0) "value" | b64enc | quote }}
 kind: Secret
 metadata:
   name: runner-secret
@@ -58,7 +58,7 @@ spec:
         - name: DOCKER_TLS_VERIFY
           value: "1"
         - name: GITEA_INSTANCE_URL
-          value: {{ .Values.gitea.ingress.hosts[0].host | quote }}
+          value: {{ index (index .Values.gitea.ingress.hosts 0) "host" | quote }}
         - name: GITEA_RUNNER_REGISTRATION_TOKEN
           valueFrom:
             secretKeyRef:
