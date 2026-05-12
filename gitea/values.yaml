@@ -86,5 +86,5 @@ gitea:
 
   deployment:
     env:
-      - name: GITEA_RUNNER_REGISTRATION_TOKEN
-        value: "TOKEN"
+    - name: GITEA_RUNNER_REGISTRATION_TOKEN
+      value: "TOKEN"
