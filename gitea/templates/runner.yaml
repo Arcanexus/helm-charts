@@ -1,15 +1,3 @@
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: runner-vol
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: standard
----
 apiVersion: v1
 data:
   # The registration token can be obtained from the web UI, API or command-line.
@@ -44,8 +32,7 @@ spec:
       - name: docker-certs
         emptyDir: {}
       - name: runner-data
-        persistentVolumeClaim:
-          claimName: runner-vol
+        emptyDir: {}
       containers:
       - name: runner
         image: gitea/runner:nightly
