@@ -58,9 +58,10 @@ gitea:
 
   postgresql:
     enabled: true
-    persistence:
-      enabled: true
-      existingClaim: gitea-db-pvc
+    primary:
+      persistence:
+        enabled: true
+        existingClaim: gitea-db-pvc
 
   postgresql-ha:
     enabled: false
