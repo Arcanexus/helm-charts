@@ -84,3 +84,7 @@ gitea:
         SSH_PORT: 22
         SSH_LISTEN_PORT: 2222
 
+  deployment:
+    env:
+      - name: GITEA_RUNNER_REGISTRATION_TOKEN
+        value: "TOKEN"
