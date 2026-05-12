@@ -1,0 +1,64 @@
+{{- if .Values.volume.giteaConfig }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: gitea-config-pv
+spec:
+  capacity:
+    storage: {{ .Values.volume.giteaConfig.storage | quote }}
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs-static
+  mountOptions:
+    - nfsvers=4.1
+  nfs:
+    server: {{ .Values.volume.giteaConfig.server | quote }}
+    path: {{ .Values.volume.giteaConfig.path | quote }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.volume.giteaConfig.claimName | quote }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-static
+  resources:
+    requests:
+      storage: {{ .Values.volume.giteaConfig.storage | quote }}
+{{- end }}
+
+{{- if .Values.volume.giteaData }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: gitea-data-pv
+spec:
+  capacity:
+    storage: {{ .Values.volume.giteaData.storage | quote }}
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs-static
+  mountOptions:
+    - nfsvers=4.1
+  nfs:
+    server: {{ .Values.volume.giteaData.server | quote }}
+    path: {{ .Values.volume.giteaData.path | quote }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.volume.giteaData.claimName | quote }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-static
+  resources:
+    requests:
+      storage: {{ .Values.volume.giteaData.storage | quote }}
+{{- end }}

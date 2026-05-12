@@ -1,0 +1,82 @@
+# externalPostgreSQL:
+#   enabled: true
+#   image: postgres:17-alpine
+#   host: postgres
+#   port: 5432
+#   username: authentik
+#   password: ThisIsNotASecurePassword
+#   database: authentik
+  
+#   nodeSelector:
+#     silent: fanless
+
+#   volume:
+#     authentikData:
+#       server: 192.168.2.50
+#       path: /volume2/docker-data/authentik/postgresql
+#       containerMountPath: /var/lib/postgresql/data/pgdata
+
+volume:
+  # giteaConfig:
+  #   server: 192.168.2.50
+  #   path: /volume2/docker/gitea/config
+  #   storage: 100Mi
+  #   claimName: gitea-config-pvc
+  giteaData:
+    server: 192.168.2.50
+    path: /volume2/docker-data/gitea/data
+    storage: 10Gi
+    claimName: gitea-data-pvc
+
+gitea:
+  nodeSelector:
+    silent: fanless
+
+  ingress:
+    enabled: true
+    className: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: le-wildcard-issuer
+    hosts:
+      - host: git.arcanexus.com
+        paths:
+          - path: /
+    tls:
+      - secretName: git-arcanexus-com-tls
+        hosts:
+          - git.arcanexus.com
+
+  service:
+    ssh:
+      type: NodePort
+      nodePort: 30222
+
+  persistence:
+    enabled: true
+    create: false
+    claimName: gitea-data-pvc
+
+  postgresql:
+    enabled: false
+
+  postgresql-ha:
+    enabled: false
+
+  valkey:
+    enabled: false
+
+  valkey-cluster:
+    enabled: false
+
+  gitea:
+    admin:
+      existingSecret:
+      username: gitea_admin
+      password: ChangeMe
+      email: gitea@local.domain
+      passwordMode: keepUpdated
+    config:
+      server:
+        SSH_PORT: 22
+        SSH_LISTEN_PORT: 2222
+
