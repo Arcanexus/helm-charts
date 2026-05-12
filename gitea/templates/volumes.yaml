@@ -1,11 +1,11 @@
-{{- if .Values.volume.giteaConfig }}
+{{- if .Values.volume.giteaDB }}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: gitea-config-pv
+  name: gitea-db-pv
 spec:
   capacity:
-    storage: {{ .Values.volume.giteaConfig.storage | quote }}
+    storage: {{ .Values.volume.giteaDB.storage | quote }}
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
@@ -13,13 +13,13 @@ spec:
   mountOptions:
     - nfsvers=4.1
   nfs:
-    server: {{ .Values.volume.giteaConfig.server | quote }}
-    path: {{ .Values.volume.giteaConfig.path | quote }}
+    server: {{ .Values.volume.giteaDB.server | quote }}
+    path: {{ .Values.volume.giteaDB.path | quote }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Values.volume.giteaConfig.claimName | quote }}
+  name: {{ .Values.volume.giteaDB.claimName | quote }}
   namespace: {{ .Release.Namespace }}
 spec:
   accessModes:
@@ -27,7 +27,7 @@ spec:
   storageClassName: nfs-static
   resources:
     requests:
-      storage: {{ .Values.volume.giteaConfig.storage | quote }}
+      storage: {{ .Values.volume.giteaDB.storage | quote }}
 {{- end }}
 
 {{- if .Values.volume.giteaData }}

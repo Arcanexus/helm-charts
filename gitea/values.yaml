@@ -17,11 +17,11 @@
 #       containerMountPath: /var/lib/postgresql/data/pgdata
 
 volume:
-  # giteaConfig:
-  #   server: 192.168.2.50
-  #   path: /volume2/docker/gitea/config
-  #   storage: 100Mi
-  #   claimName: gitea-config-pvc
+  giteaDB:
+    server: 192.168.2.50
+    path: /volume2/docker-data/gitea/db
+    storage: 10Gi
+    claimName: gitea-db-pvc
   giteaData:
     server: 192.168.2.50
     path: /volume2/docker-data/gitea/data
@@ -57,7 +57,10 @@ gitea:
     claimName: gitea-data-pvc
 
   postgresql:
-    enabled: false
+    enabled: true
+    persistence:
+      enabled: true
+      existingClaim: gitea-db-pvc
 
   postgresql-ha:
     enabled: false
