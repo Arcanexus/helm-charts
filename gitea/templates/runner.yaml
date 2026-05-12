@@ -45,7 +45,7 @@ spec:
         - name: DOCKER_TLS_VERIFY
           value: "1"
         - name: GITEA_INSTANCE_URL
-          value: {{ index (index .Values.gitea.ingress.hosts 0) "host" | quote }}
+          value: {{ printf "https://%s" (index (index .Values.gitea.ingress.hosts 0) "host") | quote }}
         - name: GITEA_RUNNER_REGISTRATION_TOKEN
           valueFrom:
             secretKeyRef:
