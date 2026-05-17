@@ -21,6 +21,7 @@ blueprintsInline: {}
 authentik:
   authentik:
     secret_key: PleaseGenerateASecureKey
+    blueprints_checksum: '{{ .Values.blueprintsInline | toYaml | sha256sum }}'
     error_reporting:
       enabled: true
     postgresql:
