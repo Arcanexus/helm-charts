@@ -42,9 +42,8 @@ authentik:
         value: authentik
 
   server:
-    env:
-      - name: BLUEPRINTS_CHECKSUM
-        value: '{{ .Values.blueprintsInline | toYaml | sha256sum }}'
+    podAnnotations:
+      checksum/blueprints: '{{ .Values.blueprintsInline | toYaml | sha256sum }}'
     ingress:
       ingressClassName: traefik
       enabled: true
@@ -63,9 +62,8 @@ authentik:
       - authentik-blueprints
 
   worker:
-    env:
-      - name: BLUEPRINTS_CHECKSUM
-        value: '{{ .Values.blueprintsInline | toYaml | sha256sum }}'
+    podAnnotations:
+      checksum/blueprints: '{{ .Values.blueprintsInline | toYaml | sha256sum }}'
 
   postgresql:
     enabled: false
