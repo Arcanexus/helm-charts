@@ -57,7 +57,7 @@ authentik:
         value: authentik
 
   server:
-    podAnnotations: []
+    podAnnotations: {}
     ingress:
       ingressClassName: traefik
       enabled: true
@@ -75,7 +75,7 @@ authentik:
     secrets: []
 
   worker:
-    podAnnotations: []
+    podAnnotations: {}
   postgresql:
     enabled: false
     auth:
