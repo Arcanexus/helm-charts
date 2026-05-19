@@ -21,7 +21,7 @@ blueprintsInline: {}
 blueprintsWatcher:
   enabled: true
   schedule: "*/1 * * * *"
-  image: rancher/kubectl:v1.31.4
+  image: alpine/k8s:1.31.4
   imagePullPolicy: IfNotPresent
   secretName: authentik-blueprints
   stateConfigMapName: authentik-blueprints-watcher-state
