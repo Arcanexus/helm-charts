@@ -18,6 +18,21 @@ externalPostgreSQL:
 
 blueprintsInline: {}
 
+blueprintsWatcher:
+  enabled: true
+  schedule: "*/1 * * * *"
+  image: rancher/kubectl:v1.31.4
+  imagePullPolicy: IfNotPresent
+  secretName: authentik-blueprints
+  stateConfigMapName: authentik-blueprints-watcher-state
+  deploymentSelector: app.kubernetes.io/instance={{ .Release.Name }},app.kubernetes.io/name=authentik
+  componentLabelKey: app.kubernetes.io/component
+  components:
+    - server
+    - worker
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+
 authentik:
   authentik:
     secret_key: PleaseGenerateASecureKey

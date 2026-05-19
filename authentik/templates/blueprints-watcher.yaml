@@ -1,0 +1,87 @@
+{{- if .Values.blueprintsWatcher.enabled }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Release.Name }}-blueprints-watcher
+  namespace: {{ .Release.Namespace }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ .Release.Name }}-blueprints-watcher
+  namespace: {{ .Release.Namespace }}
+rules:
+  - apiGroups: [""]
+    resources: ["secrets", "configmaps"]
+    verbs: ["get", "create", "patch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["list", "patch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ .Release.Name }}-blueprints-watcher
+  namespace: {{ .Release.Namespace }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Release.Name }}-blueprints-watcher
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ .Release.Name }}-blueprints-watcher
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}-blueprints-watcher
+  namespace: {{ .Release.Namespace }}
+spec:
+  schedule: {{ .Values.blueprintsWatcher.schedule | quote }}
+  successfulJobsHistoryLimit: {{ .Values.blueprintsWatcher.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.blueprintsWatcher.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: {{ .Release.Name }}-blueprints-watcher
+          restartPolicy: OnFailure
+          containers:
+            - name: secret-watcher
+              image: {{ .Values.blueprintsWatcher.image | quote }}
+              imagePullPolicy: {{ .Values.blueprintsWatcher.imagePullPolicy }}
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -eu
+
+                  SECRET_NAME={{ .Values.blueprintsWatcher.secretName | quote }}
+                  STATE_CONFIGMAP={{ .Values.blueprintsWatcher.stateConfigMapName | quote }}
+                  NS="$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)"
+                  SELECTOR={{ tpl .Values.blueprintsWatcher.deploymentSelector . | quote }}
+
+                  CURRENT_HASH="$(kubectl -n "$NS" get secret "$SECRET_NAME" -o go-template='{{`{{- range $k, $v := .data -}}{{ printf "%s=%s\\n" $k $v }}{{- end -}}`}}' 2>/dev/null | sort | sha256sum | awk '{print $1}')"
+                  if [ -z "$CURRENT_HASH" ]; then
+                    echo "Secret $SECRET_NAME not found or empty, skipping"
+                    exit 0
+                  fi
+
+                  PREVIOUS_HASH="$(kubectl -n "$NS" get configmap "$STATE_CONFIGMAP" -o jsonpath='{.data.hash}' 2>/dev/null || true)"
+                  if [ "$CURRENT_HASH" = "$PREVIOUS_HASH" ]; then
+                    echo "No blueprint secret content change detected"
+                    exit 0
+                  fi
+
+                  echo "Blueprint secret content changed, restarting authentik deployments"
+                  {{- range $component := .Values.blueprintsWatcher.components }}
+                  kubectl -n "$NS" rollout restart deployment -l "$SELECTOR,{{ $.Values.blueprintsWatcher.componentLabelKey }}={{ $component }}"
+                  {{- end }}
+
+                  kubectl -n "$NS" create configmap "$STATE_CONFIGMAP" --from-literal=hash="$CURRENT_HASH" --dry-run=client -o yaml | kubectl apply -f -
+{{- end }}
