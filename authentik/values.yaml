@@ -43,8 +43,7 @@ authentik:
 
   server:
     podAnnotations:
-      # checksum/blueprints: '{{ .Values.blueprintsInline | toYaml | sha256sum }}'
-      checksum/blueprints-secret: '{{ .Values.authentik.blueprints.secrets | toYaml | sha256sum }}'
+      checksum/blueprints: '{{ .Values.blueprintsInline | toYaml | sha256sum }}'
     ingress:
       ingressClassName: traefik
       enabled: true
@@ -59,14 +58,11 @@ authentik:
             - authentik.arcanexus.com
 
   blueprints:
-    secrets:
-      - authentik-blueprints
+    secrets: []
 
   worker:
     podAnnotations:
       checksum/blueprints: '{{ .Values.blueprintsInline | toYaml | sha256sum }}'
-      checksum/blueprints-secret: '{{ .Values.authentik.blueprints.secrets | toYaml | sha256sum }}'
-
   postgresql:
     enabled: false
     auth:
