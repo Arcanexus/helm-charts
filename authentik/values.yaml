@@ -76,6 +76,11 @@ authentik:
 
   worker:
     podAnnotations: {}
+    env:
+      - name: AUTHENTIK_BOOTSTRAP_PASSWORD
+        value: PleaseGenerateASecureBootstrapPassword
+      - name: AUTHENTIK_BOOTSTRAP_EMAIL
+        value: admin@arcanexus.com
   postgresql:
     enabled: false
     auth:
