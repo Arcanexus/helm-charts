@@ -42,8 +42,7 @@ authentik:
         value: authentik
 
   server:
-    podAnnotations:
-      checksum/blueprints: '{{ .Values.blueprintsInline | toYaml | sha256sum }}'
+    podAnnotations: {}
     ingress:
       ingressClassName: traefik
       enabled: true
@@ -61,8 +60,7 @@ authentik:
     secrets: []
 
   worker:
-    podAnnotations:
-      checksum/blueprints: '{{ .Values.blueprintsInline | toYaml | sha256sum }}'
+    podAnnotations: {}
   postgresql:
     enabled: false
     auth:
