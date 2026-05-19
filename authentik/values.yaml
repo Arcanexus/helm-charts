@@ -42,7 +42,8 @@ authentik:
         value: authentik
 
   server:
-    podAnnotations: {}
+    podAnnotations:
+      checksum/blueprints-secret: '{{ if (lookup "v1" "Secret" .Release.Namespace "authentik-blueprints") }}{{ (lookup "v1" "Secret" .Release.Namespace "authentik-blueprints").metadata.resourceVersion }}{{ end }}'
     ingress:
       ingressClassName: traefik
       enabled: true
@@ -60,7 +61,8 @@ authentik:
     secrets: []
 
   worker:
-    podAnnotations: {}
+    podAnnotations:
+      checksum/blueprints-secret: '{{ if (lookup "v1" "Secret" .Release.Namespace "authentik-blueprints") }}{{ (lookup "v1" "Secret" .Release.Namespace "authentik-blueprints").metadata.resourceVersion }}{{ end }}'
   postgresql:
     enabled: false
     auth:
