@@ -61,27 +61,44 @@ spec:
                 - |
                   set -eu
 
+                  log() {
+                    echo "[$(date -u +"%Y-%m-%dT%H:%M:%SZ")] $*"
+                  }
+
                   SECRET_NAME={{ .Values.blueprintsWatcher.secretName | quote }}
                   STATE_CONFIGMAP={{ .Values.blueprintsWatcher.stateConfigMapName | quote }}
                   NS="$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)"
                   SELECTOR={{ tpl .Values.blueprintsWatcher.deploymentSelector . | quote }}
 
+                  log "Starting blueprints watcher run"
+                  log "Namespace=$NS Secret=$SECRET_NAME StateConfigMap=$STATE_CONFIGMAP Selector=$SELECTOR"
+
                   CURRENT_HASH="$(kubectl -n "$NS" get secret "$SECRET_NAME" -o go-template='{{`{{- range $k, $v := .data -}}{{ printf "%s=%s\\n" $k $v }}{{- end -}}`}}' 2>/dev/null | sort | sha256sum | awk '{print $1}')"
                   if [ -z "$CURRENT_HASH" ]; then
-                    echo "Secret $SECRET_NAME not found or empty, skipping"
+                    log "Secret $SECRET_NAME not found or empty, skipping"
                     exit 0
                   fi
 
                   PREVIOUS_HASH="$(kubectl -n "$NS" get configmap "$STATE_CONFIGMAP" -o jsonpath='{.data.hash}' 2>/dev/null || true)"
+                  log "CurrentHash=$CURRENT_HASH"
+                  if [ -n "$PREVIOUS_HASH" ]; then
+                    log "PreviousHash=$PREVIOUS_HASH"
+                  else
+                    log "No previous hash found, initial baseline will be created"
+                  fi
+
                   if [ "$CURRENT_HASH" = "$PREVIOUS_HASH" ]; then
-                    echo "No blueprint secret content change detected"
+                    log "No blueprint secret content change detected"
                     exit 0
                   fi
 
-                  echo "Blueprint secret content changed, restarting authentik deployments"
+                  log "Blueprint secret content changed, preparing rollout restarts"
                   {{- range $component := .Values.blueprintsWatcher.components }}
+                  log "Component={{ $component }} targets: $(kubectl -n "$NS" get deployment -l "$SELECTOR,{{ $.Values.blueprintsWatcher.componentLabelKey }}={{ $component }}" -o name | tr '\n' ' ' || true)"
+                  log "Restarting deployments for component={{ $component }}"
                   kubectl -n "$NS" rollout restart deployment -l "$SELECTOR,{{ $.Values.blueprintsWatcher.componentLabelKey }}={{ $component }}"
                   {{- end }}
 
                   kubectl -n "$NS" create configmap "$STATE_CONFIGMAP" --from-literal=hash="$CURRENT_HASH" --dry-run=client -o yaml | kubectl apply -f -
+                  log "State ConfigMap updated and watcher run completed"
 {{- end }}
