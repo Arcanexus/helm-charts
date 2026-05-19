@@ -155,6 +155,12 @@ spec:
               value: {{ $value | quote }}
             {{- end }}
             {{- end }}
+            {{- if .Values.grafana.sso }}
+            {{- range $key, $value := .Values.grafana.sso.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- end }}
           volumeMounts:
             {{- range .Values.grafana.volumes }}
             - name: {{ .name }}
