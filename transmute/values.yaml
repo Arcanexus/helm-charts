@@ -1,0 +1,32 @@
+transmute:
+  image: ghcr.io/transmute-app/transmute:latest
+  replicas: 1
+  port: 3313
+
+  volumes:
+    data:
+      name: data
+      containerMountPath: /app/data
+      nfs:
+        server: 192.168.2.50
+        path: /volume2/docker-data/transmute
+
+  environment:
+    APP_URL: "https://convert.arcanexus.com"
+    OIDC_ISSUER_URL: "https://authentik.arcanexus.com/application/o/transmute/"
+    OIDC_INTERNAL_URL: "https://authentik.arcanexus.com/application/o/transmute/"
+    OIDC_CLIENT_ID: "suuOJ07yw1O3sA3EwBBGFLOa"
+    OIDC_CLIENT_SECRET: "XR5nU64l4hNUzrUjG5y+kVZ9Njyk9aARKLnmBZgVG/lNSSYmOzpE9h2aKYrcGled"
+    OIDC_DISPLAY_NAME: "Authentik"
+    OIDC_AUTO_CREATE_USERS: "true"
+    OIDC_AUTO_LAUNCH: "true"
+
+  # Authentik redirect URI:
+  # https://convert.arcanexus.com/api/oidc/callback
+
+  ingress:
+    enabled: true
+    host: convert.arcanexus.com
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: le-wildcard-issuer

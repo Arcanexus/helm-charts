@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}-{{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}-{{ .Release.Name }} # has to match .spec.template.metadata.labels
+  replicas: {{ .Values.transmute.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-{{ .Release.Name }} # has to match .spec.selector.matchLabels
+        app.kubernetes.io/name: {{ include "app.name" . }}-{{ .Release.Name }}
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      containers:
+      - name: {{ include "app.name" . }}-{{ .Release.Name }}
+        image: {{ .Values.transmute.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.transmute.port }}
+          name: transmute-port
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+          {{- range $key, $value := .Values.transmute.environment }}
+          {{- if ne $value "" }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+          {{- end }}
+        volumeMounts:
+        - name: {{ include "app.name" . }}-{{ .Values.transmute.volumes.data.name }}
+          mountPath: {{ .Values.transmute.volumes.data.containerMountPath }}
+        livenessProbe:
+          httpGet:
+            path: /api/health/ready
+            port: transmute-port
+          initialDelaySeconds: 40
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/health/ready
+            port: transmute-port
+          initialDelaySeconds: 5
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /api/health/ready
+            port: transmute-port
+          failureThreshold: 6
+          periodSeconds: 10
+      volumes:
+      - name: {{ include "app.name" . }}-{{ .Values.transmute.volumes.data.name }}
+        nfs:
+          server: {{ .Values.transmute.volumes.data.nfs.server }}
+          path: {{ .Values.transmute.volumes.data.nfs.path }}
