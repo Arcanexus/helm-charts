@@ -84,6 +84,11 @@ gitea:
         SSH_PORT: 22
         SSH_LISTEN_PORT: 2222
 
+  arcrunner:
+    enabled: true
+    image: ghcr.io/arcanexus/gitea-arc-custom-runner:v1.0.0
+    replicas: 1
+
   deployment:
     env:
     - name: GITEA_RUNNER_REGISTRATION_TOKEN

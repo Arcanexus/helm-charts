@@ -1,3 +1,5 @@
+{{- $runner := .Values.gitea.arcrunner }}
+{{- if $runner.enabled }}
 apiVersion: v1
 data:
   # The registration token can be obtained from the web UI, API or command-line.
@@ -16,7 +18,7 @@ metadata:
     app: runner
   name: runner
 spec:
-  replicas: 1
+  replicas: {{ $runner.replicas | default 1 }}
   selector:
     matchLabels:
       app: runner
@@ -35,7 +37,7 @@ spec:
         emptyDir: {}
       containers:
       - name: runner
-        image: gitea/runner:nightly
+        image: {{ .Values.gitea.arcrunner.image | default "gitea/runner:nightly" | quote }}
         command: ["sh", "-c", "while ! nc -z localhost 2376 </dev/null; do echo 'waiting for docker daemon...'; sleep 5; done; /sbin/tini -- run.sh"]
         env:
         - name: DOCKER_HOST
@@ -66,3 +68,4 @@ spec:
         volumeMounts:
         - name: docker-certs
           mountPath: /certs
+{{- end }}
