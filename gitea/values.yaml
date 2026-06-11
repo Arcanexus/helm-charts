@@ -87,6 +87,7 @@ gitea:
   arcrunner:
     enabled: true
     replicas: 1
+    image: gitea/runner:1.0.8
     labels:
     - ubuntu-latest:docker://ghcr.io/arcanexus/gha-custom-runner:1.0.6
     nodeSelector: 
