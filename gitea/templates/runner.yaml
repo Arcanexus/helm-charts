@@ -30,6 +30,10 @@ spec:
         app: runner
     spec:
       restartPolicy: Always
+{{- with $runner.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
       volumes:
       - name: docker-certs
         emptyDir: {}
