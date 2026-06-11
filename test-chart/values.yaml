@@ -15,6 +15,14 @@ testapp:
     runAsUser: 0
     runAsGroup: 0
 
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
   # Environment variables injected into the container
   env:
     TZ: "Europe/Paris"
