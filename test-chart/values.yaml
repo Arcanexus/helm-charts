@@ -1,0 +1,44 @@
+testapp:
+  image: ubuntu:latest
+  replicas: 1
+
+  hpa:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 80
+
+  nodeSelector:
+    silent: fanless
+
+  security:
+    runAsUser: 0
+    runAsGroup: 0
+
+  # Environment variables injected into the container
+  env:
+    TZ: "Europe/Paris"
+    # MY_VAR: "my-value"
+
+  service:
+    enabled: true
+    type: ClusterIP
+    port: 80
+    targetPort: 80
+
+  ingress:
+    enabled: false
+    host: test.arcanexus.com
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: le-wildcard-issuer
+    tls:
+      enabled: true
+      secretName: test-arcanexus-com-tls
+
+  volumes:
+    data:
+      name: data
+      containerMountPath: /data
+      server: 192.168.2.50
+      path: /volume2/docker-data/testapp

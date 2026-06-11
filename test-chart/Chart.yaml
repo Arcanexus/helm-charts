@@ -1,0 +1,6 @@
+apiVersion: v2
+description: Generic test chart – deploys an ubuntu:latest pod with configurable service and ingress
+name: test-chart
+type: application
+version: 0.1.0
+appVersion: "latest"

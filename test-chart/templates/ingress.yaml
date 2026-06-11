@@ -1,0 +1,34 @@
+{{- if .Values.testapp.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "app.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "app.fullname" . }}
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- if .Values.testapp.ingress.annotations }}
+  annotations:
+    {{- toYaml .Values.testapp.ingress.annotations | nindent 4 }}
+  {{- end }}
+spec:
+  ingressClassName: {{ .Values.testapp.ingress.ingressClassName }}
+  {{- if .Values.testapp.ingress.tls.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.testapp.ingress.host }}
+      secretName: {{ .Values.testapp.ingress.tls.secretName }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.testapp.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ include "app.fullname" . }}
+                port:
+                  number: {{ .Values.testapp.service.port }}
+{{- end }}

@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "app.fullname" . }}
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  {{- if not .Values.testapp.hpa.enabled }}
+  replicas: {{ .Values.testapp.replicas }}
+  {{- end }}
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+      app: {{ include "app.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.fullname" . }}
+        app.kubernetes.io/name: {{ include "app.fullname" . }}
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      securityContext:
+        runAsUser: {{ .Values.testapp.security.runAsUser }}
+        runAsGroup: {{ .Values.testapp.security.runAsGroup }}
+      nodeSelector:
+        {{- toYaml .Values.testapp.nodeSelector | nindent 8 }}
+      containers:
+      - name: {{ include "app.fullname" . }}
+        image: {{ .Values.testapp.image }}
+        imagePullPolicy: Always
+        command: ["sleep", "infinity"]
+        {{- if .Values.testapp.env }}
+        env:
+          {{- range $key, $value := .Values.testapp.env }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+        {{- end }}
+        volumeMounts:
+        - name: {{ include "app.fullname" . }}-{{ .Values.testapp.volumes.data.name }}
+          mountPath: {{ .Values.testapp.volumes.data.containerMountPath }}
+      volumes:
+      - name: {{ include "app.fullname" . }}-{{ .Values.testapp.volumes.data.name }}
+        nfs:
+          server: {{ .Values.testapp.volumes.data.server }}
+          path: {{ .Values.testapp.volumes.data.path }}
