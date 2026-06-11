@@ -57,6 +57,8 @@ spec:
             secretKeyRef:
               name: runner-secret
               key: token
+        - name: GITEA_RUNNER_EPHEMERAL
+          value: "1"
 {{- if $runner.labels }}
         - name: GITEA_RUNNER_LABELS
           value: {{ join "," $runner.labels | quote }}
