@@ -37,7 +37,7 @@ spec:
         emptyDir: {}
       containers:
       - name: runner
-        image: {{ .Values.gitea.arcrunner.image | default "gitea/runner:nightly" | quote }}
+        image: gitea/runner:nightly
         command: ["sh", "-c", "while ! nc -z localhost 2376 </dev/null; do echo 'waiting for docker daemon...'; sleep 5; done; /sbin/tini -- run.sh"]
         env:
         - name: DOCKER_HOST
@@ -53,6 +53,10 @@ spec:
             secretKeyRef:
               name: runner-secret
               key: token
+{{- if $runner.labels }}
+        - name: GITEA_RUNNER_LABELS
+          value: {{ join "," $runner.labels | quote }}
+{{- end }}
         volumeMounts:
         - name: docker-certs
           mountPath: /certs

@@ -86,8 +86,9 @@ gitea:
 
   arcrunner:
     enabled: true
-    image: ghcr.io/arcanexus/gitea-arc-custom-runner:v1.0.0
     replicas: 1
+    labels:
+    - ubuntu-latest:docker://ghcr.io/arcanexus/gha-custom-runner:1.0.6
 
   deployment:
     env:
