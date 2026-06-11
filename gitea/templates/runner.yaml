@@ -15,19 +15,19 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: runner
-  name: runner
+    app: gitea-runner
+  name: gitea-runner
 spec:
   replicas: {{ $runner.replicas | default 1 }}
   selector:
     matchLabels:
-      app: runner
+      app: gitea-runner
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: runner
+        app: gitea-runner
     spec:
       restartPolicy: Always
 {{- with $runner.nodeSelector }}
@@ -40,7 +40,7 @@ spec:
       - name: runner-data
         emptyDir: {}
       containers:
-      - name: gitea-runner
+      - name: runner
         image: {{ $runner.image | default "gitea/runner:nightly" }}
         command: ["sh", "-c", "while ! nc -z localhost 2376 </dev/null; do echo 'waiting for docker daemon...'; sleep 5; done; /sbin/tini -- run.sh"]
         env:
