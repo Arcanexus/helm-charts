@@ -40,7 +40,7 @@ spec:
       - name: runner-data
         emptyDir: {}
       containers:
-      - name: runner
+      - name: gitea-runner
         image: {{ $runner.image | default "gitea/runner:nightly" }}
         command: ["sh", "-c", "while ! nc -z localhost 2376 </dev/null; do echo 'waiting for docker daemon...'; sleep 5; done; /sbin/tini -- run.sh"]
         env:
