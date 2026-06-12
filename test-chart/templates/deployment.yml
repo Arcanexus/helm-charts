@@ -38,11 +38,18 @@ spec:
         resources:
           {{- toYaml .Values.testapp.resources | nindent 10 }}
         {{- end }}
-        envFrom:
-        - secretRef:
-            name: {{ include "app.fullname" . }}-secrets
-        {{- if .Values.testapp.env }}
         env:
+          - name: DEFAULT_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "app.fullname" . }}-secrets
+                key: default_username
+          - name: DEFAULT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "app.fullname" . }}-secrets
+                key: default_password
+        {{- if .Values.testapp.env }}
           {{- range $key, $value := .Values.testapp.env }}
           - name: {{ $key }}
             value: {{ $value | quote }}
