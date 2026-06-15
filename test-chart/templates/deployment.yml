@@ -44,16 +44,16 @@ spec:
               secretKeyRef:
                 name: {{ include "app.fullname" . }}-aws-secrets
                 key: default_username
-          - name: DEFAULT_PASSWORD
+          - name: AWS_DEFAULT_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: {{ include "app.fullname" . }}-aws-secrets
                 key: default_password
-          - name: BITWARDEN_SECRETS
+          - name: BITWARDEN_DEFAULT_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: {{ include "app.fullname" . }}-bitwarden-secrets
-                key: test-secret
+                key: DEFAULT_PASSWORD
         {{- if .Values.testapp.env }}
           {{- range $key, $value := .Values.testapp.env }}
           - name: {{ $key }}
