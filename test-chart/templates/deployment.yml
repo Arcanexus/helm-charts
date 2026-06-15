@@ -42,13 +42,18 @@ spec:
           - name: DEFAULT_USERNAME
             valueFrom:
               secretKeyRef:
-                name: {{ include "app.fullname" . }}-secrets
+                name: {{ include "app.fullname" . }}-aws-secrets
                 key: default_username
           - name: DEFAULT_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ include "app.fullname" . }}-secrets
+                name: {{ include "app.fullname" . }}-aws-secrets
                 key: default_password
+          - name: BITWARDEN_SECRETS
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "app.fullname" . }}-bitwarden-secrets
+                key: test-secret
         {{- if .Values.testapp.env }}
           {{- range $key, $value := .Values.testapp.env }}
           - name: {{ $key }}
