@@ -59,7 +59,10 @@ authentik:
   server:
     podAnnotations: {}
     startupProbe:
-      timeoutSeconds: 3600
+      initialDelaySeconds: 0
+      periodSeconds: 10
+      timeoutSeconds: 3
+      failureThreshold: 360
     ingress:
       ingressClassName: traefik
       enabled: true
@@ -79,7 +82,10 @@ authentik:
   worker:
     podAnnotations: {}
     startupProbe:
-      timeoutSeconds: 3600
+      initialDelaySeconds: 0
+      periodSeconds: 10
+      timeoutSeconds: 3
+      failureThreshold: 360
     env:
       - name: AUTHENTIK_BOOTSTRAP_PASSWORD
         value: PleaseGenerateASecureBootstrapPassword
