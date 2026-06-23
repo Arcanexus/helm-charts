@@ -58,6 +58,8 @@ authentik:
 
   server:
     podAnnotations: {}
+    startupProbe:
+      timeoutSeconds: 3600
     ingress:
       ingressClassName: traefik
       enabled: true
@@ -76,6 +78,8 @@ authentik:
 
   worker:
     podAnnotations: {}
+    startupProbe:
+      timeoutSeconds: 3600
     env:
       - name: AUTHENTIK_BOOTSTRAP_PASSWORD
         value: PleaseGenerateASecureBootstrapPassword
