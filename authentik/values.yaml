@@ -93,6 +93,7 @@ authentik:
         value: admin@arcanexus.com
   postgresql:
     enabled: false
+    fullnameOverride: postgres
     auth:
       password: ThisIsNotASecurePassword
 
