@@ -59,6 +59,13 @@ gitea:
   postgresql:
     enabled: true
     primary:
+      startupProbe:
+        enabled: true
+        initialDelaySeconds: 30
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 120
+      terminationGracePeriodSeconds: 180
       persistence:
         enabled: true
         existingClaim: gitea-db-pvc
