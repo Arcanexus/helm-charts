@@ -1,0 +1,12 @@
+{{- range .Values.redirects }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ .name }}
+spec:
+  redirectRegex:
+    regex: "^https?://({{ join "|" .sources }})(/.*)?$"
+    replacement: "{{ .destination }}${2}"
+    permanent: true
+{{- end }}

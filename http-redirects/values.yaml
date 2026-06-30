@@ -1,0 +1,12 @@
+redirects:
+  - name: arcanexus-redirect
+    sources:
+      - arcanexus.com
+      - arcanexus.fr
+      - www.arcanexus.fr
+    destination: https://www.arcanexus.com
+
+  - name: mydaya-redirect
+    sources:
+      - mydaya.alvima.com
+    destination: https://mydaya.arcanexus.com

@@ -1,0 +1,5 @@
+apiVersion: v2
+name: http-redirects
+description: Helm chart for HTTP redirects using Traefik and cert-manager
+type: application
+version: 0.1.0

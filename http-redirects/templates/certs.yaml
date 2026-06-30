@@ -1,0 +1,17 @@
+{{- range .Values.redirects }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ .name }}-tls
+spec:
+  secretName: {{ .name }}-tls
+  dnsNames:
+{{- range .sources }}
+    - {{ . }}
+{{- end }}
+  issuerRef:
+    name: le-wildcard-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+{{- end }}

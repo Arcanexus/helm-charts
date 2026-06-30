@@ -1,0 +1,21 @@
+{{- range .Values.redirects }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .name }}
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: Host(`{{ join "`) || Host(`" .sources }}`)
+      kind: Rule
+      middlewares:
+        - name: {{ .name }}
+      services:
+        - name: noop
+          port: 80
+  tls:
+    secretName: {{ .name }}-tls
+{{- end }}
