@@ -11,7 +11,7 @@ spec:
     - {{ . }}
 {{- end }}
   issuerRef:
-    name: {{ .cert-issuer | default "le-wildcard-issuer" }}
-    kind: {{ .cert-issuer-kind | default "ClusterIssuer" }}
-    group: {{ .cert-issuer-group | default "cert-manager.io" }}
+    name: {{ .certIssuer | default "le-wildcard-issuer" }}
+    kind: {{ .certIssuerKind | default "ClusterIssuer" }}
+    group: {{ .certIssuerGroup | default "cert-manager.io" }}
 {{- end }}
