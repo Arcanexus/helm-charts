@@ -4,9 +4,13 @@ redirects: []
   #     - arcanexus.com
   #     - arcanexus.fr
   #     - www.arcanexus.fr
+  #   cert-issuer: le-wildcard-issuer
+  #   cert-issuer-kind: ClusterIssuer
+  #   cert-issuer-group: cert-manager.io
   #   destination: https://www.arcanexus.com
 
   # - name: mydaya-redirect
   #   sources:
   #     - mydaya.alvima.com
+  #   cert-issuer: le-wildcard-issuer
   #   destination: https://mydaya.arcanexus.com
