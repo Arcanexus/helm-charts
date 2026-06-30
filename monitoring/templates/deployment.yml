@@ -128,6 +128,8 @@ spec:
         env:
           - name: TZ
             value: "Europe/Paris"
+          - name: GF_SERVER_ROOT_URL
+            value: "https://{{ .Values.grafana.ingress.host }}"
           {{- range $key, $value := .Values.grafana.environment }}
           - name: {{ $key }}
             value: {{ $value | quote }}

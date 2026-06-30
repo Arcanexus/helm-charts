@@ -72,7 +72,8 @@ grafana:
     GF_PATHS_LOGS: /var/log/grafana
     GF_PATHS_PLUGINS: /var/lib/grafana/plugins
     GF_PATHS_PROVISIONING: /etc/grafana/provisioning
-
+    
+    #SSO 
     GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
     GF_AUTH_GENERIC_OAUTH_NAME: "authentik"
     GF_AUTH_GENERIC_OAUTH_CLIENT_ID: "CHANGEME_GRAFANA_CLIENT_ID"
