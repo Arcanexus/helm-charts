@@ -8,6 +8,7 @@ image:
 tailscale:
   hostname: k8s-router
 
+  advertiseTags: "tag:router"
   advertiseRoutes: "192.168.2.0/24"
   advertiseExitNode: true
   acceptDNS: false

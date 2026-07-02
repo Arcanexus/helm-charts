@@ -82,12 +82,22 @@ spec:
             - name: TS_LOGIN_SERVER
               value: {{ .Values.tailscale.loginServer | quote }}
             {{- end }}
+            {{- $tailscaleArgs := list -}}
+            {{- if .Values.tailscale.advertiseTags }}
+            {{- $tailscaleArgs = append $tailscaleArgs (printf "--advertise-tags=%s" .Values.tailscale.advertiseTags) -}}
+            {{- end }}
+            {{- if .Values.tailscale.advertiseRoutes }}
+            {{- $tailscaleArgs = append $tailscaleArgs (printf "--advertise-routes=%s" .Values.tailscale.advertiseRoutes) -}}
+            {{- end }}
+            {{- if .Values.tailscale.advertiseExitNode }}
+            {{- $tailscaleArgs = append $tailscaleArgs "--advertise-exit-node" -}}
+            {{- end }}
+            {{- $tailscaleArgs = append $tailscaleArgs (printf "--accept-dns=%t" .Values.tailscale.acceptDNS) -}}
+            {{- if .Values.tailscale.extraArgs }}
+            {{- $tailscaleArgs = append $tailscaleArgs .Values.tailscale.extraArgs -}}
+            {{- end }}
             - name: TS_EXTRA_ARGS
-              value: >-
-                --advertise-routes={{ .Values.tailscale.advertiseRoutes }}
-                {{- if .Values.tailscale.advertiseExitNode }} --advertise-exit-node{{- end }}
-                --accept-dns={{ .Values.tailscale.acceptDNS }}
-                {{- if .Values.tailscale.extraArgs }} {{ .Values.tailscale.extraArgs }}{{- end }}
+              value: {{ join " " $tailscaleArgs | quote }}
           volumeMounts:
             - name: tun
               mountPath: /dev/net/tun
