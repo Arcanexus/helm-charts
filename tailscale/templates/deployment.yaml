@@ -51,16 +51,16 @@ spec:
                 - NET_ADMIN
                 - NET_RAW
           env:
-            - name: TS_AUTHKEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ printf "%s-aws-secrets" (include "tailscale-router.fullname" .) | quote }}
-                  key: tailscale_client_secret
             - name: TS_CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: {{ printf "%s-aws-secrets" (include "tailscale-router.fullname" .) | quote }}
                   key: tailscale_client_id
+            - name: TS_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ printf "%s-aws-secrets" (include "tailscale-router.fullname" .) | quote }}
+                  key: tailscale_client_secret
             - name: TS_HOSTNAME
               value: {{ .Values.tailscale.hostname | quote }}
             - name: TS_STATE_DIR
