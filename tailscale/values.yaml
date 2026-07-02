@@ -1,0 +1,37 @@
+replicaCount: 1
+
+image:
+  repository: tailscale/tailscale
+  tag: stable
+  pullPolicy: IfNotPresent
+
+tailscale:
+  hostname: k8s-router
+
+  advertiseRoutes: "192.168.2.0/24"
+  advertiseExitNode: true
+  acceptDNS: false
+
+  # Set if you're on Headscale instead of tailscale.com's control server
+  loginServer: ""
+
+  # Any extra flags to append to TS_EXTRA_ARGS, e.g. "--advertise-tags=tag:router"
+  extraArgs: ""
+
+persistence:
+  enabled: true
+  nfs:
+    server: 192.168.2.50
+    path: /volume2/docker-data/tailscale
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 32Mi
+  limits:
+    memory: 128Mi
+
+nodeSelector:
+  silent: fanless
+tolerations: []
+affinity: {}
