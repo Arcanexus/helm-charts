@@ -33,7 +33,7 @@ immich:
   kiosk:
     enabled: true
     replicas: 1
-    image: ghcr.io/damongolding/immich-kiosk:v0.40.0
+    image: ghcr.io/damongolding/immich-kiosk:0.40.0
     imagePullPolicy: IfNotPresent
     service:
       port: 3000
