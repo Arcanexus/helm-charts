@@ -63,8 +63,13 @@ spec:
         volumeMounts:
         - name: {{ include "app.fullname" . }}-{{ .Values.testapp.volumes.data.name }}
           mountPath: {{ .Values.testapp.volumes.data.containerMountPath }}
+        - name: pvc
+          mountPath: /pvc
       volumes:
       - name: {{ include "app.fullname" . }}-{{ .Values.testapp.volumes.data.name }}
         nfs:
           server: {{ .Values.testapp.volumes.data.server }}
           path: {{ .Values.testapp.volumes.data.path }}
+      - name: pvc
+        persistentVolumeClaim:
+          claimName: nfs-test
