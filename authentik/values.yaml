@@ -96,4 +96,6 @@ authentik:
     fullnameOverride: postgres
     auth:
       password: ThisIsNotASecurePassword
-
+    primary:
+      nodeSelector:
+        silent: fanless
