@@ -98,5 +98,5 @@ authentik:
       password: ThisIsNotASecurePassword
     primary:
       nodeSelector:
-        # silent: fanless
-        kubernetes.io/hostname: k3s-3
+        silent: fanless
+        # kubernetes.io/hostname: k3s-3
