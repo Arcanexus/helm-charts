@@ -1,0 +1,83 @@
+{{- if .Values.reloadCustomBlueprintsJob.enabled }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: reload-custom-blueprints
+  namespace: {{ .Release.Namespace }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: reload-custom-blueprints
+  namespace: {{ .Release.Namespace }}
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["create"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: reload-custom-blueprints
+  namespace: {{ .Release.Namespace }}
+subjects:
+  - kind: ServiceAccount
+    name: reload-custom-blueprints
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: reload-custom-blueprints
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: reload-custom-blueprints
+  namespace: {{ .Release.Namespace }}
+spec:
+  suspend: {{ .Values.reloadCustomBlueprintsJob.suspend }}
+  backoffLimit: {{ .Values.reloadCustomBlueprintsJob.backoffLimit }}
+  template:
+    spec:
+      serviceAccountName: reload-custom-blueprints
+      restartPolicy: Never
+      containers:
+        - name: reload-custom-blueprints
+          image: {{ .Values.reloadCustomBlueprintsJob.image | quote }}
+          imagePullPolicy: {{ .Values.reloadCustomBlueprintsJob.imagePullPolicy }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -eu
+
+              log() {
+                echo "[$(date -u +"%Y-%m-%dT%H:%M:%SZ")] $*"
+              }
+
+              NS="$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)"
+              SELECTOR={{ tpl .Values.reloadCustomBlueprintsJob.workerPodSelector . | quote }}
+              BLUEPRINT_DIR={{ .Values.reloadCustomBlueprintsJob.blueprintDir | quote }}
+
+              WORKER_POD="$(kubectl -n "$NS" get pods -l "$SELECTOR" --field-selector=status.phase=Running -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)"
+              if [ -z "$WORKER_POD" ]; then
+                log "No running authentik worker pod found for selector: $SELECTOR"
+                exit 1
+              fi
+              log "Using worker pod: $WORKER_POD"
+
+              if ! kubectl -n "$NS" exec "$WORKER_POD" -- sh -c "[ -d \"$BLUEPRINT_DIR\" ]"; then
+                log "Directory does not exist in worker pod: $BLUEPRINT_DIR"
+                exit 1
+              fi
+              log "Directory exists in worker pod: $BLUEPRINT_DIR"
+
+              kubectl -n "$NS" exec "$WORKER_POD" -- sh -c "cd ; for i in \$(ls $BLUEPRINT_DIR/) ; do ak apply_blueprint $BLUEPRINT_DIR/\$i ; done"
+{{- end }}
