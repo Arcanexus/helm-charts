@@ -96,7 +96,12 @@ authentik:
     fullnameOverride: postgres
     auth:
       password: ThisIsNotASecurePassword
-    # primary:
+    primary:
     #   nodeSelector:
     #     silent: fanless
     #     # kubernetes.io/hostname: k3s-3
+      persistence:
+        enabled: true
+        storageClass: nfs
+      #   accessModes:
+      #     - ReadWriteOnce
