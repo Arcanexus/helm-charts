@@ -39,8 +39,10 @@ reloadCustomBlueprintsJob:
   imagePullPolicy: IfNotPresent
   workerPodSelector: app.kubernetes.io/instance={{ .Release.Name }},app.kubernetes.io/name=authentik,app.kubernetes.io/component=worker
   blueprintDir: /blueprints/mounted/secret-authentik-blueprints
+  schedule: "0 0 * * *"
   backoffLimit: 0
-  suspend: true
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
 
 authentik:
   authentik:
