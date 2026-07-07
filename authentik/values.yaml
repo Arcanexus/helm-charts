@@ -50,7 +50,7 @@ authentik:
     error_reporting:
       enabled: true
     postgresql:
-      host: authentik-postgres
+      # host: authentik-postgres
       password: ThisIsNotASecurePassword
 
   global:
@@ -58,7 +58,8 @@ authentik:
       silent: fanless
     env:
       - name: AUTHENTIK_POSTGRESQL__HOST
-        value: authentik-postgres
+        # value: authentik-postgres
+        value: postgres
       - name: AUTHENTIK_POSTGRESQL__PORT
         value: "5432"
       - name: AUTHENTIK_POSTGRESQL__USER
@@ -126,7 +127,7 @@ authentik:
       #   value: authentik
   postgresql:
     enabled: false
-    fullnameOverride: authentik-postgres
+    # fullnameOverride: authentik-postgres
     auth:
       password: ThisIsNotASecurePassword
     primary:
