@@ -57,7 +57,7 @@ authentik:
       silent: fanless
     env:
       - name: AUTHENTIK_POSTGRESQL__HOST
-        value: postgres
+        value: authentik-postgres
       - name: AUTHENTIK_POSTGRESQL__PORT
         value: "5432"
       - name: AUTHENTIK_POSTGRESQL__USER
