@@ -50,6 +50,7 @@ authentik:
     error_reporting:
       enabled: true
     postgresql:
+      host: authentik-postgres
       password: ThisIsNotASecurePassword
 
   global:
@@ -75,16 +76,16 @@ authentik:
       timeoutSeconds: 3
       failureThreshold: 360
     # env:
-      # - name: AUTHENTIK_POSTGRESQL__HOST
-      #   value: authentik-postgres
-      # - name: AUTHENTIK_POSTGRESQL__PORT
-      #   value: "5432"
-      # - name: AUTHENTIK_POSTGRESQL__USER
-      #   value: authentik
-      # - name: AUTHENTIK_POSTGRESQL__PASSWORD
-      #   value: ThisIsNotASecurePassword
-      # - name: AUTHENTIK_POSTGRESQL__NAME
-      #   value: authentik
+    #   - name: AUTHENTIK_POSTGRESQL__HOST
+    #     value: authentik-postgres
+    #   - name: AUTHENTIK_POSTGRESQL__PORT
+    #     value: "5432"
+    #   - name: AUTHENTIK_POSTGRESQL__USER
+    #     value: authentik
+    #   - name: AUTHENTIK_POSTGRESQL__PASSWORD
+    #     value: ThisIsNotASecurePassword
+    #   - name: AUTHENTIK_POSTGRESQL__NAME
+    #     value: authentik
     ingress:
       ingressClassName: traefik
       enabled: true
