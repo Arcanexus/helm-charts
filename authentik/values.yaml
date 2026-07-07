@@ -104,15 +104,17 @@ authentik:
         value: admin@arcanexus.com
   postgresql:
     enabled: false
-    fullnameOverride: postgres
+    fullnameOverride: authentik-postgres
     auth:
       password: ThisIsNotASecurePassword
     primary:
       nodeSelector:
         silent: fanless
     #     # kubernetes.io/hostname: k3s-3
+
       persistence:
         enabled: true
+        existingClaim: authentik-postgresql-pvc
         # storageClass: nfs
       #   accessModes:
       #     - ReadWriteOnce
