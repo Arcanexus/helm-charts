@@ -110,11 +110,8 @@ authentik:
     primary:
       nodeSelector:
         silent: fanless
-    #     # kubernetes.io/hostname: k3s-3
 
       persistence:
         enabled: true
-        existingClaim: authentik-postgresql-pvc
-        # storageClass: nfs
-      #   accessModes:
-      #     - ReadWriteOnce
+        # existingClaim: authentik-postgresql-pvc
+        storageClass: nfs
