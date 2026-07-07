@@ -76,17 +76,17 @@ authentik:
       periodSeconds: 10
       timeoutSeconds: 3
       failureThreshold: 360
-    # env:
-    #   - name: AUTHENTIK_POSTGRESQL__HOST
-    #     value: authentik-postgres
-    #   - name: AUTHENTIK_POSTGRESQL__PORT
-    #     value: "5432"
-    #   - name: AUTHENTIK_POSTGRESQL__USER
-    #     value: authentik
-    #   - name: AUTHENTIK_POSTGRESQL__PASSWORD
-    #     value: ThisIsNotASecurePassword
-    #   - name: AUTHENTIK_POSTGRESQL__NAME
-    #     value: authentik
+    env:
+      - name: AUTHENTIK_POSTGRESQL__HOST
+        value: postgres
+      - name: AUTHENTIK_POSTGRESQL__PORT
+        value: "5432"
+      - name: AUTHENTIK_POSTGRESQL__USER
+        value: authentik
+      - name: AUTHENTIK_POSTGRESQL__PASSWORD
+        value: ThisIsNotASecurePassword
+      - name: AUTHENTIK_POSTGRESQL__NAME
+        value: authentik
     ingress:
       ingressClassName: traefik
       enabled: true
@@ -115,19 +115,19 @@ authentik:
         value: PleaseGenerateASecureBootstrapPassword
       - name: AUTHENTIK_BOOTSTRAP_EMAIL
         value: admin@arcanexus.com
-      # - name: AUTHENTIK_POSTGRESQL__HOST
-      #   value: authentik-postgres
-      # - name: AUTHENTIK_POSTGRESQL__PORT
-      #   value: "5432"
-      # - name: AUTHENTIK_POSTGRESQL__USER
-      #   value: authentik
-      # - name: AUTHENTIK_POSTGRESQL__PASSWORD
-      #   value: ThisIsNotASecurePassword
-      # - name: AUTHENTIK_POSTGRESQL__NAME
-      #   value: authentik
+      - name: AUTHENTIK_POSTGRESQL__HOST
+        value: authentik
+      - name: AUTHENTIK_POSTGRESQL__PORT
+        value: "5432"
+      - name: AUTHENTIK_POSTGRESQL__USER
+        value: authentik
+      - name: AUTHENTIK_POSTGRESQL__PASSWORD
+        value: ThisIsNotASecurePassword
+      - name: AUTHENTIK_POSTGRESQL__NAME
+        value: authentik
   postgresql:
     enabled: false
-    # fullnameOverride: authentik-postgres
+    fullnameOverride: postgres
     auth:
       password: ThisIsNotASecurePassword
     primary:
