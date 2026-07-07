@@ -115,3 +115,5 @@ authentik:
         enabled: true
         # existingClaim: authentik-postgresql-pvc
         storageClass: nfs
+    volumePermissions:
+      enabled: true
