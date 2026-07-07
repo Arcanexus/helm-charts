@@ -117,3 +117,7 @@ authentik:
         storageClass: nfs
     volumePermissions:
       enabled: true
+      image:
+        repository: busybox
+        tag: 1.36.1
+        pullPolicy: IfNotPresent
