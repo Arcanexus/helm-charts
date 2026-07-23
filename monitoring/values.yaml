@@ -19,10 +19,9 @@ prometheus:
       path: /volume2/docker-data/prometheus
       containerMountPath: /prometheus
     config:
-      name: config
-      server: 192.168.2.50
-      path: /volume2/docker/prometheus/config
       containerMountPath: /etc/prometheus
+
+  configFiles: {}
 
 
   ingress:
