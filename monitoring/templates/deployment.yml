@@ -7,6 +7,8 @@ spec:
     matchLabels:
       app: {{ include "app.name" . }}-{{ .Release.Name }}-prometheus
   replicas: {{ .Values.prometheus.replicas }}
+  strategy:
+    type: Recreate
   revisionHistoryLimit: 0
   template:
     metadata:
