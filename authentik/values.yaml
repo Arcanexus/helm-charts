@@ -71,10 +71,14 @@ authentik:
 
   server:
     podAnnotations: {}
+    livenessProbe:
+      timeoutSeconds: 6
+    readinessProbe:
+      timeoutSeconds: 6
     startupProbe:
       initialDelaySeconds: 0
       periodSeconds: 10
-      timeoutSeconds: 3
+      timeoutSeconds: 6
       failureThreshold: 360
     env:
       - name: AUTHENTIK_POSTGRESQL__HOST
@@ -105,10 +109,14 @@ authentik:
 
   worker:
     podAnnotations: {}
+    livenessProbe:
+      timeoutSeconds: 6
+    readinessProbe:
+      timeoutSeconds: 6
     startupProbe:
       initialDelaySeconds: 0
       periodSeconds: 10
-      timeoutSeconds: 3
+      timeoutSeconds: 6
       failureThreshold: 360
     env:
       - name: AUTHENTIK_BOOTSTRAP_PASSWORD
