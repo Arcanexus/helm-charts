@@ -1,0 +1,19 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ include "app.name" . }}
+  namespace: {{ .Values.skooner.namespace }}
+  labels:
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/name: {{ include "app.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.skooner.service.type }}
+  ports:
+    - name: http
+      port: {{ .Values.skooner.port }}
+      targetPort: {{ .Values.skooner.targetPort }}
+  selector:
+    k8s-app: {{ include "app.name" . }}

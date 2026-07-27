@@ -1,0 +1,57 @@
+skooner:
+  namespace: kube-system
+  image: ghcr.io/skooner-k8s/skooner:stable
+  imagePullPolicy: Always
+  replicas: 1
+
+  port: 80
+  targetPort: 4654
+  service:
+    type: ClusterIP
+
+  revisionHistoryLimit: 0
+
+  env: {}
+
+  serviceAccount:
+    create: true
+    name: skooner-sa
+
+  rbac:
+    createClusterRoleBinding: true
+    clusterRole: cluster-admin
+
+  podAnnotations: {}
+
+  nodeSelector:
+    silent: fanless
+
+  tolerations: []
+  affinity: {}
+  resources: {}
+
+  livenessProbe:
+    httpGet:
+      scheme: HTTP
+      path: /
+      port: 4654
+    initialDelaySeconds: 30
+    timeoutSeconds: 30
+
+  readinessProbe:
+    httpGet:
+      scheme: HTTP
+      path: /
+      port: 4654
+    initialDelaySeconds: 10
+    timeoutSeconds: 10
+
+  ingress:
+    enabled: true
+    host: k8dash.arcanexus.com
+    ingressClassName: traefik
+    tls:
+      enabled: true
+      secretName: arcanexus-k8dash-tls
+    annotations:
+      cert-manager.io/cluster-issuer: le-wildcard-issuer

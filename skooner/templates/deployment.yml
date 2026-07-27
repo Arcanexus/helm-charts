@@ -1,0 +1,63 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: {{ include "app.name" . }}
+  namespace: {{ .Values.skooner.namespace }}
+  labels:
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/name: {{ include "app.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  revisionHistoryLimit: {{ .Values.skooner.revisionHistoryLimit }}
+  replicas: {{ .Values.skooner.replicas }}
+  selector:
+    matchLabels:
+      k8s-app: {{ include "app.name" . }}
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/name: {{ include "app.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        k8s-app: {{ include "app.name" . }}
+      {{- with .Values.skooner.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      serviceAccountName: {{ .Values.skooner.serviceAccount.name }}
+      containers:
+      - name: {{ include "app.name" . }}
+        image: {{ .Values.skooner.image }}
+        imagePullPolicy: {{ .Values.skooner.imagePullPolicy }}
+        ports:
+        - containerPort: {{ .Values.skooner.targetPort }}
+        {{- with .Values.skooner.env }}
+        env:
+          {{- range $key, $value := . }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+        {{- end }}
+        livenessProbe:
+          {{- toYaml .Values.skooner.livenessProbe | nindent 10 }}
+        readinessProbe:
+          {{- toYaml .Values.skooner.readinessProbe | nindent 10 }}
+        {{- with .Values.skooner.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+      {{- with .Values.skooner.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.skooner.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.skooner.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
