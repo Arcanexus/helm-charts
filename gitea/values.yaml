@@ -83,7 +83,7 @@ gitea:
 
   gitea:
     admin:
-      existingSecret:
+      existingSecret: gitea-aws-secrets
       username: gitea_admin
       password: ChangeMe
       email: gitea@local.domain
