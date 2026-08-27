@@ -30,7 +30,9 @@ volume:
 
 gitea:
   image:
-    tag: 1.27.0
+    tag: 1.27.2
+  strategy:
+    type: Recreate
   nodeSelector:
     silent: fanless
 
