@@ -30,7 +30,7 @@ volume:
 
 gitea:
   image:
-    tag: latest
+    tag: 1.25.5
   nodeSelector:
     silent: fanless
 
