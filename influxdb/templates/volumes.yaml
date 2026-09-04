@@ -1,0 +1,64 @@
+{{- if .Values.volume.influxdbData }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: influxdb-data-pv
+spec:
+  capacity:
+    storage: {{ .Values.volume.influxdbData.storage | quote }}
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs-static
+  mountOptions:
+    - nfsvers=4
+  nfs:
+    server: {{ .Values.volume.influxdbData.server | quote }}
+    path: {{ .Values.volume.influxdbData.path | quote }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.volume.influxdbData.claimName | quote }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-static
+  resources:
+    requests:
+      storage: {{ .Values.volume.influxdbData.storage | quote }}
+{{- end }}
+
+{{- if .Values.volume.influxdbConfig }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: influxdb-config-pv
+spec:
+  capacity:
+    storage: {{ .Values.volume.influxdbConfig.storage | quote }}
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs-static
+  mountOptions:
+    - nfsvers=4
+  nfs:
+    server: {{ .Values.volume.influxdbConfig.server | quote }}
+    path: {{ .Values.volume.influxdbConfig.path | quote }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.volume.influxdbConfig.claimName | quote }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-static
+  resources:
+    requests:
+      storage: {{ .Values.volume.influxdbConfig.storage | quote }}
+{{- end }}

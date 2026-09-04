@@ -1,0 +1,52 @@
+volume:
+  influxdbData:
+    server: 192.168.2.50
+    path: /volume2/docker-data/influxDB/data
+    storage: 50Gi
+    claimName: influxdb-data-pvc
+  influxdbConfig:
+    server: 192.168.2.50
+    path: /volume2/docker/influxDB/config
+    storage: 1Gi
+    claimName: influxdb-config-pvc
+
+influxdb2:
+  image:
+    repository: influxdb
+    tag: 2.7.12
+
+  env:
+    - name: TZ
+      value: Europe/Paris
+
+  resources:
+    limits:
+      memory: 500Mi
+
+  persistence:
+    enabled: true
+    useExisting: true
+    name: influxdb-data-pvc
+
+  volumes:
+    - name: config
+      persistentVolumeClaim:
+        claimName: influxdb-config-pvc
+  mountPoints:
+    - name: config
+      mountPath: /etc/influxdb2
+
+  adminUser:
+    existingSecret: influxdb-aws-secrets
+    organization: influxdata
+    bucket: default
+    user: admin
+
+  ingress:
+    enabled: true
+    className: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: le-wildcard-issuer
+    hostname: influxdb.arcanexus.com
+    tls: true
+    secretName: influxdb-arcanexus-com-tls

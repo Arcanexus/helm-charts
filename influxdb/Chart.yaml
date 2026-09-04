@@ -1,0 +1,10 @@
+apiVersion: v2
+name: influxdb
+description: Wrapper chart for InfluxDB with static NFS-backed persistence
+type: application
+version: 0.1.0
+appVersion: "2.7.12"
+dependencies:
+  - name: influxdb2
+    repository: https://helm.influxdata.com/
+    version: "2.1.2"
