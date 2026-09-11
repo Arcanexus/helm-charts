@@ -349,8 +349,20 @@ spec:
               containerPort: {{ .Values.immich.kiosk.service.port }}
           env:
             {{- range $key, $value := .Values.immich.kiosk.env }}
+            {{- if ne $key "KIOSK_IMMICH_API_KEY" }}
             - name: {{ $key }}
               value: {{ $value | quote }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.immich.kiosk.env.KIOSK_IMMICH_API_KEY }}
+            - name: KIOSK_IMMICH_API_KEY
+              value: {{ .Values.immich.kiosk.env.KIOSK_IMMICH_API_KEY | quote }}
+            {{- else }}
+            - name: KIOSK_IMMICH_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ printf "%s-aws-secrets" (include "app.fullname" .) }}
+                  key: kiosk_api_key
             {{- end }}
           livenessProbe:
             httpGet:
