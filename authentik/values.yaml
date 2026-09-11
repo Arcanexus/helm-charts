@@ -146,6 +146,15 @@ authentik:
         enabled: true
         # existingClaim: authentik-postgresql-pvc
         storageClass: nfs
+
+      customStartupProbe:
+        exec:
+          command:
+            - /bin/sh
+            - -c
+            - exec pg_isready -U "authentik" -d "dbname=authentik" -h 127.0.0.1 -p 5432
+        periodSeconds: 10
+        failureThreshold: 180 # ~30 min runway before liveness engages at all
     volumePermissions:
       enabled: true
       image:

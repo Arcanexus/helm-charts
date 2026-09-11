@@ -35,6 +35,14 @@ spec:
           volumeMounts:
             - name: authentik-data
               mountPath: {{ .Values.externalPostgreSQL.volume.authentikData.containerMountPath }}
+          startupProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - exec pg_isready -U {{ .Values.externalPostgreSQL.username | quote }} -d "dbname={{ .Values.externalPostgreSQL.database }}" -h 127.0.0.1 -p {{ .Values.externalPostgreSQL.port }}
+            periodSeconds: 10
+            failureThreshold: 180 # ~30 min runway before liveness engages at all
           env:
             - name: PGDATA
               value: {{ .Values.externalPostgreSQL.volume.authentikData.containerMountPath | quote }}
