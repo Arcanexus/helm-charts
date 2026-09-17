@@ -10,4 +10,3 @@ pods:
     image: ricoberger/loki_exporter:0.4.0
     replicas: 1
     containerPort: 9524
-    exposedPort: 30004
