@@ -28,8 +28,6 @@ spec:
             value: "Europe/Paris"
           - name: PORT
             value: {{ .Values.piholeexporter.containerPort | quote }}
-          - name: PIHOLE_HOSTNAME
-            value: {{ .Values.piholeexporter.pihole_hostname | quote }}
           {{- range $key, $value := .Values.piholeexporter.environment }}
           - name: {{ $key }}
             value: {{ $value | quote }}

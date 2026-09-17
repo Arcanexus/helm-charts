@@ -9,6 +9,9 @@ piholeexporter:
     runAsGroup: 0
 
   environment:
+    PIHOLE_HOSTNAME: "192.168.2.52"
+    PIHOLE_PROTOCOL: "https"
+    PIHOLE_PORT: 443
+    SKIP_TLS_VERIFICATION: true
 
-  pihole_hostname: "192.168.2.52"
   pihole_api_token: ""
