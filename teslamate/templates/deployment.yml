@@ -168,12 +168,12 @@ spec:
             - name: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "app.fullname" . }}-grafana-oauth
+                  name: grafana-aws-secrets
                   key: client_id
             - name: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "app.fullname" . }}-grafana-oauth
+                  name: grafana-aws-secrets
                   key: client_secret
             {{- range $key, $value := .Values.grafana.sso.env }}
             - name: {{ $key }}

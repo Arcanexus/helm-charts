@@ -18,16 +18,14 @@ externalPostgreSQL:
 
 blueprintsInline: {}
 
-# OAuth client credentials pulled from SSM and exposed to the worker as
-# <NAME>_CLIENT_ID / <NAME>_CLIENT_SECRET, so blueprints can use !Env instead
-# of hardcoding secrets. Keep secretName in sync with authentik.worker.envFrom.
-ssoClients:
-  enabled: true
-  secretName: authentik-sso-clients
-  secretStore: parameterstore
-  clients:
-    GRAFANA: /authentik/grafana
-    TESLAMATE_GRAFANA: /authentik/teslamate-grafana
+# Grafana OAuth client credentials from SSM (JSON {client_id, client_secret}).
+# Each becomes a Secret whose keys the worker gets as <prefix>client_id /
+# <prefix>client_secret (authentik.worker.envFrom), read by blueprints with !Env.
+grafanaClientSecrets:
+  - name: grafana-aws-secrets
+    key: /authentik/grafana
+  - name: teslamate-grafana-aws-secrets
+    key: /authentik/teslamate-grafana
 
 blueprintsWatcher:
   enabled: true
@@ -37,7 +35,8 @@ blueprintsWatcher:
   secretName: authentik-blueprints
   # Also restart server/worker when these change (envFrom is only read at pod start)
   extraSecretNames:
-    - authentik-sso-clients
+    - grafana-aws-secrets
+    - teslamate-grafana-aws-secrets
   stateConfigMapName: authentik-blueprints-watcher-state
   deploymentSelector: app.kubernetes.io/instance={{ .Release.Name }},app.kubernetes.io/name=authentik
   componentLabelKey: app.kubernetes.io/component
@@ -124,8 +123,13 @@ authentik:
   worker:
     podAnnotations: {}
     envFrom:
-      - secretRef:
-          name: authentik-sso-clients
+      - prefix: GRAFANA_
+        secretRef:
+          name: grafana-aws-secrets
+          optional: true
+      - prefix: TESLAMATE_GRAFANA_
+        secretRef:
+          name: teslamate-grafana-aws-secrets
           optional: true
     livenessProbe:
       timeoutSeconds: 6
