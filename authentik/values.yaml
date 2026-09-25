@@ -18,6 +18,17 @@ externalPostgreSQL:
 
 blueprintsInline: {}
 
+# OAuth client credentials pulled from SSM and exposed to the worker as
+# <NAME>_CLIENT_ID / <NAME>_CLIENT_SECRET, so blueprints can use !Env instead
+# of hardcoding secrets. Keep secretName in sync with authentik.worker.envFrom.
+ssoClients:
+  enabled: true
+  secretName: authentik-sso-clients
+  secretStore: parameterstore
+  clients:
+    GRAFANA: /authentik/grafana
+    TESLAMATE_GRAFANA: /authentik/teslamate-grafana
+
 blueprintsWatcher:
   enabled: true
   schedule: "*/1 * * * *"
@@ -109,6 +120,10 @@ authentik:
 
   worker:
     podAnnotations: {}
+    envFrom:
+      - secretRef:
+          name: authentik-sso-clients
+          optional: true
     livenessProbe:
       timeoutSeconds: 6
     readinessProbe:
