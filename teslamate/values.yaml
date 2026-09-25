@@ -56,8 +56,7 @@ database:
       containerMountPath: /var/lib/postgresql
 
 grafana:
-  # Pinned to the version that was running from :latest (digest f2afcd9b). Keep in step with teslamate.image.
-  image: teslamate/grafana:4.0.1
+  image: teslamate/grafana:latest
   pullPolicy: IfNotPresent
   replicas: 1
 
