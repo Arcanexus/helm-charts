@@ -164,7 +164,17 @@ spec:
               value: {{ $value | quote }}
             {{- end }}
             {{- end }}
-            {{- if .Values.grafana.sso }}
+            {{- if .Values.grafana.sso.enabled }}
+            - name: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-aws-secrets
+                  key: client_id
+            - name: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-aws-secrets
+                  key: client_secret
             {{- range $key, $value := .Values.grafana.sso.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}

@@ -24,6 +24,9 @@ blueprintsWatcher:
   image: alpine/k8s:1.31.4
   imagePullPolicy: IfNotPresent
   secretName: authentik-blueprints
+  # Also restart server/worker when these change (envFrom is only read at pod start)
+  extraSecretNames:
+    - grafana-aws-secrets
   stateConfigMapName: authentik-blueprints-watcher-state
   deploymentSelector: app.kubernetes.io/instance={{ .Release.Name }},app.kubernetes.io/name=authentik
   componentLabelKey: app.kubernetes.io/component
@@ -109,6 +112,13 @@ authentik:
 
   worker:
     podAnnotations: {}
+    # grafana-aws-secrets (templates/externalsecrets.yaml, SSM /authentik/grafana) gives
+    # GRAFANA_client_id / GRAFANA_client_secret, used by the grafana blueprint via !Env.
+    envFrom:
+      - prefix: GRAFANA_
+        secretRef:
+          name: grafana-aws-secrets
+          optional: true
     livenessProbe:
       timeoutSeconds: 6
     readinessProbe:
