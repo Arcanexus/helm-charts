@@ -78,9 +78,9 @@ grafana:
   sso:
     enabled: true
     # OAuth client credentials from SSM (JSON {client_id, client_secret}),
-    # shared with the Authentik blueprint for the teslamate-grafana provider.
+    # same client as grafana.arcanexus.com (Authentik grafana-oauth2 provider).
     secretStore: parameterstore
-    remoteKey: /authentik/teslamate-grafana
+    remoteKey: /authentik/grafana
     env:
       GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
       GF_AUTH_GENERIC_OAUTH_NAME: "authentik"
@@ -88,7 +88,7 @@ grafana:
       GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://authentik.arcanexus.com/application/o/authorize/"
       GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://authentik.arcanexus.com/application/o/token/"
       GF_AUTH_GENERIC_OAUTH_API_URL: "https://authentik.arcanexus.com/application/o/userinfo/"
-      GF_AUTH_SIGNOUT_REDIRECT_URL: "https://authentik.arcanexus.com/application/o/teslamate-grafana/end-session/"
+      GF_AUTH_SIGNOUT_REDIRECT_URL: "https://authentik.arcanexus.com/application/o/grafana/end-session/"
       GF_AUTH_GENERIC_OAUTH_AUTO_LOGIN: "true"
       GF_AUTH_GENERIC_OAUTH_LOGIN_ATTRIBUTE_PATH: "preferred_username"
       GF_AUTH_GENERIC_OAUTH_EMAIL_ATTRIBUTE_PATH: "email"
