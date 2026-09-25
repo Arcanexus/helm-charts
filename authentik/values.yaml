@@ -109,6 +109,26 @@ authentik:
 
   worker:
     podAnnotations: {}
+    # OAuth client credentials (keys client_id / client_secret, synced from SSM by the
+    # ExternalSecrets in templates/externalsecrets.yaml) mounted as files so blueprints can
+    # read them with !File instead of inline literals. optional: a secret that is not synced
+    # yet must not stop the worker.
+    volumes:
+      - name: grafana-aws-secrets
+        secret:
+          secretName: grafana-aws-secrets
+          optional: true
+      - name: teslamate-grafana-aws-secrets
+        secret:
+          secretName: teslamate-grafana-aws-secrets
+          optional: true
+    volumeMounts:
+      - name: grafana-aws-secrets
+        mountPath: /secrets/grafana-aws-secrets
+        readOnly: true
+      - name: teslamate-grafana-aws-secrets
+        mountPath: /secrets/teslamate-grafana-aws-secrets
+        readOnly: true
     livenessProbe:
       timeoutSeconds: 6
     readinessProbe:
