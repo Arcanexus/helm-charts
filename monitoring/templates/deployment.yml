@@ -138,6 +138,18 @@ spec:
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{- end }}
+          {{- if .Values.grafana.sso.externalSecret.enabled }}
+          - name: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "app.name" . }}-{{ .Release.Name }}-grafana-aws-secrets
+                key: client_id
+          - name: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "app.name" . }}-{{ .Release.Name }}-grafana-aws-secrets
+                key: client_secret
+          {{- end }}
         volumeMounts:
         - name: grafana-config
           mountPath: {{ .Values.grafana.volumes.config.containerMountPath }}
