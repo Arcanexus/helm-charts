@@ -8,7 +8,7 @@ teslamate:
       mountPath: /opt/app/import
 
   replicas: 1
-  image: teslamate/teslamate:3.0
+  image: teslamate/teslamate:4.1.1  # matches the cluster; syncing 3.0 would downgrade the TeslaMate DB
   pullPolicy: IfNotPresent
   nodeSelector:
     silent: fanless
@@ -56,7 +56,7 @@ database:
       containerMountPath: /var/lib/postgresql
 
 grafana:
-  image: teslamate/grafana:4.0.1  # pinned: :latest silently moved Grafana to 13.x
+  image: teslamate/grafana:4.1.1  # keep in step with teslamate/teslamate; :latest moves silently
   pullPolicy: IfNotPresent
   replicas: 1
 
