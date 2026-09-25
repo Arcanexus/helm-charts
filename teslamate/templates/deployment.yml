@@ -169,6 +169,18 @@ spec:
             - name: {{ $key }}
               value: {{ $value | quote }}
             {{- end }}
+            {{- if and .Values.grafana.sso.enabled .Values.grafana.sso.externalSecret.enabled }}
+            - name: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "app.fullname" . }}-grafana-aws-secrets
+                  key: client_id
+            - name: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "app.fullname" . }}-grafana-aws-secrets
+                  key: client_secret
+            {{- end }}
             {{- end }}
           volumeMounts:
             {{- range .Values.grafana.volumes }}
