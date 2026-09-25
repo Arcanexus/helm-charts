@@ -73,7 +73,20 @@ spec:
                   log "Starting blueprints watcher run"
                   log "Namespace=$NS Secret=$SECRET_NAME StateConfigMap=$STATE_CONFIGMAP Selector=$SELECTOR"
 
-                  CURRENT_HASH="$(kubectl -n "$NS" get secret "$SECRET_NAME" -o go-template='{{`{{- range $k, $v := .data -}}{{ printf "%s=%s\\n" $k $v }}{{- end -}}`}}' 2>/dev/null | sort | sha256sum | awk '{print $1}')"
+                  EXTRA_SECRETS={{ join " " (.Values.blueprintsWatcher.extraSecretNames | default list) | quote }}
+
+                  secret_data() {
+                    kubectl -n "$NS" get secret "$1" -o go-template='{{`{{- range $k, $v := .data -}}{{ printf "%s=%s\\n" $k $v }}{{- end -}}`}}' 2>/dev/null | sed "s|^|$1/|"
+                  }
+
+                  BLUEPRINT_DATA="$(secret_data "$SECRET_NAME")"
+                  if [ -z "$BLUEPRINT_DATA" ]; then
+                    CURRENT_HASH=""
+                  else
+                    # Extra secrets (e.g. OAuth client creds consumed via envFrom) are part of
+                    # the hash, so rotating them or creating them late also restarts the pods.
+                    CURRENT_HASH="$( { echo "$BLUEPRINT_DATA"; for s in $EXTRA_SECRETS; do secret_data "$s"; done; } | sort | sha256sum | awk '{print $1}')"
+                  fi
                   if [ -z "$CURRENT_HASH" ]; then
                     log "Secret $SECRET_NAME not found or empty, skipping"
                     exit 0
