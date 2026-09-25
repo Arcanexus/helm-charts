@@ -140,6 +140,32 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- $grafanaPg := (((.Values.grafana.database).postgres) | default dict) }}
+      {{- if $grafanaPg.enabled }}
+      initContainers:
+        - name: create-grafana-db
+          image: {{ .Values.database.image | quote }}
+          imagePullPolicy: {{ .Values.database.pullPolicy }}
+          env:
+            - name: PGHOST
+              value: database
+            - name: PGPORT
+              value: {{ .Values.database.service.port | quote }}
+            - name: PGUSER
+              value: {{ .Values.database.env.POSTGRES_USER | quote }}
+            - name: PGPASSWORD
+              value: {{ .Values.database.env.POSTGRES_PASSWORD | quote }}
+            - name: PGDATABASE
+              value: postgres
+            - name: GRAFANA_DB
+              value: {{ $grafanaPg.name | quote }}
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -q; do echo "waiting for database"; sleep 2; done
+              psql -tAc "SELECT 1 FROM pg_database WHERE datname='${GRAFANA_DB}'" | grep -q 1 || psql -v ON_ERROR_STOP=1 -c "CREATE DATABASE \"${GRAFANA_DB}\""
+      {{- end }}
 
       containers:
         - name: grafana
@@ -154,6 +180,20 @@ spec:
           env:
             - name: DATABASE_HOST
               value: database
+            {{- if $grafanaPg.enabled }}
+            - name: GF_DATABASE_TYPE
+              value: postgres
+            - name: GF_DATABASE_HOST
+              value: {{ printf "database:%v" .Values.database.service.port | quote }}
+            - name: GF_DATABASE_NAME
+              value: {{ $grafanaPg.name | quote }}
+            - name: GF_DATABASE_USER
+              value: {{ .Values.database.env.POSTGRES_USER | quote }}
+            - name: GF_DATABASE_PASSWORD
+              value: {{ .Values.database.env.POSTGRES_PASSWORD | quote }}
+            - name: GF_DATABASE_SSL_MODE
+              value: disable
+            {{- end }}
             {{- if .Values.teslamate.ingress.host }}
             - name: GF_SERVER_DOMAIN
               value: {{ .Values.teslamate.ingress.host | quote }}

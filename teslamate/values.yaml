@@ -98,6 +98,15 @@ grafana:
       path: /volume2/docker-data/teslamate/grafana
       containerMountPath: /var/lib/grafana
 
+  # Store Grafana's own database (users, sessions, preferences) in the TeslaMate PostgreSQL
+  # instead of SQLite on NFS, which is prone to "database is locked" and lost writes.
+  # The database is created on first start by an init container. Dashboards are provisioned
+  # by the image, so only local users/preferences start fresh (SSO recreates users).
+  database:
+    postgres:
+      enabled: true
+      name: grafana
+
 mosquitto:
   image: eclipse-mosquitto:2
   pullPolicy: IfNotPresent
