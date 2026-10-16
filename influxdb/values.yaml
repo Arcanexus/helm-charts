@@ -28,6 +28,9 @@ influxdb2:
     useExisting: true
     name: influxdb-data-pvc
 
+  pdb:
+    create: false
+
   volumes:
     - name: config
       persistentVolumeClaim:
