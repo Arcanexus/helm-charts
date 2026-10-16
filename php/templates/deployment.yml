@@ -1,40 +1,54 @@
+{{- $workload := include "php.workload" . }}
+{{- if and .Values.phpmyadmin.enabled (not .Values.mariadb.enabled) }}
+{{- fail "phpmyadmin.enabled requires mariadb.enabled" }}
+{{- end }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "app.name" . }}-{{ .Release.Name }}
+  name: {{ $workload }}
+  labels:
+    {{- include "php.labels" (dict "ctx" . "name" $workload) | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ include "app.name" . }}-{{ .Release.Name }} # has to match .spec.template.metadata.labels
+      app: {{ $workload }} # has to match .spec.template.metadata.labels
   replicas: {{ .Values.php.replicas }}
   revisionHistoryLimit: 0
   template:
     metadata:
       labels:
-        app: {{ include "app.name" . }}-{{ .Release.Name }} # has to match .spec.selector.matchLabels
-        app.kubernetes.io/name: {{ include "app.name" . }}-{{ .Release.Name }}
-        helm.sh/chart: {{ include "app.chart" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
-        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app: {{ $workload }} # has to match .spec.selector.matchLabels
+        {{- include "php.labels" (dict "ctx" . "name" $workload) | nindent 8 }}
     spec:
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
       securityContext:
         runAsUser: {{ .Values.php.security.runAsUser }}
         runAsGroup: {{ .Values.php.security.runAsGroup }}
+      {{- with .Values.php.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
-      - name: {{ include "app.name" . }}-{{ .Release.Name }}
+      - name: {{ $workload }}
         image: {{ .Values.php.image }}
-        imagePullPolicy: Always
+        imagePullPolicy: {{ .Values.php.imagePullPolicy }}
         ports:
         - containerPort: {{ .Values.php.httpContainerPort }}
           name: php-http
+        {{- if .Values.php.probes.enabled }}
+        {{- include "php.tcpProbes" (dict "port" "php-http") | nindent 8 }}
+        {{- end }}
+        {{- with .Values.php.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         volumeMounts:
-        - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.php.volumes.phpdata.name }}
+        - name: {{ $workload }}-{{ .Values.php.volumes.phpdata.name }}
           mountPath: {{ .Values.php.volumes.phpdata.containerMountPath }}
         env:
           - name: TZ
-            value: "Europe/Paris"
+            value: {{ .Values.timezone | quote }}
           {{- if .Values.mariadb.enabled }}
           - name: MARIADB_HOST
             value: {{ .Release.Name }}-mariadb
@@ -45,141 +59,141 @@ spec:
           - name: MARIADB_USER
             valueFrom:
               secretKeyRef:
-                name: {{ include "app.fullname" . }}-mariadb-user
+                name: {{ include "php.mariadb.secret" . }}
                 key: username
           - name: MARIADB_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ include "app.fullname" . }}-mariadb-user
+                name: {{ include "php.mariadb.secret" . }}
                 key: password
           {{- end }}
+          {{- range $name, $value := .Values.php.env }}
+          - name: {{ $name }}
+            value: {{ $value | quote }}
+          {{- end }}
       volumes:
-      - name: {{ include "app.name" . }}-{{ .Release.Name }}-{{ .Values.php.volumes.phpdata.name }}
+      - name: {{ $workload }}-{{ .Values.php.volumes.phpdata.name }}
         nfs:
           server: {{ .Values.php.volumes.phpdata.server }}
           path: {{ .Values.php.volumes.phpdata.path }}
-
----
 {{- if .Values.mariadb.enabled }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "app.name" . }}-{{ .Release.Name }}-mariadb
+  name: {{ $workload }}-mariadb
+  labels:
+    {{- include "php.labels" (dict "ctx" . "name" (printf "%s-mariadb" $workload)) | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ include "app.name" . }}-{{ .Release.Name }}-mariadb
+      app: {{ $workload }}-mariadb
   replicas: {{ .Values.mariadb.replicas }}
+  # Never run two MariaDB pods on the same datadir, even during a rollout.
+  strategy:
+    type: Recreate
   revisionHistoryLimit: 0
   template:
     metadata:
       labels:
-        app: {{ include "app.name" . }}-{{ .Release.Name }}-mariadb
-        app.kubernetes.io/name: {{ include "app.name" . }}-{{ .Release.Name }}-mariadb
-        helm.sh/chart: {{ include "app.chart" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
-        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app: {{ $workload }}-mariadb
+        {{- include "php.labels" (dict "ctx" . "name" (printf "%s-mariadb" $workload)) | nindent 8 }}
     spec:
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
       securityContext:
         runAsUser: {{ .Values.mariadb.security.runAsUser }}
         runAsGroup: {{ .Values.mariadb.security.runAsGroup }}
-      {{- if .Values.mariadb.nodeSelector }}
+      {{- with .Values.mariadb.nodeSelector }}
       nodeSelector:
-      {{ toYaml .Values.mariadb.nodeSelector | indent 6 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-      - name: {{ include "app.name" . }}-{{ .Release.Name }}-mariadb
+      - name: {{ $workload }}-mariadb
         image: {{ .Values.mariadb.image }}
-        imagePullPolicy: Always
+        imagePullPolicy: {{ .Values.mariadb.imagePullPolicy }}
         ports:
         - containerPort: {{ .Values.mariadb.port }}
           name: mariadb
+        {{- if .Values.mariadb.probes.enabled }}
+        {{- include "php.tcpProbes" (dict "port" "mariadb") | nindent 8 }}
+        {{- end }}
+        {{- with .Values.mariadb.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         volumeMounts:
-        - name: {{ include "app.name" . }}-{{ .Release.Name }}-mariadb
+        - name: {{ $workload }}-mariadb
           mountPath: {{ .Values.mariadb.volumes.datas.containerMountPath }}
         env:
           - name: MARIADB_ROOT_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ include "app.fullname" . }}-mariadb-root
+                name: {{ include "php.mariadb.secret" . }}
                 key: root-password
-          - name: MARIADB_DATABASE 
+          - name: MARIADB_DATABASE
             value: {{ .Values.mariadb.database | quote }}
           - name: MARIADB_USER
             valueFrom:
               secretKeyRef:
-                name: {{ include "app.fullname" . }}-mariadb-user
+                name: {{ include "php.mariadb.secret" . }}
                 key: username
           - name: MARIADB_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ include "app.fullname" . }}-mariadb-user
+                name: {{ include "php.mariadb.secret" . }}
                 key: password
           - name: TZ
-            value: "Europe/Paris"
-      {{- if .Values.mariadb.volumes }}
+            value: {{ .Values.timezone | quote }}
       volumes:
-      - name: {{ include "app.name" . }}-{{ .Release.Name }}-mariadb
+      - name: {{ $workload }}-mariadb
         nfs:
           server: {{ .Values.mariadb.volumes.datas.server }}
           path: {{ .Values.mariadb.volumes.datas.path }}
-      {{- end }}
 {{- end }}
-
+{{- if and .Values.mariadb.enabled .Values.phpmyadmin.enabled }}
 ---
-{{- if .Values.phpmyadmin.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "app.name" . }}-{{ .Release.Name }}-phpmyadmin
+  name: {{ $workload }}-phpmyadmin
+  labels:
+    {{- include "php.labels" (dict "ctx" . "name" (printf "%s-phpmyadmin" $workload)) | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ include "app.name" . }}-{{ .Release.Name }}-phpmyadmin
+      app: {{ $workload }}-phpmyadmin
   replicas: {{ .Values.phpmyadmin.replicas }}
   revisionHistoryLimit: 0
   template:
     metadata:
       labels:
-        app: {{ include "app.name" . }}-{{ .Release.Name }}-phpmyadmin
-        app.kubernetes.io/name: {{ include "app.name" . }}-{{ .Release.Name }}-phpmyadmin
-        helm.sh/chart: {{ include "app.chart" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
-        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app: {{ $workload }}-phpmyadmin
+        {{- include "php.labels" (dict "ctx" . "name" (printf "%s-phpmyadmin" $workload)) | nindent 8 }}
     spec:
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
       containers:
-      - name: {{ include "app.name" . }}-{{ .Release.Name }}-phpmyadmin
+      - name: {{ $workload }}-phpmyadmin
         image: {{ .Values.phpmyadmin.image }}
-        imagePullPolicy: Always
+        imagePullPolicy: {{ .Values.phpmyadmin.imagePullPolicy }}
         ports:
         - containerPort: {{ .Values.phpmyadmin.port }}
           name: phpmyadmin
+        {{- include "php.tcpProbes" (dict "port" "phpmyadmin") | nindent 8 }}
+        {{- with .Values.phpmyadmin.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         env:
           - name: PMA_HOST
             value: {{ .Release.Name }}-mariadb
           - name: PMA_PORT
             value: {{ .Values.mariadb.port | quote }}
-          # - name: PMA_USER
-          #   valueFrom:
-          #     secretKeyRef:
-          #       name: {{ include "app.fullname" . }}-mariadb-user
-          #       key: username
-          # - name: PMA_PASSWORD
-          #   valueFrom:
-          #     secretKeyRef:
-          #       name: {{ include "app.fullname" . }}-mariadb-user
-          #       key: password
-          - name: PMA_ROOT_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "app.fullname" . }}-mariadb-root
-                key: root-password
-          # - name: PMA_ABSOLUTE_URI
-          #   value: https://{{ .Values.php.ingress.host }}/pma
+          {{- if and .Values.php.ingress.enabled .Values.phpmyadmin.ingress.enabled }}
+          - name: PMA_ABSOLUTE_URI
+            value: https://{{ .Values.php.ingress.host }}{{ trimSuffix "/" .Values.phpmyadmin.ingress.path }}/
+          {{- end }}
           - name: TZ
-            value: "Europe/Paris"
+            value: {{ .Values.timezone | quote }}
 {{- end }}

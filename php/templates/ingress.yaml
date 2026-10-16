@@ -1,67 +1,81 @@
 {{- if .Values.php.ingress.enabled }}
----
+{{- $hosts := list .Values.php.ingress.host }}
+{{- if .Values.php.ingress.wwwhost }}
+{{- $hosts = append $hosts (printf "www.%s" .Values.php.ingress.host) }}
+{{- end }}
+{{- $tls := list (dict "hosts" (list .Values.php.ingress.host) "secretName" (printf "%s-tls" .Release.Name)) }}
+{{- if .Values.php.ingress.wwwhost }}
+{{- $tls = append $tls (dict "hosts" (list (printf "www.%s" .Values.php.ingress.host)) "secretName" (printf "www-%s-tls" .Release.Name)) }}
+{{- end }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ .Release.Name }}-ingress
+  labels:
+    {{- include "php.labels" (dict "ctx" . "name" (printf "%s-ingress" .Release.Name)) | nindent 4 }}
+  {{- with .Values.php.ingress.annotations }}
   annotations:
-    {{- if .Values.php.ingress.annotations }}
-    {{- toYaml .Values.php.ingress.annotations | nindent 4 }}
-    {{- end }}
-spec:
-  ingressClassName: traefik
-  {{- if .Values.php.ingress.enabled }}
-  tls:
-    - hosts:
-        - {{ .Values.php.ingress.host }}
-      secretName: {{ .Release.Name }}-tls
-    {{- if .Values.php.ingress.wwwhost }}
-    - hosts:
-        - www.{{ .Values.php.ingress.host }}
-      secretName: www-{{ .Release.Name }}-tls
-    {{- end }}
-
+    {{- toYaml . | nindent 4 }}
   {{- end }}
+spec:
+  ingressClassName: {{ .Values.php.ingress.ingressClassName }}
+  tls:
+    {{- toYaml $tls | nindent 4 }}
   rules:
-    - host: {{ .Values.php.ingress.host }}
+    {{- range $hosts }}
+    - host: {{ . }}
       http:
         paths:
           - path: /
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: {{ .Release.Name }}-service
-                port:
-                  number: {{ .Values.php.httpContainerPort }}
-          {{- if .Values.phpmyadmin.enabled }}
-          - path: /pma
             pathType: Prefix
             backend:
               service:
-                name: {{ .Release.Name }}-phpmyadmin
+                name: {{ $.Release.Name }}-service
                 port:
-                  number: {{ .Values.phpmyadmin.port | default 80 }}
-          {{- end }}
-    {{- if .Values.php.ingress.wwwhost }}
-    - host: www.{{ .Values.php.ingress.host }}
-      http:
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: {{ .Release.Name }}-service
-                port:
-                  number: {{ .Values.php.httpContainerPort }}
-          {{- if .Values.phpmyadmin.enabled }}
-          - path: /pma
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ .Release.Name }}-phpmyadmin
-                port:
-                  number: {{ .Values.phpmyadmin.port | default 80 }}
-          {{- end }}
+                  number: {{ $.Values.php.httpContainerPort }}
     {{- end }}
-
+{{- if and .Values.mariadb.enabled .Values.phpmyadmin.enabled .Values.phpmyadmin.ingress.enabled }}
+{{- $prefix := trimSuffix "/" .Values.phpmyadmin.ingress.path }}
+{{- $stripMiddleware := printf "%s-%s-pma-stripprefix@kubernetescrd" .Release.Namespace .Release.Name }}
+---
+# Strips the phpMyAdmin prefix before forwarding (phpMyAdmin serves from /).
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ .Release.Name }}-pma-stripprefix
+  labels:
+    {{- include "php.labels" (dict "ctx" . "name" (printf "%s-pma-stripprefix" .Release.Name)) | nindent 4 }}
+spec:
+  stripPrefix:
+    prefixes:
+      - {{ $prefix }}
+---
+# Separate Ingress so the middleware only applies to the phpMyAdmin path. It reuses
+# the main Ingress TLS secrets without the cert-manager annotation (one Certificate per secret).
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-pma-ingress
+  labels:
+    {{- include "php.labels" (dict "ctx" . "name" (printf "%s-pma-ingress" .Release.Name)) | nindent 4 }}
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: {{ join "," (prepend .Values.phpmyadmin.ingress.middlewares $stripMiddleware) }}
+spec:
+  ingressClassName: {{ .Values.php.ingress.ingressClassName }}
+  tls:
+    {{- toYaml $tls | nindent 4 }}
+  rules:
+    {{- range $hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - path: {{ $prefix }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $.Release.Name }}-phpmyadmin
+                port:
+                  number: {{ $.Values.phpmyadmin.port }}
+    {{- end }}
+{{- end }}
 {{- end }}

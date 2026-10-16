@@ -1,4 +1,6 @@
-apiVersion: v1
-description: A Helm chart for php
+apiVersion: v2
+description: Generic PHP (Apache) site, with optional MariaDB and phpMyAdmin
 name: php
-version: 0.0.2
+type: application
+version: 0.1.0
+appVersion: "8.3"

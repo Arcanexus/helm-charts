@@ -1,16 +1,33 @@
+# Unknown keys are rejected by values.schema.json, so a typo or an old
+# parameter path (e.g. the pre-0.1.0 `pods.php.*` layout) fails the render
+# instead of being silently ignored.
+
+timezone: Europe/Paris
+
 php:
   image: ghcr.io/arcanexus/docker-php:v1.0.0
+  imagePullPolicy: Always
   replicas: 1
   httpContainerPort: 80
-  httpExposedPort: 30013
 
   security:
     runAsUser: 0
     runAsGroup: 0
 
+  resources: {}
+  nodeSelector: {}
+
+  # TCP probes on the HTTP port (an HTTP probe would depend on what the site returns on /).
+  probes:
+    enabled: true
+
+  # Extra environment variables, as a name: value map.
+  env: {}
+
   ingress:
     enabled: true
     host: php.arcanexus.com
+    # Also serve www.<host>.
     wwwhost: false
     ingressClassName: traefik
     annotations:
@@ -24,9 +41,12 @@ php:
       containerMountPath: /var/www/html/
 
 
+# Optional MariaDB, reachable from the PHP pod via MARIADB_* env vars.
 mariadb:
   enabled: false
   image: mariadb:12-ubi
+  imagePullPolicy: IfNotPresent
+  # Keep at 1: pods share one NFS datadir (the Deployment uses the Recreate strategy).
   replicas: 1
   port: 3306
 
@@ -34,13 +54,25 @@ mariadb:
     runAsUser: 0
     runAsGroup: 0
 
+  resources: {}
   nodeSelector:
     silent: fanless
 
-  rootPassword: changeme
+  probes:
+    enabled: true
+
   database: phpdb
   user: phpuser
-  password: changeme
+
+  # Root and user passwords both come from one remote key, synced by an
+  # ExternalSecret into <fullname>-aws-secrets (keys root-password, username, password).
+  # Set existingSecret to use a Secret with those keys instead.
+  existingSecret: ""
+  externalSecret:
+    secretStore: parameterstore
+    secretStoreKind: ClusterSecretStore
+    refreshInterval: 1h
+    passwordKey: default_password
 
   volumes:
     datas:
@@ -49,8 +81,19 @@ mariadb:
       path: /volume2/docker-data/php/mariadb
       containerMountPath: /var/lib/mysql/
 
+# Optional phpMyAdmin for the MariaDB above (requires mariadb.enabled).
 phpmyadmin:
   enabled: false
-  image: phpmyadmin:latest
+  image: phpmyadmin:5.2
+  imagePullPolicy: IfNotPresent
   port: 80
   replicas: 1
+  resources: {}
+
+  # Served at https://<php.ingress.host><path> (prefix stripped by a Traefik middleware).
+  ingress:
+    enabled: true
+    path: /pma
+    # Extra Traefik middlewares chained after the strip-prefix, e.g.
+    # authentik-ak-outpost-authentik-embedded-outpost@kubernetescrd
+    middlewares: []

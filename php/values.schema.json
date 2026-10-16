@@ -1,0 +1,135 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "nameOverride": { "type": "string" },
+    "fullnameOverride": { "type": "string" },
+    "timezone": { "type": "string" },
+    "php": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["image", "httpContainerPort", "volumes"],
+      "properties": {
+        "image": { "type": "string" },
+        "imagePullPolicy": { "enum": ["Always", "IfNotPresent", "Never"] },
+        "replicas": { "type": "integer", "minimum": 0 },
+        "httpContainerPort": { "type": "integer" },
+        "security": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "runAsUser": { "type": "integer" },
+            "runAsGroup": { "type": "integer" }
+          }
+        },
+        "resources": { "type": "object" },
+        "nodeSelector": { "type": "object" },
+        "probes": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "enabled": { "type": "boolean" } }
+        },
+        "env": { "type": "object" },
+        "ingress": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "host": { "type": "string", "minLength": 1 },
+            "wwwhost": { "type": "boolean" },
+            "ingressClassName": { "type": "string" },
+            "annotations": { "type": ["object", "null"] }
+          }
+        },
+        "volumes": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "phpdata": { "$ref": "#/definitions/nfsVolume" }
+          }
+        }
+      }
+    },
+    "mariadb": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "image": { "type": "string" },
+        "imagePullPolicy": { "enum": ["Always", "IfNotPresent", "Never"] },
+        "replicas": { "type": "integer", "minimum": 0, "maximum": 1 },
+        "port": { "type": "integer" },
+        "security": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "runAsUser": { "type": "integer" },
+            "runAsGroup": { "type": "integer" }
+          }
+        },
+        "resources": { "type": "object" },
+        "nodeSelector": { "type": ["object", "null"] },
+        "probes": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "enabled": { "type": "boolean" } }
+        },
+        "database": { "type": "string" },
+        "user": { "type": "string" },
+        "existingSecret": { "type": "string" },
+        "externalSecret": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "secretStore": { "type": "string" },
+            "secretStoreKind": { "enum": ["SecretStore", "ClusterSecretStore"] },
+            "refreshInterval": { "type": "string" },
+            "passwordKey": { "type": "string", "minLength": 1 }
+          }
+        },
+        "volumes": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "datas": { "$ref": "#/definitions/nfsVolume" }
+          }
+        }
+      }
+    },
+    "phpmyadmin": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "image": { "type": "string" },
+        "imagePullPolicy": { "enum": ["Always", "IfNotPresent", "Never"] },
+        "port": { "type": "integer" },
+        "replicas": { "type": "integer", "minimum": 0 },
+        "resources": { "type": "object" },
+        "ingress": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "path": { "type": "string", "pattern": "^/.+" },
+            "middlewares": { "type": "array", "items": { "type": "string" } }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "nfsVolume": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "server", "path", "containerMountPath"],
+      "properties": {
+        "name": { "type": "string" },
+        "server": { "type": "string" },
+        "path": { "type": "string" },
+        "containerMountPath": { "type": "string" }
+      }
+    }
+  }
+}
