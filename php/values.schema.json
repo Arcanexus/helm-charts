@@ -85,7 +85,8 @@
             "secretStore": { "type": "string" },
             "secretStoreKind": { "enum": ["SecretStore", "ClusterSecretStore"] },
             "refreshInterval": { "type": "string" },
-            "passwordKey": { "type": "string", "minLength": 1 }
+            "passwordKey": { "type": "string", "minLength": 1 },
+            "credentialsKey": { "type": "string" }
           }
         },
         "volumes": {
