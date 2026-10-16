@@ -99,6 +99,8 @@ spec:
             {{- end }}
             - name: TS_EXTRA_ARGS
               value: {{ join " " $tailscaleArgs | quote }}
+            - name: TS_AUTH_ONCE
+              value: "true"
           volumeMounts:
             - name: tun
               mountPath: /dev/net/tun
