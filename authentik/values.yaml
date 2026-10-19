@@ -27,6 +27,7 @@ blueprintsWatcher:
   # Also restart server/worker when these change (envFrom is only read at pod start)
   extraSecretNames:
     - grafana-aws-secrets
+    - awx-aws-secrets
   stateConfigMapName: authentik-blueprints-watcher-state
   deploymentSelector: app.kubernetes.io/instance={{ .Release.Name }},app.kubernetes.io/name=authentik
   componentLabelKey: app.kubernetes.io/component
@@ -114,10 +115,16 @@ authentik:
     podAnnotations: {}
     # grafana-aws-secrets (templates/externalsecrets.yaml, SSM /authentik/grafana) gives
     # GRAFANA_client_id / GRAFANA_client_secret, used by the grafana blueprint via !Env.
+    # awx-aws-secrets (SSM /authentik/awx) gives AWX_client_id / AWX_client_secret
+    # the same way, for the awx blueprint.
     envFrom:
       - prefix: GRAFANA_
         secretRef:
           name: grafana-aws-secrets
+          optional: true
+      - prefix: AWX_
+        secretRef:
+          name: awx-aws-secrets
           optional: true
     livenessProbe:
       timeoutSeconds: 6
