@@ -1,0 +1,85 @@
+{{- if .Values.grafana.sidecar.enabled }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "app.name" . }}-{{ .Release.Name }}-grafana
+---
+# The dashboards sidecar only reads ConfigMaps and Secrets of this namespace.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "app.name" . }}-{{ .Release.Name }}-grafana-sidecar
+rules:
+  - apiGroups: [""]
+    resources: [configmaps, secrets]
+    verbs: [get, list, watch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "app.name" . }}-{{ .Release.Name }}-grafana-sidecar
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "app.name" . }}-{{ .Release.Name }}-grafana-sidecar
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "app.name" . }}-{{ .Release.Name }}-grafana
+    namespace: {{ .Release.Namespace }}
+---
+# Provisioning files mounted next to the ones kept on the NAS.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "app.name" . }}-{{ .Release.Name }}-grafana-provisioning
+data:
+  dashboards-sidecar.yaml: |
+    apiVersion: 1
+    providers:
+      - name: sidecar
+        folder: {{ .Values.grafana.sidecar.dashboards.folder | quote }}
+        folderUid: {{ .Values.grafana.sidecar.dashboards.folderUid | quote }}
+        type: file
+        disableDeletion: true
+        allowUiUpdates: false
+        updateIntervalSeconds: 30
+        options:
+          path: /tmp/dashboards
+  # Run by the sidecar after each change, on the copies it wrote only:
+  # - give each dashboard its own UID ("kps-" prefix, links updated), so a
+  #   dashboard already in Grafana with the same UID is never overwritten;
+  {{- if .Values.grafana.sidecar.dashboards.defaultDatasourceUid }}
+  # - preselect the given datasource in the "Data source" picker.
+  {{- end }}
+  prepare-dashboards.sh: |
+    #!/bin/sh
+    python - <<'PY'
+    import glob, json, re
+    PREFIX = "kps-"
+    DATASOURCE = {{ .Values.grafana.sidecar.dashboards.defaultDatasourceUid | quote }}
+
+    def new_uid(uid):
+        return uid if uid.startswith(PREFIX) else (PREFIX + uid)[:40]
+
+    for path in glob.glob("/tmp/dashboards/*.json"):
+        with open(path) as f:
+            text = f.read()
+        text = re.sub(r"/d/([A-Za-z0-9_-]+)", lambda m: "/d/" + new_uid(m.group(1)), text)
+        dashboard = json.loads(text)
+        if dashboard.get("uid"):
+            dashboard["uid"] = new_uid(dashboard["uid"])
+        dashboard.pop("id", None)
+        if DATASOURCE:
+            for var in dashboard.get("templating", {}).get("list", []):
+                if var.get("type") == "datasource" and var.get("query") == "prometheus":
+                    var["current"] = {"selected": True, "text": DATASOURCE, "value": DATASOURCE}
+        with open(path, "w") as f:
+            json.dump(dashboard, f)
+    PY
+  {{- with .Values.grafana.provisionedDatasources }}
+  datasources-helm.yaml: |
+    apiVersion: 1
+    datasources:
+{{ toYaml . | indent 6 }}
+  {{- end }}
+{{- end }}

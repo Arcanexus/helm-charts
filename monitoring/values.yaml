@@ -101,6 +101,26 @@ grafana:
     secretStore: parameterstore
     remoteKey: /authentik/grafana
 
+  # Load dashboards from labelled ConfigMaps (kube-prometheus-stack ships
+  # them that way) into the "folder" Grafana folder.
+  sidecar:
+    enabled: false
+    image: quay.io/kiwigrid/k8s-sidecar:2.14.1
+    dashboards:
+      label: grafana_dashboard
+      labelValue: "1"
+      # A folder of its own, so no existing folder or dashboard is touched.
+      folder: Kubernetes (k3s)
+      folderUid: kps-kubernetes
+      # Datasource UID the loaded dashboards select by default (their
+      # "Data source" picker otherwise starts on Grafana's default datasource).
+      # Empty = leave the dashboards as they are.
+      defaultDatasourceUid: ""
+
+  # Extra datasources provisioned from Helm (Grafana provisioning format),
+  # added to the ones on the NAS. Needs sidecar.enabled.
+  provisionedDatasources: []
+
   volumes:
     config:
       name: config
