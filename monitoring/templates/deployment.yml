@@ -126,6 +126,10 @@ spec:
       securityContext:
         runAsUser: {{ .Values.grafana.security.runAsUser }}
         runAsGroup: {{ .Values.grafana.security.runAsGroup }}
+      {{- with .Values.grafana.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- if .Values.grafana.sidecar.enabled }}
       serviceAccountName: {{ include "app.name" . }}-{{ .Release.Name }}-grafana
       {{- end }}

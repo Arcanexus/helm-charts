@@ -101,6 +101,16 @@ grafana:
     secretStore: parameterstore
     remoteKey: /authentik/grafana
 
+  # k3s-3 is the low-performance node: keep Grafana off it.
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: NotIn
+                values: [k3s-3]
+
   # Load dashboards from labelled ConfigMaps (kube-prometheus-stack ships
   # them that way) into the "folder" Grafana folder.
   sidecar:
