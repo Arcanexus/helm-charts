@@ -110,6 +110,10 @@ spec:
   revisionHistoryLimit: 0
   template:
     metadata:
+      {{- if .Values.grafana.sidecar.enabled }}
+      annotations:
+        checksum/grafana-provisioning: {{ include (print $.Template.BasePath "/grafana-sidecar.yaml") . | sha256sum }}
+      {{- end }}
       labels:
         app: {{ include "app.name" . }}-{{ .Release.Name }}-grafana
         app.kubernetes.io/name: {{ include "app.name" . }}-{{ .Release.Name }}-grafana
@@ -122,7 +126,37 @@ spec:
       securityContext:
         runAsUser: {{ .Values.grafana.security.runAsUser }}
         runAsGroup: {{ .Values.grafana.security.runAsGroup }}
+      {{- if .Values.grafana.sidecar.enabled }}
+      serviceAccountName: {{ include "app.name" . }}-{{ .Release.Name }}-grafana
+      {{- end }}
       containers:
+      {{- if .Values.grafana.sidecar.enabled }}
+      # Copies the dashboards found in ConfigMaps labelled
+      # {{ .Values.grafana.sidecar.dashboards.label }}={{ .Values.grafana.sidecar.dashboards.labelValue }} (e.g. from kube-prometheus-stack)
+      # into a folder that Grafana's file provider reads.
+      - name: grafana-sc-dashboards
+        image: {{ .Values.grafana.sidecar.image }}
+        env:
+          - name: METHOD
+            value: WATCH
+          - name: LABEL
+            value: {{ .Values.grafana.sidecar.dashboards.label | quote }}
+          - name: LABEL_VALUE
+            value: {{ .Values.grafana.sidecar.dashboards.labelValue | quote }}
+          - name: FOLDER
+            value: /tmp/dashboards
+          - name: RESOURCE
+            value: both
+        resources:
+          requests:
+            cpu: 10m
+            memory: 64Mi
+          limits:
+            memory: 128Mi
+        volumeMounts:
+        - name: grafana-sc-dashboards
+          mountPath: /tmp/dashboards
+      {{- end }}
       - name: grafana
         image: {{ .Values.grafana.image }}
         imagePullPolicy: Always
@@ -157,7 +191,29 @@ spec:
           mountPath: {{ .Values.grafana.volumes.data.containerMountPath }}
         - name: grafana-logs
           mountPath: {{ .Values.grafana.volumes.logs.containerMountPath }}
+        {{- if .Values.grafana.sidecar.enabled }}
+        - name: grafana-sc-dashboards
+          mountPath: /tmp/dashboards
+          readOnly: true
+        - name: grafana-provisioning
+          mountPath: {{ .Values.grafana.environment.GF_PATHS_PROVISIONING }}/dashboards/sidecar.yaml
+          subPath: dashboards-sidecar.yaml
+          readOnly: true
+        {{- if .Values.grafana.provisionedDatasources }}
+        - name: grafana-provisioning
+          mountPath: {{ .Values.grafana.environment.GF_PATHS_PROVISIONING }}/datasources/helm.yaml
+          subPath: datasources-helm.yaml
+          readOnly: true
+        {{- end }}
+        {{- end }}
       volumes:
+      {{- if .Values.grafana.sidecar.enabled }}
+      - name: grafana-sc-dashboards
+        emptyDir: {}
+      - name: grafana-provisioning
+        configMap:
+          name: {{ include "app.name" . }}-{{ .Release.Name }}-grafana-provisioning
+      {{- end }}
       - name: grafana-config
         nfs:
           server: {{ .Values.grafana.volumes.config.server }}
