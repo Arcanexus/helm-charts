@@ -44,6 +44,26 @@ data:
         updateIntervalSeconds: 30
         options:
           path: /tmp/dashboards
+  {{- with .Values.grafana.sidecar.dashboards.defaultDatasourceUid }}
+  # Run by the sidecar after each change: preselect this datasource in the
+  # "Data source" picker of the dashboards that default to "default".
+  set-default-datasource.sh: |
+    #!/bin/sh
+    python - <<'PY'
+    import glob, json
+    for path in glob.glob("/tmp/dashboards/*.json"):
+        with open(path) as f:
+            dashboard = json.load(f)
+        changed = False
+        for var in dashboard.get("templating", {}).get("list", []):
+            if var.get("type") == "datasource" and var.get("query") == "prometheus":
+                var["current"] = {"selected": True, "text": "{{ . }}", "value": "{{ . }}"}
+                changed = True
+        if changed:
+            with open(path, "w") as f:
+                json.dump(dashboard, f)
+    PY
+  {{- end }}
   {{- with .Values.grafana.provisionedDatasources }}
   datasources-helm.yaml: |
     apiVersion: 1

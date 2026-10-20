@@ -110,6 +110,10 @@ grafana:
       label: grafana_dashboard
       labelValue: "1"
       folder: Kubernetes
+      # Datasource UID the loaded dashboards select by default (their
+      # "Data source" picker otherwise starts on Grafana's default datasource).
+      # Empty = leave the dashboards as they are.
+      defaultDatasourceUid: ""
 
   # Extra datasources provisioned from Helm (Grafana provisioning format),
   # added to the ones on the NAS. Needs sidecar.enabled.

@@ -147,6 +147,10 @@ spec:
             value: /tmp/dashboards
           - name: RESOURCE
             value: both
+          {{- if .Values.grafana.sidecar.dashboards.defaultDatasourceUid }}
+          - name: SCRIPT
+            value: /scripts/set-default-datasource.sh
+          {{- end }}
         resources:
           requests:
             cpu: 10m
@@ -156,6 +160,12 @@ spec:
         volumeMounts:
         - name: grafana-sc-dashboards
           mountPath: /tmp/dashboards
+        {{- if .Values.grafana.sidecar.dashboards.defaultDatasourceUid }}
+        - name: grafana-provisioning
+          mountPath: /scripts/set-default-datasource.sh
+          subPath: set-default-datasource.sh
+          readOnly: true
+        {{- end }}
       {{- end }}
       - name: grafana
         image: {{ .Values.grafana.image }}
