@@ -109,7 +109,9 @@ grafana:
     dashboards:
       label: grafana_dashboard
       labelValue: "1"
-      folder: Kubernetes
+      # A folder of its own, so no existing folder or dashboard is touched.
+      folder: Kubernetes (k3s)
+      folderUid: kps-kubernetes
       # Datasource UID the loaded dashboards select by default (their
       # "Data source" picker otherwise starts on Grafana's default datasource).
       # Empty = leave the dashboards as they are.

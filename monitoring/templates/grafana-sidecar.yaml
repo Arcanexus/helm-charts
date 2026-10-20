@@ -38,32 +38,44 @@ data:
     providers:
       - name: sidecar
         folder: {{ .Values.grafana.sidecar.dashboards.folder | quote }}
+        folderUid: {{ .Values.grafana.sidecar.dashboards.folderUid | quote }}
         type: file
         disableDeletion: true
         allowUiUpdates: false
         updateIntervalSeconds: 30
         options:
           path: /tmp/dashboards
-  {{- with .Values.grafana.sidecar.dashboards.defaultDatasourceUid }}
-  # Run by the sidecar after each change: preselect this datasource in the
-  # "Data source" picker of the dashboards that default to "default".
-  set-default-datasource.sh: |
+  # Run by the sidecar after each change, on the copies it wrote only:
+  # - give each dashboard its own UID ("kps-" prefix, links updated), so a
+  #   dashboard already in Grafana with the same UID is never overwritten;
+  {{- if .Values.grafana.sidecar.dashboards.defaultDatasourceUid }}
+  # - preselect the given datasource in the "Data source" picker.
+  {{- end }}
+  prepare-dashboards.sh: |
     #!/bin/sh
     python - <<'PY'
-    import glob, json
+    import glob, json, re
+    PREFIX = "kps-"
+    DATASOURCE = {{ .Values.grafana.sidecar.dashboards.defaultDatasourceUid | quote }}
+
+    def new_uid(uid):
+        return uid if uid.startswith(PREFIX) else (PREFIX + uid)[:40]
+
     for path in glob.glob("/tmp/dashboards/*.json"):
         with open(path) as f:
-            dashboard = json.load(f)
-        changed = False
-        for var in dashboard.get("templating", {}).get("list", []):
-            if var.get("type") == "datasource" and var.get("query") == "prometheus":
-                var["current"] = {"selected": True, "text": "{{ . }}", "value": "{{ . }}"}
-                changed = True
-        if changed:
-            with open(path, "w") as f:
-                json.dump(dashboard, f)
+            text = f.read()
+        text = re.sub(r"/d/([A-Za-z0-9_-]+)", lambda m: "/d/" + new_uid(m.group(1)), text)
+        dashboard = json.loads(text)
+        if dashboard.get("uid"):
+            dashboard["uid"] = new_uid(dashboard["uid"])
+        dashboard.pop("id", None)
+        if DATASOURCE:
+            for var in dashboard.get("templating", {}).get("list", []):
+                if var.get("type") == "datasource" and var.get("query") == "prometheus":
+                    var["current"] = {"selected": True, "text": DATASOURCE, "value": DATASOURCE}
+        with open(path, "w") as f:
+            json.dump(dashboard, f)
     PY
-  {{- end }}
   {{- with .Values.grafana.provisionedDatasources }}
   datasources-helm.yaml: |
     apiVersion: 1
