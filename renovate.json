@@ -1,0 +1,10 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", "schedule:weekends"],
+  "timezone": "Europe/Paris",
+  "dependencyDashboardTitle": "Outdated charts and images",
+  "labels": ["renovate"],
+  "kubernetes": {
+    "managerFilePatterns": ["/(^|/)templates/.+\\.ya?ml$/"]
+  }
+}
