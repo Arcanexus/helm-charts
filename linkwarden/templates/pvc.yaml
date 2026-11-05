@@ -1,0 +1,18 @@
+{{- if .Values.volumes.postgresPvc.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-data
+  labels:
+    app: postgres
+  annotations:
+    # Argo CD ne doit jamais supprimer la base, meme en prune
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.volumes.postgresPvc.storageClass }}
+  resources:
+    requests:
+      storage: {{ .Values.volumes.postgresPvc.size }}
+{{- end }}

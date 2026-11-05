@@ -64,6 +64,9 @@ spec:
     matchLabels:
       app: postgres
   revisionHistoryLimit: 0
+  # Jamais deux Postgres sur le meme dossier de donnees
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -90,9 +93,14 @@ spec:
           mountPath: {{ .Values.volumes.dbdata.containerMountPath }}
       volumes:
       - name: postgres-data
+        {{- if .Values.volumes.postgresPvc.enabled }}
+        persistentVolumeClaim:
+          claimName: postgres-data
+        {{- else }}
         nfs:
           server: {{ .Values.volumes.dbdata.server }}
           path: {{ .Values.volumes.dbdata.path }}
+        {{- end }}
 
 
 ---
