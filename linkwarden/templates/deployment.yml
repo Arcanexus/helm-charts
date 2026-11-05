@@ -90,7 +90,11 @@ spec:
         {{- end }}
         volumeMounts:
         - name: postgres-data
+          {{- if .Values.volumes.postgresPvc.enabled }}
+          mountPath: {{ .Values.volumes.postgresPvc.containerMountPath }}
+          {{- else }}
           mountPath: {{ .Values.volumes.dbdata.containerMountPath }}
+          {{- end }}
       volumes:
       - name: postgres-data
         {{- if .Values.volumes.postgresPvc.enabled }}

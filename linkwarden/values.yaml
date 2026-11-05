@@ -5,11 +5,14 @@ volumes:
     path: /volume2/docker-data/linkwarden/dbdata
     containerMountPath: /var/lib/postgresql/data
   # PVC dynamique pour Postgres. Quand enabled, il remplace le montage NFS
-  # direct "dbdata" ci-dessus (gardé comme sauvegarde de l'ancienne base 16).
+  # direct "dbdata" ci-dessus (garde comme sauvegarde de l'ancienne base 16).
   postgresPvc:
     enabled: true
     storageClass: nfs
     size: 5Gi
+    # Postgres 18+ : monter le parent, les donnees vont dans 18/docker
+    # (PGDATA par defaut de l'image), ce qui permet les futurs pg_upgrade.
+    containerMountPath: /var/lib/postgresql
   linkwardendata:
     name: linkwardendata
     server: 192.168.2.50
@@ -52,7 +55,7 @@ pods:
         value: http://meilisearch:7700
         
   postgres:
-    image: postgres:17.11-alpine
+    image: postgres:18.6-alpine
     replicas: 1
 
     security:
@@ -66,9 +69,6 @@ pods:
         value: linkwarden
       - name: POSTGRES_DB
         value: postgres
-      # Sous-dossier : evite le conflit avec la racine du volume
-      - name: PGDATA
-        value: /var/lib/postgresql/data/pgdata
 
   meilisearch:
     image: getmeili/meilisearch:v1.12.8
