@@ -1,8 +1,12 @@
 # GitHub credentials used by the runner scale sets (githubConfigSecret in the
 # gha-runner-scale-set chart). ARC expects the PAT under the key github_token.
-githubToken:
-  # Name of the Kubernetes secret, referenced by githubConfigSecret.
-  secretName: github-gha-pat-token
-  # SSM Parameter Store key holding the PAT (ClusterSecretStore parameterstore).
-  remoteKey: git_pat_token
-  refreshInterval: 1h
+# One ExternalSecret per entry, read from SSM Parameter Store
+# (ClusterSecretStore parameterstore).
+githubTokens:
+  # Org Arcanexus (scale set github-runners-arcanexus)
+  - secretName: github-gha-pat-token
+    remoteKey: git_pat_token
+  # Repo nex84/mydaya (scale set github-runners-mydaya), fine-grained PAT
+  - secretName: github-gha-pat-token-mydaya
+    remoteKey: git_pat_token_mydaya
+refreshInterval: 1h
