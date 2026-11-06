@@ -1,0 +1,130 @@
+{{- with .Values.bitwarden }}
+{{- if .enabled }}
+# TLS chain for bitwarden-sdk-server, as in the External Secrets docs:
+# self-signed bootstrap issuer -> CA certificate -> CA issuer -> server certificate.
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: {{ .tls.bootstrapIssuer }}
+  labels:
+    {{- include "cluster-base.labels" $ | nindent 4 }}
+  annotations:
+    {{- include "cluster-base.crdAnnotations" $ | nindent 4 }}
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ .tls.caCertificateName }}
+  namespace: {{ .tls.certManagerNamespace }}
+  labels:
+    {{- include "cluster-base.labels" $ | nindent 4 }}
+  annotations:
+    {{- include "cluster-base.crdAnnotations" $ | nindent 4 }}
+spec:
+  isCA: true
+  commonName: external-secrets-bitwarden-bootstrap
+  subject:
+    organizations:
+      - external-secrets.io
+  secretName: {{ .tls.secretName }}
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  issuerRef:
+    name: {{ .tls.bootstrapIssuer }}
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: {{ .tls.caIssuer }}
+  labels:
+    {{- include "cluster-base.labels" $ | nindent 4 }}
+  annotations:
+    {{- include "cluster-base.crdAnnotations" $ | nindent 4 }}
+spec:
+  ca:
+    secretName: {{ .tls.secretName }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ .tls.secretName }}
+  namespace: {{ .namespace }}
+  labels:
+    {{- include "cluster-base.labels" $ | nindent 4 }}
+  annotations:
+    {{- include "cluster-base.crdAnnotations" $ | nindent 4 }}
+spec:
+  secretName: {{ .tls.secretName }}
+  dnsNames:
+    - bitwarden-sdk-server.{{ .namespace }}.svc.cluster.local
+    - external-secrets-bitwarden-sdk-server.{{ .namespace }}.svc.cluster.local
+    - localhost
+  ipAddresses:
+    - 127.0.0.1
+    - ::1
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS8
+    size: 2048
+  issuerRef:
+    name: {{ .tls.caIssuer }}
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: {{ .tokenSecretName }}
+  namespace: {{ .namespace }}
+  labels:
+    {{- include "cluster-base.labels" $ | nindent 4 }}
+  annotations:
+    {{- include "cluster-base.crdAnnotations" $ | nindent 4 }}
+spec:
+  refreshInterval: {{ $.Values.externalSecrets.refreshInterval }}
+  secretStoreRef:
+    name: {{ $.Values.parameterStore.name }}
+    kind: ClusterSecretStore
+  target:
+    name: {{ .tokenSecretName }}
+    creationPolicy: Owner
+  data:
+    - secretKey: token
+      remoteRef:
+        key: {{ .tokenRemoteKey | quote }}
+        property: token
+---
+apiVersion: external-secrets.io/v1
+kind: ClusterSecretStore
+metadata:
+  name: {{ .name }}
+  labels:
+    {{- include "cluster-base.labels" $ | nindent 4 }}
+  annotations:
+    {{- include "cluster-base.crdAnnotations" $ | nindent 4 }}
+spec:
+  provider:
+    bitwardensecretsmanager:
+      apiURL: {{ required "bitwarden.apiURL" .apiURL }}
+      identityURL: {{ required "bitwarden.identityURL" .identityURL }}
+      organizationID: {{ required "bitwarden.organizationID" .organizationID }}
+      projectID: {{ required "bitwarden.projectID" .projectID }}
+      bitwardenServerSDKURL: {{ .sdkServerURL }}
+      auth:
+        secretRef:
+          credentials:
+            name: {{ .tokenSecretName }}
+            namespace: {{ .namespace }}
+            key: token
+      caProvider:
+        type: Secret
+        name: {{ .tls.secretName }}
+        namespace: {{ .namespace }}
+        key: ca.crt
+{{- end }}
+{{- end }}
