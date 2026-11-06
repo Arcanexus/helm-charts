@@ -48,7 +48,7 @@ Most charts are self-contained application charts (a Deployment/StatefulSet, Ser
 | [freshrss](freshrss) | FreshRSS | |
 | [gitea](gitea) | Wrapper chart for Gitea with static NFS-backed persistence | [gitea/gitea](https://dl.gitea.com/charts/) |
 | [github-arc](github-arc) | GitHub App credentials (from SSM) for the GitHub ARC runner scale sets | |
-| [cluster-base](cluster-base) | Cluster-wide base objects: ClusterSecretStores (SSM, Bitwarden), ClusterIssuers (Let's Encrypt Route53, Bitwarden TLS chain), nfs StorageClass, Argo CD repo-creds from SSM | |
+| [cluster-base](cluster-base) | Cluster-wide base objects: ClusterSecretStores (SSM, Bitwarden), ClusterIssuers (Let's Encrypt Route53, Bitwarden TLS chain), nfs StorageClass | |
 | [homepage](homepage) | Homepage dashboard | |
 | [http-redirects](http-redirects) | HTTP redirects using Traefik and cert-manager | |
 | [immich](immich) | Immich, including the Immich Kiosk companion app | |

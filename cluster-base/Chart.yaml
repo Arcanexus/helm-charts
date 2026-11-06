@@ -1,5 +1,5 @@
 apiVersion: v2
 name: cluster-base
-description: Cluster-wide base objects that everything else needs - ClusterSecretStores, ClusterIssuers, the nfs StorageClass and the Argo CD secrets that come from SSM
+description: Cluster-wide base objects that everything else needs - ClusterSecretStores, ClusterIssuers and the nfs StorageClass
 type: application
-version: 0.1.0
+version: 0.2.0
