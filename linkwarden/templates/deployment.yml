@@ -115,7 +115,7 @@ metadata:
   labels:
     app: meilisearch
 spec:
-  replicas: {{ .Values.pods.postgres.replicas }}
+  replicas: {{ .Values.pods.meilisearch.replicas }}
   selector:
     matchLabels:
       app: meilisearch
@@ -139,9 +139,9 @@ spec:
         env:
         - name: TZ
           value: "Europe/Paris"
-          {{- if .Values.pods.meilisearch.environment }}
-            {{- toYaml .Values.pods.meilisearch.environment | nindent 10 }}
-          {{- end }}
+        {{- if .Values.pods.meilisearch.environment }}
+          {{- toYaml .Values.pods.meilisearch.environment | nindent 8 }}
+        {{- end }}
         volumeMounts:
         - name: postgres-data
           mountPath: {{ .Values.volumes.meilisearchdata.containerMountPath }}
