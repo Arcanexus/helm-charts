@@ -41,7 +41,7 @@ Most charts are self-contained application charts (a Deployment/StatefulSet, Ser
 
 | Chart | Description | Wraps |
 | --- | --- | --- |
-| [authentik](authentik) | Wrapper chart for authentik with static NFS-backed PostgreSQL persistence | [goauthentik/authentik](https://charts.goauthentik.io) |
+| [authentik](authentik) | authentik add-ons (blueprints, ExternalSecrets, blueprints watcher, reload job). Deployed next to the official chart as a second source of the Argo CD Application, which sets the authentik version | [goauthentik/authentik](https://charts.goauthentik.io) (separate source) |
 | [bentopdf](bentopdf) | Deploys the bentopdf application | |
 | [ctbrec](ctbrec) | CTBRec | |
 | [erugo](erugo) | Erugo | |
