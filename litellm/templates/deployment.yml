@@ -37,11 +37,14 @@ spec:
           - name: TZ
             value: "Europe/Paris"
           - name: DATABASE_URL
-            value: "postgresql://{{ .Values.pods.postgres.username }}:{{ .Values.pods.postgres.password }}@litellm-postgres:5432/{{ .Values.pods.postgres.database }}"
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.pods.postgres.existingSecret | default "litellm-postgres-secrets" }}
+                key: DATABASE_URL
           - name: LITELLM_MASTER_KEY
             valueFrom:
               secretKeyRef:
-                name: litellm-secrets
+                name: {{ .Values.pods.litellm.existingSecret | default "litellm-secrets" }}
                 key: LITELLM_MASTER_KEY
           {{- if .Values.pods.litellm.environment }}
             {{- toYaml .Values.pods.litellm.environment | nindent 10 }}
@@ -52,7 +55,7 @@ spec:
           subPath: config.yaml
         envFrom:
         - secretRef:
-            name: litellm-secrets
+            name: {{ .Values.pods.litellm.existingSecret | default "litellm-secrets" }}
       volumes:
         - name: config-volume
           configMap:
@@ -97,7 +100,7 @@ spec:
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: litellm-postgres-secrets
+              name: {{ .Values.pods.postgres.existingSecret | default "litellm-postgres-secrets" }}
               key: password
         volumeMounts:
         - name: postgres-data
@@ -146,7 +149,7 @@ spec:
           - name: OPENAI_API_KEY
             valueFrom:
               secretKeyRef:
-                name: litellm-secrets
+                name: {{ .Values.pods.litellm.existingSecret | default "litellm-secrets" }}
                 key: LITELLM_MASTER_KEY
           - name: OPENAI_API_BASE_URL
             value: "https://{{ .Values.pods.litellm.ingress.host }}/v1"

@@ -99,6 +99,13 @@ gitea:
     enabled: true
     replicas: 1
     image: gitea/runner:1.0.8
+    # Registration token read from an existing Secret (e.g. built by an ExternalSecret).
+    # Must hold the same value as GITEA_RUNNER_REGISTRATION_TOKEN on the Gitea server
+    # (gitea.deployment.env). Empty name = the chart renders runner-secret from
+    # gitea.deployment.env[0].value (legacy).
+    existingSecret:
+      name: ""
+      key: token
     # Docker-in-Docker sidecar the runner starts job containers in
     dindImage: docker:23.0.6-dind
     labels:

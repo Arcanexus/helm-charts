@@ -13,4 +13,10 @@ piholeexporter:
     PIHOLE_PORT: 443
     SKIP_TLS_VERIFICATION: true
 
+  # Pi-hole API token (app password), as a plain value...
   pihole_api_token: ""
+  # ...or from an existing Secret (e.g. built by an ExternalSecret). When
+  # existingSecret.name is set, pihole_api_token is ignored and no Secret is rendered.
+  existingSecret:
+    name: ""
+    key: token

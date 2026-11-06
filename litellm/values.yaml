@@ -35,7 +35,13 @@ pods:
     # nodeSelector:
     #   silent: fanless
 
-    litellm_master_key: "sk-master-Sw4WaS4bkMMCNaYeTYa9"
+    # Secrets of LiteLLM, as plain values (litellm_master_key here, ANTHROPIC_API_KEY
+    # and OPENAI_API_KEY at the root)...
+    litellm_master_key: ""
+    # ...or an existing Secret (e.g. built by an ExternalSecret) holding the keys
+    # LITELLM_MASTER_KEY, ANTHROPIC_API_KEY and OPENAI_API_KEY. When set, the plain
+    # values are ignored and the chart renders no litellm-secrets Secret.
+    existingSecret: ""
 
     environment:
       - name: STORE_MODEL_IN_DB
@@ -47,7 +53,11 @@ pods:
 
     database: litellm
     username: litellm
-    password: litellm
+    # Database password, as a plain value...
+    password: ""
+    # ...or an existing Secret holding the keys password and DATABASE_URL
+    # (postgresql://<username>:<password>@litellm-postgres:5432/<database>).
+    existingSecret: ""
 
   openwebui:
     image: ghcr.io/open-webui/open-webui:main
@@ -76,5 +86,5 @@ pods:
       - name: WEBUI_AUTH
         value: "False"
 
-ANTHROPIC_API_KEY: TBD
-OPENAI_API_KEY: TBD
+ANTHROPIC_API_KEY: ""
+OPENAI_API_KEY: ""

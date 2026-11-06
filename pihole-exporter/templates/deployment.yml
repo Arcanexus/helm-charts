@@ -35,8 +35,15 @@ spec:
           - name: PIHOLE_PASSWORD
             valueFrom:
               secretKeyRef:
+                {{- with .Values.piholeexporter.existingSecret }}
+                {{- if .name }}
+                name: {{ .name }}
+                key: {{ .key }}
+                {{- else }}
                 name: pihole-exporter-secrets
                 key: PIHOLE_API_TOKEN
+                {{- end }}
+                {{- end }}
         securityContext:
           runAsUser: {{ .Values.piholeexporter.security.runAsUser }}
           runAsGroup: {{ .Values.piholeexporter.security.runAsGroup }}
