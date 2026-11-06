@@ -14,6 +14,16 @@ tinyauth:
     COOKIE_DOMAIN: ".arcanexus.com"
     DISABLE_ANALYTICS: "true"
 
+  # Users from AWS SSM Parameter Store through External Secrets.
+  # The SecureString parameter holds JSON: {"users": "user1:<bcrypt>,user2:<bcrypt>"}.
+  # When enabled, USERS below is ignored and no Secret is rendered from values.
+  externalSecret:
+    enabled: false
+    remoteKey: /tinyauth/users
+    secretStore: parameterstore
+    secretStoreKind: ClusterSecretStore
+    refreshInterval: 1h
+
   USERS: 
     - username: admin
       password: $$2a$$10$$UdLYoJ5lgPsC0RKqYH/jMua7zIn0g9kPqWmhYayJYLaZQ/FTmH2/u

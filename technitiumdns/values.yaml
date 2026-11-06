@@ -7,6 +7,16 @@ technitiumdns:
       path: /volume2/docker/technitiumDNS/config
       mountPath: /etc/dns
 
+  # Admin password from AWS SSM Parameter Store through External Secrets.
+  # The SecureString parameter holds JSON: {"password": "..."}.
+  # When enabled, env.DNS_SERVER_ADMIN_PASSWORD is ignored.
+  externalSecret:
+    enabled: false
+    remoteKey: /technitiumdns/admin
+    secretStore: parameterstore
+    secretStoreKind: ClusterSecretStore
+    refreshInterval: 1h
+
   replicas: 1
   image: technitium/dns-server:14.3.0
   pullPolicy: IfNotPresent
