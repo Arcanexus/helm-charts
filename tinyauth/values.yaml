@@ -14,15 +14,12 @@ tinyauth:
     COOKIE_DOMAIN: ".arcanexus.com"
     DISABLE_ANALYTICS: "true"
 
-  # Users from AWS SSM Parameter Store through External Secrets.
-  # The SecureString parameter holds JSON: {"users": "user1:<bcrypt>,user2:<bcrypt>"}.
-  # When enabled, USERS below is ignored and no Secret is rendered from values.
-  externalSecret:
-    enabled: false
-    remoteKey: /tinyauth/users
-    secretStore: parameterstore
-    secretStoreKind: ClusterSecretStore
-    refreshInterval: 1h
+  # Users: either USERS below, or an existing Secret holding "user:<bcrypt>,..."
+  # (for example one built by an ExternalSecret in extraObjects).
+  # When existingSecret.name is set, USERS is ignored and no Secret is rendered.
+  existingSecret:
+    name: ""
+    key: USERS
 
   USERS: 
     - username: admin
@@ -34,3 +31,6 @@ tinyauth:
     ingressClassName: traefik
     annotations:
       cert-manager.io/cluster-issuer: le-wildcard-issuer
+
+# Extra manifests rendered with the release (passed through tpl), e.g. an ExternalSecret
+extraObjects: []

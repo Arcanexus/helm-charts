@@ -38,21 +38,20 @@ spec:
               protocol: {{ .protocol | default "TCP" }}
             {{- end }}
           env:
-            {{- $es := .Values.technitiumdns.externalSecret }}
+            {{- $existing := .Values.technitiumdns.existingSecret }}
             {{- range $key, $value := .Values.technitiumdns.env }}
-            {{- if not (and $es.enabled (eq $key "DNS_SERVER_ADMIN_PASSWORD")) }}
+            {{- if not (and $existing.name (eq $key "DNS_SERVER_ADMIN_PASSWORD")) }}
             - name: {{ $key }}
               value: {{ $value | quote }}
             {{- end }}
             {{- end }}
-            {{- if $es.enabled }}
-            # Admin password from SSM (ExternalSecret below). Technitium only reads
-            # it on first start, when the config volume is still empty.
+            {{- if $existing.name }}
+            # Technitium only reads it on first start, when the config volume is still empty.
             - name: DNS_SERVER_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "app.fullname" . }}-admin
-                  key: password
+                  name: {{ $existing.name }}
+                  key: {{ $existing.key }}
             {{- end }}
           volumeMounts:
             {{- range .Values.technitiumdns.volumes }}
