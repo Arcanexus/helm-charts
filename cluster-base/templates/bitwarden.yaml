@@ -8,6 +8,8 @@ metadata:
   name: {{ .tls.bootstrapIssuer }}
   labels:
     {{- include "cluster-base.labels" $ | nindent 4 }}
+  annotations:
+    {{- include "cluster-base.crdAnnotations" $ | nindent 4 }}
 spec:
   selfSigned: {}
 ---
@@ -18,6 +20,8 @@ metadata:
   namespace: {{ .tls.certManagerNamespace }}
   labels:
     {{- include "cluster-base.labels" $ | nindent 4 }}
+  annotations:
+    {{- include "cluster-base.crdAnnotations" $ | nindent 4 }}
 spec:
   isCA: true
   commonName: external-secrets-bitwarden-bootstrap
@@ -39,6 +43,8 @@ metadata:
   name: {{ .tls.caIssuer }}
   labels:
     {{- include "cluster-base.labels" $ | nindent 4 }}
+  annotations:
+    {{- include "cluster-base.crdAnnotations" $ | nindent 4 }}
 spec:
   ca:
     secretName: {{ .tls.secretName }}
@@ -50,6 +56,8 @@ metadata:
   namespace: {{ .namespace }}
   labels:
     {{- include "cluster-base.labels" $ | nindent 4 }}
+  annotations:
+    {{- include "cluster-base.crdAnnotations" $ | nindent 4 }}
 spec:
   secretName: {{ .tls.secretName }}
   dnsNames:

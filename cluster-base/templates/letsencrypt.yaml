@@ -28,6 +28,8 @@ metadata:
   name: {{ .name }}
   labels:
     {{- include "cluster-base.labels" $ | nindent 4 }}
+  annotations:
+    {{- include "cluster-base.crdAnnotations" $ | nindent 4 }}
 spec:
   acme:
     email: {{ required "letsencrypt.email" .email }}
