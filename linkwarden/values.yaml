@@ -71,7 +71,7 @@ pods:
         value: postgres
 
   meilisearch:
-    image: getmeili/meilisearch:v1.12.8
+    image: getmeili/meilisearch:v1.56.1
     replicas: 1
 
     httpContainerPort: 7700
@@ -80,6 +80,11 @@ pods:
       runAsUser: 0
       runAsGroup: 0
 
+    environment:
+      # Upgrade the index files in place when the image version moves up
+      # (no-op when versions already match). A downgrade still fails.
+      - name: MEILI_UPGRADE_DB
+        value: "true"
     # environment:
     # - name: MEILI_HOST
     #   value: http://meilisearch:7700
