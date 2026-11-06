@@ -1,8 +1,8 @@
 # GitHub credentials used by the runner scale sets (githubConfigSecret in the
 # gha-runner-scale-set chart). One ExternalSecret per entry, read from SSM
 # Parameter Store (ClusterSecretStore parameterstore). Parameters are
-# SecureString (KMS-encrypted; ESO decrypts them; encrypted with KMS alias/ssmkey), named /github-arc/<org> or
-# /github-arc/<owner>/<repo> like the githubConfigUrl of the scale set.
+# SecureString (KMS-encrypted; ESO decrypts them; encrypted with KMS alias/ssmkey), named /github-arc/<org or account> after the
+# GitHub owner the App is installed on.
 #
 # type: app (default) - GitHub App. The parameter is a JSON object with the
 #   keys ARC expects: github_app_id, github_app_installation_id,
@@ -15,8 +15,10 @@ githubCredentials:
   - secretName: github-arc-app-arcanexus
     remoteKey: /github-arc/Arcanexus
     type: app
-  # Repo nex84/mydaya (scale set github-runners-mydaya), App owned by nex84
-  - secretName: github-arc-app-nex84-mydaya
-    remoteKey: /github-arc/nex84/mydaya
+  # Account nex84, App owned by nex84 and installed on all its repos. A user
+  # account has no account-wide runners: each repo gets its own scale set
+  # (github-runners-mydaya for now), all sharing this secret.
+  - secretName: github-arc-app-nex84
+    remoteKey: /github-arc/nex84
     type: app
 refreshInterval: 1h
