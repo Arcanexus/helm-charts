@@ -32,7 +32,7 @@ spec:
           - name: DEBUG
             value: "{{ .Values.pods.healthchecksio.debug }}"
       - name: {{ .Release.Name }}-configwatcher
-        image: alpine:latest
+        image: {{ .Values.pods.configwatcher.image | default "alpine:latest" }}
         command: ["/bin/sh", "-c"]
         args:
         - |

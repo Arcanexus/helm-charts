@@ -15,7 +15,6 @@ pods:
     replicas: 1
     debug: "false"
     tz: "Europe/Paris"
-
-
-
-
+  # Sidecar restarting the pod when the config changes
+  configwatcher:
+    image: alpine:latest

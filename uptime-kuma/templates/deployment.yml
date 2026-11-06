@@ -29,7 +29,7 @@ spec:
       {{- end }}
       initContainers:
       - name: wait-for-db
-        image: busybox
+        image: {{ .Values.pods.waitForDb.image | default "busybox" }}
         command: ['sh', '-c', 'until nc -z -v -w30 uptime-kuma-db {{ .Values.pods.db.dbContainerPort }}; do echo waiting for db; sleep 2; done;']
       containers:
       - name: {{ include "app.name" . }}
