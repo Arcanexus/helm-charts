@@ -1,5 +1,6 @@
 {{- $runner := .Values.gitea.arcrunner }}
 {{- if $runner.enabled }}
+{{- if not $runner.existingSecret.name }}
 apiVersion: v1
 data:
   # The registration token can be obtained from the web UI, API or command-line.
@@ -11,6 +12,7 @@ metadata:
   name: runner-secret
 type: Opaque
 ---
+{{- end }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -55,8 +57,13 @@ spec:
         - name: GITEA_RUNNER_REGISTRATION_TOKEN
           valueFrom:
             secretKeyRef:
+              {{- if $runner.existingSecret.name }}
+              name: {{ $runner.existingSecret.name }}
+              key: {{ $runner.existingSecret.key }}
+              {{- else }}
               name: runner-secret
               key: token
+              {{- end }}
         # - name: GITEA_RUNNER_EPHEMERAL
         #   value: "1"
 {{- if $runner.labels }}
