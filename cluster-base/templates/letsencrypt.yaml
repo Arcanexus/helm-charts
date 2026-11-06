@@ -17,10 +17,14 @@ spec:
   target:
     name: {{ .route53.secretName }}
     creationPolicy: Owner
-  # SSM SecureString JSON: {"access-key-id": "...", "secret-access-key": "..."}
-  dataFrom:
-    - extract:
-        key: {{ .route53.remoteKey | quote }}
+  # Two plain SecureString parameters (shared with other users of this IAM user)
+  data:
+    - secretKey: access-key-id
+      remoteRef:
+        key: {{ .route53.accessKeyIDRemoteKey | quote }}
+    - secretKey: secret-access-key
+      remoteRef:
+        key: {{ .route53.secretAccessKeyRemoteKey | quote }}
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer

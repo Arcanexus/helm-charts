@@ -40,7 +40,7 @@ bitwarden:
     caIssuer: bitwarden-certificate-issuer
 
 # Let's Encrypt wildcard ClusterIssuer, DNS-01 on Route53. The IAM access key ID
-# and secret come together from SSM JSON {"access-key-id": "...", "secret-access-key": "..."}.
+# and secret come from two existing plain SecureString parameters.
 letsencrypt:
   enabled: true
   name: le-wildcard-issuer
@@ -48,7 +48,8 @@ letsencrypt:
   server: https://acme-v02.api.letsencrypt.org/directory
   route53:
     region: eu-west-1
-    remoteKey: /cert-manager/route53
+    accessKeyIDRemoteKey: /IAM/certmanagerUserAccessKey
+    secretAccessKeyRemoteKey: /IAM/certmanagerUserSecretKey
     secretName: route53-credentials
     # Must be cert-manager's cluster resource namespace (its own namespace by default)
     namespace: certmanager
