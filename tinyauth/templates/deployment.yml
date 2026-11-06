@@ -39,8 +39,8 @@ spec:
           - name: USERS
             valueFrom:
               secretKeyRef:
-                name: {{ include "app.fullname" . }}-users
-                key: USERS
+                name: {{ .Values.tinyauth.existingSecret.name | default (printf "%s-users" (include "app.fullname" .)) }}
+                key: {{ if .Values.tinyauth.existingSecret.name }}{{ .Values.tinyauth.existingSecret.key }}{{ else }}USERS{{ end }}
         livenessProbe:
           httpGet:
             path: /api/healthz

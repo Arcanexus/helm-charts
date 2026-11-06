@@ -2,5 +2,5 @@ apiVersion: v2
 name: technitiumdns
 description: A Helm chart for Technitium DNS Server
 type: application
-version: 0.2.0
+version: 0.3.0
 appVersion: "14.3.0"
