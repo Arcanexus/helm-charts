@@ -47,6 +47,7 @@ Most charts are self-contained application charts (a Deployment/StatefulSet, Ser
 | [erugo](erugo) | Erugo | |
 | [freshrss](freshrss) | FreshRSS | |
 | [gitea](gitea) | Wrapper chart for Gitea with static NFS-backed persistence | [gitea/gitea](https://dl.gitea.com/charts/) |
+| [github-arc](github-arc) | GitHub App credentials (from SSM) for the GitHub ARC runner scale sets | |
 | [homepage](homepage) | Homepage dashboard | |
 | [http-redirects](http-redirects) | HTTP redirects using Traefik and cert-manager | |
 | [immich](immich) | Immich, including the Immich Kiosk companion app | |
