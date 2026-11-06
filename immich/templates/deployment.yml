@@ -272,6 +272,9 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      # Give Postgres time to checkpoint and stop cleanly; an unclean stop on NFS
+      # means a very long crash recovery (fsync of every data file) on next start.
+      terminationGracePeriodSeconds: {{ .Values.immich.database.terminationGracePeriodSeconds | default 120 }}
       containers:
         - name: postgres
           image: "{{ .Values.immich.database.image.repository }}:{{ .Values.immich.database.image.tag }}"
@@ -299,9 +302,11 @@ spec:
               port: postgres
             initialDelaySeconds: 20
             periodSeconds: 30
+          # Ready only when Postgres accepts connections (the port is open during recovery too).
+          # Liveness stays a TCP check so a long recovery is not killed and restarted.
           readinessProbe:
-            tcpSocket:
-              port: postgres
+            exec:
+              command: ["pg_isready", "-U", {{ .Values.immich.apiserver.env.DB_USERNAME | quote }}, "-d", {{ .Values.immich.apiserver.env.DB_DATABASE_NAME | quote }}]
             initialDelaySeconds: 10
             periodSeconds: 10
       volumes:

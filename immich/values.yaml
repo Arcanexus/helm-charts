@@ -168,6 +168,7 @@ immich:
     service:
       port: 5432
     shmSize: 128Mi
+    terminationGracePeriodSeconds: 120
     volume:
       database:
         server: 192.168.2.50
