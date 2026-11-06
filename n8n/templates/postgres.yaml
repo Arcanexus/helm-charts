@@ -21,7 +21,7 @@ spec:
     spec:
       restartPolicy: Always
       containers:
-        - image: postgres:13-alpine
+        - image: {{ .Values.postgres.image | default "postgres:13-alpine" }}
           name: postgres
           ports:
             - containerPort: 5432

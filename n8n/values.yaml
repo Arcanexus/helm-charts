@@ -24,3 +24,9 @@ n8n:
 
 resources:
   memoryLimit: 1Gi
+
+postgres:
+  image: postgres:13-alpine
+
+redis:
+  image: redis:6-alpine

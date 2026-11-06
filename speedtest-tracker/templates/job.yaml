@@ -11,7 +11,7 @@ spec:
         spec:
           containers:
           - name: recreate-speedtest-tracker
-            image: bitnami/kubectl:latest
+            image: {{ .Values.recreateJob.image | default "bitnami/kubectl:latest" }}
             imagePullPolicy: IfNotPresent
             command: ["/bin/sh", "-c", "kubectl delete pod -l app={{ include "app.name" . }}"]
           restartPolicy: OnFailure

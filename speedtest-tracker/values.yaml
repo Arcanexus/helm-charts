@@ -34,3 +34,6 @@ pods:
     # nodeSelector:
     #   silent: fanless
 
+# CronJob deleting the pod every night
+recreateJob:
+  image: bitnami/kubectl:latest

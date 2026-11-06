@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: redis
-        image: redis:6-alpine
+        image: {{ .Values.redis.image | default "redis:6-alpine" }}
         ports:
         - containerPort: 6379
 

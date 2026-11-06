@@ -47,3 +47,6 @@ pods:
     
     # nodeSelector:
     #   silent: fanless
+  # initContainer waiting for the database
+  waitForDb:
+    image: busybox

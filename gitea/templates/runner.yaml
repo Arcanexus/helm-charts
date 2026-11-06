@@ -69,7 +69,7 @@ spec:
         - name: runner-data
           mountPath: /data
       - name: daemon
-        image: docker:23.0.6-dind
+        image: {{ $runner.dindImage | default "docker:23.0.6-dind" }}
         env:
         - name: DOCKER_TLS_CERTDIR
           value: /certs
