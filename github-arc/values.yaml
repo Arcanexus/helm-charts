@@ -5,8 +5,8 @@
 githubTokens:
   # Org Arcanexus (scale set github-runners-arcanexus)
   - secretName: github-gha-pat-token
-    remoteKey: git_pat_token
+    remoteKey: /github-arc/arcanexus
   # Repo nex84/mydaya (scale set github-runners-mydaya), fine-grained PAT
   - secretName: github-gha-pat-token-mydaya
-    remoteKey: git_pat_token_mydaya
+    remoteKey: /github-arc/mydaya
 refreshInterval: 1h
