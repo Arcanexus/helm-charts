@@ -1,10 +1,9 @@
 apiVersion: v2
 name: authentik
-description: Wrapper chart for authentik with static NFS-backed PostgreSQL persistence
+description: >-
+  Our additions to authentik (blueprints, ExternalSecrets, blueprints watcher, reload job,
+  optional external PostgreSQL). authentik itself comes from the official chart
+  (https://charts.goauthentik.io), set as a second source in the Argo CD Application,
+  which also sets the authentik version.
 type: application
-version: 0.1.0
-appVersion: "2026.8.5"
-dependencies:
-  - name: authentik
-    repository: https://charts.goauthentik.io
-    version: 2026.8.5
+version: 0.2.0
