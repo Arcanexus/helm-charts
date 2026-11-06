@@ -182,12 +182,12 @@ spec:
           - name: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
             valueFrom:
               secretKeyRef:
-                name: grafana-aws-secrets
+                name: {{ .Values.grafana.oauth.existingSecret }}
                 key: client_id
           - name: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
             valueFrom:
               secretKeyRef:
-                name: grafana-aws-secrets
+                name: {{ .Values.grafana.oauth.existingSecret }}
                 key: client_secret
           {{- end }}
           {{- range $key, $value := .Values.grafana.environment }}

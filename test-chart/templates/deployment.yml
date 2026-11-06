@@ -42,17 +42,17 @@ spec:
           - name: DEFAULT_USERNAME
             valueFrom:
               secretKeyRef:
-                name: {{ include "app.fullname" . }}-aws-secrets
+                name: {{ .Values.testapp.existingSecrets.aws | default (printf "%s-aws-secrets" (include "app.fullname" .)) }}
                 key: default_username
           - name: AWS_DEFAULT_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ include "app.fullname" . }}-aws-secrets
+                name: {{ .Values.testapp.existingSecrets.aws | default (printf "%s-aws-secrets" (include "app.fullname" .)) }}
                 key: default_password
           - name: BITWARDEN_DEFAULT_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ include "app.fullname" . }}-bitwarden-secrets
+                name: {{ .Values.testapp.existingSecrets.bitwarden | default (printf "%s-bitwarden-secrets" (include "app.fullname" .)) }}
                 key: DEFAULT_PASSWORD
         {{- if .Values.testapp.env }}
           {{- range $key, $value := .Values.testapp.env }}

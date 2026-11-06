@@ -19,6 +19,14 @@ tailscale:
   # Set if you're on Headscale instead of tailscale.com's control server
   loginServer: ""
 
+  # OAuth client: plain values, or else an existing Secret with keys
+  # tailscale_client_id / tailscale_client_secret (name defaults to
+  # <fullname>-aws-secrets, built by an ExternalSecret next to the Argo CD Application).
+  oauth:
+    clientId: ""
+    clientSecret: ""
+    existingSecret: ""
+
   # Any extra flags to append to TS_EXTRA_ARGS, e.g. "--advertise-tags=tag:router"
   extraArgs: ""
 

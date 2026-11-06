@@ -1,9 +1,9 @@
 apiVersion: v2
 name: authentik
 description: >-
-  Our additions to authentik (blueprints, ExternalSecrets, blueprints watcher, reload job,
+  Our additions to authentik (blueprints, blueprints watcher, reload job,
   optional external PostgreSQL). authentik itself comes from the official chart
   (https://charts.goauthentik.io), set as a second source in the Argo CD Application,
   which also sets the authentik version.
 type: application
-version: 0.2.0
+version: 0.3.0

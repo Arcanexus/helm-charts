@@ -37,10 +37,14 @@ immich:
     imagePullPolicy: IfNotPresent
     service:
       port: 3000
+    # API key: env.KIOSK_IMMICH_API_KEY below, or else an existing Secret
+    # (name defaults to <fullname>-aws-secrets, built by an ExternalSecret next to the Argo CD Application).
+    existingSecret:
+      name: ""
+      key: kiosk_api_key
     env:
       LANG: fr_FR
       TZ: Europe/Paris
-      # Falls back to the ExternalSecret-managed value (AWS SSM: immich_kiosk_api_key) unless overridden here.
       KIOSK_IMMICH_API_KEY: ""
       KIOSK_IMMICH_URL: "https://immich.arcanexus.com"
       KIOSK_IMMICH_EXTERNAL_URL: ""
