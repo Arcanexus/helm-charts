@@ -4,6 +4,15 @@ volumes:
     server: 192.168.2.50
     path: /volume2/docker-data/linkwarden/dbdata
     containerMountPath: /var/lib/postgresql/data
+  # PVC dynamique pour Postgres. Quand enabled, il remplace le montage NFS
+  # direct "dbdata" ci-dessus (garde comme sauvegarde de l'ancienne base 16).
+  postgresPvc:
+    enabled: true
+    storageClass: nfs
+    size: 5Gi
+    # Postgres 18+ : monter le parent, les donnees vont dans 18/docker
+    # (PGDATA par defaut de l'image), ce qui permet les futurs pg_upgrade.
+    containerMountPath: /var/lib/postgresql
   linkwardendata:
     name: linkwardendata
     server: 192.168.2.50
@@ -46,7 +55,7 @@ pods:
         value: http://meilisearch:7700
         
   postgres:
-    image: postgres:16-alpine
+    image: postgres:18.6-alpine
     replicas: 1
 
     security:
@@ -62,7 +71,7 @@ pods:
         value: postgres
 
   meilisearch:
-    image: getmeili/meilisearch:v1.12.8
+    image: getmeili/meilisearch:v1.56.1
     replicas: 1
 
     httpContainerPort: 7700
@@ -71,6 +80,11 @@ pods:
       runAsUser: 0
       runAsGroup: 0
 
+    environment:
+      # Upgrade the index files in place when the image version moves up
+      # (no-op when versions already match). A downgrade still fails.
+      - name: MEILI_UPGRADE_DB
+        value: "true"
     # environment:
     # - name: MEILI_HOST
     #   value: http://meilisearch:7700

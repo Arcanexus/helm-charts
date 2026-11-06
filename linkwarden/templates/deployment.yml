@@ -64,6 +64,9 @@ spec:
     matchLabels:
       app: postgres
   revisionHistoryLimit: 0
+  # Jamais deux Postgres sur le meme dossier de donnees
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -87,12 +90,21 @@ spec:
         {{- end }}
         volumeMounts:
         - name: postgres-data
+          {{- if .Values.volumes.postgresPvc.enabled }}
+          mountPath: {{ .Values.volumes.postgresPvc.containerMountPath }}
+          {{- else }}
           mountPath: {{ .Values.volumes.dbdata.containerMountPath }}
+          {{- end }}
       volumes:
       - name: postgres-data
+        {{- if .Values.volumes.postgresPvc.enabled }}
+        persistentVolumeClaim:
+          claimName: postgres-data
+        {{- else }}
         nfs:
           server: {{ .Values.volumes.dbdata.server }}
           path: {{ .Values.volumes.dbdata.path }}
+        {{- end }}
 
 
 ---
@@ -103,7 +115,7 @@ metadata:
   labels:
     app: meilisearch
 spec:
-  replicas: {{ .Values.pods.postgres.replicas }}
+  replicas: {{ .Values.pods.meilisearch.replicas }}
   selector:
     matchLabels:
       app: meilisearch
@@ -127,9 +139,9 @@ spec:
         env:
         - name: TZ
           value: "Europe/Paris"
-          {{- if .Values.pods.meilisearch.environment }}
-            {{- toYaml .Values.pods.meilisearch.environment | nindent 10 }}
-          {{- end }}
+        {{- if .Values.pods.meilisearch.environment }}
+          {{- toYaml .Values.pods.meilisearch.environment | nindent 8 }}
+        {{- end }}
         volumeMounts:
         - name: postgres-data
           mountPath: {{ .Values.volumes.meilisearchdata.containerMountPath }}
