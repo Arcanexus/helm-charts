@@ -1,3 +1,9 @@
+# Existing Secret (e.g. built by an ExternalSecret) holding the keys encryption-key
+# (TeslaMate ENCRYPTION_KEY) and db-password (database password, used by TeslaMate,
+# Postgres and Grafana). When set, ENCRYPTION_KEY / DATABASE_PASS / POSTGRES_PASSWORD
+# in the env maps below are ignored.
+existingSecret: ""
+
 teslamate:
   # nodeSelector:
   #   silent: fanless

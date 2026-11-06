@@ -40,8 +40,8 @@ spec:
         env:
           - name: TZ
             value: "Europe/Paris"
-          {{- if .Values.pods.linkwarden.environment }}
-            {{- toYaml .Values.pods.linkwarden.environment | nindent 10 }}
+          {{- with include "linkwarden.env" (list .Values.pods.linkwarden.environment .Values.pods.linkwarden.existingSecret "DATABASE_URL" "NEXTAUTH_SECRET" "POSTGRES_PASSWORD") }}
+            {{- . | nindent 10 }}
           {{- end }}
 
       volumes:
@@ -85,8 +85,8 @@ spec:
         env:
         - name: TZ
           value: "Europe/Paris"
-        {{- if .Values.pods.postgres.environment }}
-          {{- toYaml .Values.pods.postgres.environment | nindent 8 }}
+        {{- with include "linkwarden.env" (list .Values.pods.postgres.environment .Values.pods.linkwarden.existingSecret "POSTGRES_PASSWORD") }}
+          {{- . | nindent 8 }}
         {{- end }}
         volumeMounts:
         - name: postgres-data

@@ -13,7 +13,14 @@ shlink:
     IS_HTTPS_ENABLED: "true"
     SKIP_INITIAL_GEOLITE_DOWNLOAD: "true"
 
+  # API key shared by Shlink (INITIAL_API_KEY, only used when its database has no
+  # key yet) and the web client (SHLINK_SERVER_API_KEY), as a plain value...
   initial_api_key: b68a46dd-9293-474b-9723-229fc7033352
+  # ...or from an existing Secret (e.g. built by an ExternalSecret). When
+  # existingSecret.name is set, initial_api_key is ignored and no Secret is rendered.
+  existingSecret:
+    name: ""
+    key: api-key
 
   volumes:
     dbdata:

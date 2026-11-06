@@ -42,6 +42,11 @@ pods:
       annotations:
         cert-manager.io/cluster-issuer: le-wildcard-issuer
 
+    # Existing Secret (e.g. built by an ExternalSecret) holding the keys DATABASE_URL,
+    # NEXTAUTH_SECRET and POSTGRES_PASSWORD. When set, these three variables are read
+    # from it (here and in pods.postgres) and the plain entries below are ignored.
+    existingSecret: ""
+
     environment:
       - name: DATABASE_URL
         value: postgresql://linkwarden:linkwarden@postgres:5432/postgres

@@ -2,5 +2,5 @@ apiVersion: v2
 name: teslamate
 description: A Helm chart for TeslaMate
 type: application
-version: 0.2.0
+version: 0.3.0
 appVersion: "v2"
