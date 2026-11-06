@@ -1,0 +1,75 @@
+# Cluster-wide base objects. Synced right after external-secrets and before
+# nfs-csi-driver / cert-manager users (sync wave -2 in the app-of-apps).
+# Account-specific values (role ARN, Bitwarden IDs...) are set in the
+# gitops-argocd Application, not here.
+
+# ClusterSecretStore on AWS SSM Parameter Store. Its credentials Secret is the
+# only secret created by hand on a new cluster (see runbooks).
+parameterStore:
+  enabled: true
+  name: parameterstore
+  region: eu-west-1
+  role: ""
+  credentialsSecret:
+    name: aws-parameterstore-secret
+    namespace: external-secrets
+    accessKeyIDKey: access-key
+    secretAccessKeyKey: secret-access-key
+
+# ClusterSecretStore on Bitwarden Secrets Manager (bitwarden-sdk-server of the
+# external-secrets chart), with its TLS chain from cert-manager.
+bitwarden:
+  enabled: false
+  name: bitwarden-secretsmanager-common
+  apiURL: ""
+  identityURL: ""
+  organizationID: ""
+  projectID: ""
+  sdkServerURL: https://bitwarden-sdk-server.external-secrets.svc.cluster.local:9998
+  namespace: external-secrets
+  # Access token, from SSM JSON {"token": "..."}
+  tokenSecretName: bitwarden-access-token
+  tokenRemoteKey: /external-secrets/bitwarden
+  tls:
+    secretName: bitwarden-tls-certs
+    # Namespace where cert-manager keeps ClusterIssuer secrets (its own namespace)
+    certManagerNamespace: certmanager
+    # CA certificate (in certManagerNamespace), same name as the live one
+    caCertificateName: bitwarden-tls-certs
+    bootstrapIssuer: bitwarden-bootstrap-issuer
+    caIssuer: bitwarden-certificate-issuer
+
+# Let's Encrypt wildcard ClusterIssuer, DNS-01 on Route53. The IAM access key ID
+# and secret come together from SSM JSON {"access-key-id": "...", "secret-access-key": "..."}.
+letsencrypt:
+  enabled: true
+  name: le-wildcard-issuer
+  email: ""
+  server: https://acme-v02.api.letsencrypt.org/directory
+  route53:
+    region: eu-west-1
+    remoteKey: /cert-manager/route53
+    secretName: route53-credentials
+    # Must be cert-manager's cluster resource namespace (its own namespace by default)
+    namespace: certmanager
+
+# StorageClass served by csi-driver-nfs
+nfsStorageClass:
+  enabled: true
+  name: nfs
+  server: 192.168.2.50
+  share: /volume1/k8s_nfs
+  subDir: "${pvc.metadata.namespace}/${pvc.metadata.name}"
+  reclaimPolicy: Delete
+  volumeBindingMode: Immediate
+  mountOptions:
+    - nfsvers=4.1
+
+# Argo CD credential templates (secret-type repo-creds) from SSM.
+# Each entry: name, url (prefix), remoteKey (JSON {"username": "...", "password": "..."}), type (git|helm), enableOCI.
+argocd:
+  namespace: argocd
+  repoCreds: []
+
+externalSecrets:
+  refreshInterval: 1h

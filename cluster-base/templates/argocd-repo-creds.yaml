@@ -1,0 +1,38 @@
+{{- range .Values.argocd.repoCreds }}
+---
+# Argo CD credential template: any repo URL starting with .url uses it.
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Values.argocd.namespace }}
+  labels:
+    {{- include "cluster-base.labels" $ | nindent 4 }}
+  annotations:
+    {{- include "cluster-base.crdAnnotations" $ | nindent 4 }}
+spec:
+  refreshInterval: {{ $.Values.externalSecrets.refreshInterval }}
+  secretStoreRef:
+    name: {{ $.Values.parameterStore.name }}
+    kind: ClusterSecretStore
+  target:
+    name: {{ .name }}
+    creationPolicy: Owner
+    template:
+      engineVersion: v2
+      metadata:
+        labels:
+          argocd.argoproj.io/secret-type: repo-creds
+      data:
+        type: {{ .type | default "git" | quote }}
+        url: {{ .url | quote }}
+        {{- if .enableOCI }}
+        enableOCI: "true"
+        {{- end }}
+        username: '{{ "{{ .username }}" }}'
+        password: '{{ "{{ .password }}" }}'
+  # SSM SecureString JSON: {"username": "...", "password": "..."}
+  dataFrom:
+    - extract:
+        key: {{ .remoteKey | quote }}
+{{- end }}

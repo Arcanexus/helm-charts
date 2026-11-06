@@ -1,0 +1,48 @@
+{{- with .Values.letsencrypt }}
+{{- if .enabled }}
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: {{ .route53.secretName }}
+  namespace: {{ .route53.namespace }}
+  labels:
+    {{- include "cluster-base.labels" $ | nindent 4 }}
+  annotations:
+    {{- include "cluster-base.crdAnnotations" $ | nindent 4 }}
+spec:
+  refreshInterval: {{ $.Values.externalSecrets.refreshInterval }}
+  secretStoreRef:
+    name: {{ $.Values.parameterStore.name }}
+    kind: ClusterSecretStore
+  target:
+    name: {{ .route53.secretName }}
+    creationPolicy: Owner
+  # SSM SecureString JSON: {"access-key-id": "...", "secret-access-key": "..."}
+  dataFrom:
+    - extract:
+        key: {{ .route53.remoteKey | quote }}
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: {{ .name }}
+  labels:
+    {{- include "cluster-base.labels" $ | nindent 4 }}
+spec:
+  acme:
+    email: {{ required "letsencrypt.email" .email }}
+    server: {{ .server }}
+    privateKeySecretRef:
+      name: {{ .name }}
+    solvers:
+      - dns01:
+          route53:
+            region: {{ .route53.region }}
+            accessKeyIDSecretRef:
+              name: {{ .route53.secretName }}
+              key: access-key-id
+            secretAccessKeySecretRef:
+              name: {{ .route53.secretName }}
+              key: secret-access-key
+{{- end }}
+{{- end }}
