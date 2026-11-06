@@ -1,8 +1,9 @@
 # GitHub credentials used by the runner scale sets (githubConfigSecret in the
 # gha-runner-scale-set chart). One ExternalSecret per entry, read from SSM
 # Parameter Store (ClusterSecretStore parameterstore). Parameters are
-# SecureString (KMS-encrypted; ESO decrypts them; encrypted with KMS alias/ssmkey), named /github-arc/<org or account> after the
-# GitHub owner the App is installed on.
+# SecureString, encrypted with the KMS key alias/ssmkey (ESO decrypts them),
+# named /github-arc/<org or account> after the GitHub owner the App is
+# installed on.
 #
 # type: app (default) - GitHub App. The parameter is a JSON object with the
 #   keys ARC expects: github_app_id, github_app_installation_id,
