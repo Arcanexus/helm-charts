@@ -77,10 +77,9 @@ grafana:
   
   sso:
     enabled: true
-    # OAuth client credentials from SSM (JSON {client_id, client_secret}),
-    # same client as grafana.arcanexus.com (Authentik grafana-oauth2 provider).
-    secretStore: parameterstore
-    remoteKey: /authentik/grafana
+    # Existing Secret with the OAuth client credentials (keys client_id,
+    # client_secret), e.g. built by an ExternalSecret next to the Argo CD Application.
+    existingSecret: grafana-aws-secrets
     env:
       GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
       GF_AUTH_GENERIC_OAUTH_NAME: "authentik"

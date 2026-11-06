@@ -366,8 +366,8 @@ spec:
             - name: KIOSK_IMMICH_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ printf "%s-aws-secrets" (include "app.fullname" .) }}
-                  key: kiosk_api_key
+                  name: {{ .Values.immich.kiosk.existingSecret.name | default (printf "%s-aws-secrets" (include "app.fullname" .)) }}
+                  key: {{ .Values.immich.kiosk.existingSecret.key }}
             {{- end }}
           livenessProbe:
             httpGet:

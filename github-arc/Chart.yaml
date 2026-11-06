@@ -1,6 +1,0 @@
-apiVersion: v2
-name: github-arc
-description: GitHub App credentials (from SSM) for the GitHub ARC runner scale sets
-type: application
-version: 0.3.0
-appVersion: "0.15.1"

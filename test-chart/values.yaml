@@ -11,6 +11,12 @@ testapp:
   nodeSelector:
     silent: fanless
 
+  # Existing Secrets read by the pod (built by ExternalSecrets next to the
+  # Argo CD Application). Empty = <fullname>-aws-secrets / <fullname>-bitwarden-secrets.
+  existingSecrets:
+    aws: ""
+    bitwarden: ""
+
   security:
     runAsUser: 0
     runAsGroup: 0

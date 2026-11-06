@@ -53,16 +53,26 @@ spec:
                 - NET_ADMIN
                 - NET_RAW
           env:
+            {{- $oauth := .Values.tailscale.oauth }}
+            {{- $secret := $oauth.existingSecret | default (printf "%s-aws-secrets" (include "tailscale-router.fullname" .)) }}
             - name: TS_CLIENT_ID
+              {{- if $oauth.clientId }}
+              value: {{ $oauth.clientId | quote }}
+              {{- else }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ printf "%s-aws-secrets" (include "tailscale-router.fullname" .) | quote }}
+                  name: {{ $secret | quote }}
                   key: tailscale_client_id
+              {{- end }}
             - name: TS_CLIENT_SECRET
+              {{- if $oauth.clientSecret }}
+              value: {{ $oauth.clientSecret | quote }}
+              {{- else }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ printf "%s-aws-secrets" (include "tailscale-router.fullname" .) | quote }}
+                  name: {{ $secret | quote }}
                   key: tailscale_client_secret
+              {{- end }}
             - name: POD_NAME
               valueFrom:
                 fieldRef:

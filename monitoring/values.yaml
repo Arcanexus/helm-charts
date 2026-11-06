@@ -98,8 +98,9 @@ grafana:
   # shared with the Authentik blueprint for the grafana provider.
   oauth:
     enabled: true
-    secretStore: parameterstore
-    remoteKey: /authentik/grafana
+    # Existing Secret with the OAuth client credentials (keys client_id,
+    # client_secret), e.g. built by an ExternalSecret next to the Argo CD Application.
+    existingSecret: grafana-aws-secrets
 
   # k3s-3 is the low-performance node: keep Grafana off it.
   affinity:

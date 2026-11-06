@@ -41,13 +41,12 @@ Most charts are self-contained application charts (a Deployment/StatefulSet, Ser
 
 | Chart | Description | Wraps |
 | --- | --- | --- |
-| [authentik](authentik) | authentik add-ons (blueprints, ExternalSecrets, blueprints watcher, reload job). Deployed next to the official chart as a second source of the Argo CD Application, which sets the authentik version | [goauthentik/authentik](https://charts.goauthentik.io) (separate source) |
+| [authentik](authentik) | authentik add-ons (blueprints, blueprints watcher, reload job). Deployed next to the official chart as a second source of the Argo CD Application, which sets the authentik version | [goauthentik/authentik](https://charts.goauthentik.io) (separate source) |
 | [bentopdf](bentopdf) | Deploys the bentopdf application | |
 | [ctbrec](ctbrec) | CTBRec | |
 | [erugo](erugo) | Erugo | |
 | [freshrss](freshrss) | FreshRSS | |
 | [gitea](gitea) | Wrapper chart for Gitea with static NFS-backed persistence | [gitea/gitea](https://dl.gitea.com/charts/) |
-| [github-arc](github-arc) | GitHub App credentials (from SSM) for the GitHub ARC runner scale sets | |
 | [cluster-base](cluster-base) | Cluster-wide base objects: ClusterSecretStores (SSM, Bitwarden), ClusterIssuers (Let's Encrypt Route53, Bitwarden TLS chain), nfs StorageClass | |
 | [homepage](homepage) | Homepage dashboard | |
 | [http-redirects](http-redirects) | HTTP redirects using Traefik and cert-manager | |

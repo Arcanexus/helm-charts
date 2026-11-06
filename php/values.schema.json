@@ -78,17 +78,8 @@
         "database": { "type": "string" },
         "user": { "type": "string" },
         "existingSecret": { "type": "string" },
-        "externalSecret": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "secretStore": { "type": "string" },
-            "secretStoreKind": { "enum": ["SecretStore", "ClusterSecretStore"] },
-            "refreshInterval": { "type": "string" },
-            "passwordKey": { "type": "string", "minLength": 1 },
-            "credentialsKey": { "type": "string" }
-          }
-        },
+        "rootPassword": { "type": "string" },
+        "password": { "type": "string" },
         "volumes": {
           "type": "object",
           "additionalProperties": false,

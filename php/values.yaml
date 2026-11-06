@@ -64,15 +64,12 @@ mariadb:
   database: phpdb
   user: phpuser
 
-  # Root and user passwords both come from one remote key, synced by an
-  # ExternalSecret into <fullname>-aws-secrets (keys root-password, username, password).
-  # Set existingSecret to use a Secret with those keys instead.
+  # Passwords: plain values below (rendered into <fullname>-aws-secrets), or an
+  # existing Secret with keys root-password, username, password (for example
+  # built by an ExternalSecret next to the Argo CD Application).
   existingSecret: ""
-  externalSecret:
-    secretStore: parameterstore
-    secretStoreKind: ClusterSecretStore
-    refreshInterval: 1h
-    passwordKey: default_password
+  rootPassword: ""
+  password: ""
 
   volumes:
     datas:
