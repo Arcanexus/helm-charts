@@ -37,3 +37,14 @@ Create chart name and version as used by the chart label.
 {{ $user.username }}:{{ $user.password }}
 {{- end -}}
 {{- end -}}
+
+{{/* Secret name + key of the Shlink API key: existingSecret or the chart's own Secret */}}
+{{- define "shlink.apiKeyRef" -}}
+{{- if .Values.shlink.existingSecret.name -}}
+name: {{ .Values.shlink.existingSecret.name }}
+key: {{ .Values.shlink.existingSecret.key }}
+{{- else -}}
+name: {{ include "app.fullname" . }}-shlink-admin-apikey
+key: admin-apikey
+{{- end -}}
+{{- end -}}

@@ -42,8 +42,22 @@ spec:
             - name: DATABASE_HOST
               value: database
             {{- range $key, $value := .Values.teslamate.env }}
+            {{- if not (and $.Values.existingSecret (has $key (list "ENCRYPTION_KEY" "DATABASE_PASS"))) }}
             - name: {{ $key }}
               value: {{ $value | quote }}
+            {{- end }}
+            {{- end }}
+            {{- with .Values.existingSecret }}
+            - name: ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ . }}
+                  key: encryption-key
+            - name: DATABASE_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ . }}
+                  key: db-password
             {{- end }}
           volumeMounts:
             {{- range .Values.teslamate.volumes }}
@@ -96,8 +110,17 @@ spec:
               containerPort: {{ .Values.database.service.port }}
           env:
             {{- range $key, $value := .Values.database.env }}
+            {{- if not (and $.Values.existingSecret (eq $key "POSTGRES_PASSWORD")) }}
             - name: {{ $key }}
               value: {{ $value | quote }}
+            {{- end }}
+            {{- end }}
+            {{- with .Values.existingSecret }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ . }}
+                  key: db-password
             {{- end }}
           volumeMounts:
             - name: database
@@ -159,10 +182,17 @@ spec:
               value: {{ .Values.teslamate.ingress.host | quote }}
             {{- end }}
             {{- range $key, $value := .Values.grafana.env }}
-            {{- if ne $key "GF_SERVER_DOMAIN" }}
+            {{- if and (ne $key "GF_SERVER_DOMAIN") (not (and $.Values.existingSecret (eq $key "DATABASE_PASS"))) }}
             - name: {{ $key }}
               value: {{ $value | quote }}
             {{- end }}
+            {{- end }}
+            {{- with .Values.existingSecret }}
+            - name: DATABASE_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ . }}
+                  key: db-password
             {{- end }}
             {{- if .Values.grafana.sso.enabled }}
             - name: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
