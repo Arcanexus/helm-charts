@@ -37,3 +37,33 @@ Create chart name and version as used by the chart label.
 {{ $user.username }}:{{ $user.password }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+DB_PASSWORD source: immich.database.existingSecret when set, else apiserver.env.DB_PASSWORD.
+*/}}
+{{- define "immich.dbPasswordValue" -}}
+{{- if .Values.immich.database.existingSecret.name -}}
+valueFrom:
+  secretKeyRef:
+    name: {{ .Values.immich.database.existingSecret.name }}
+    key: {{ .Values.immich.database.existingSecret.key }}
+{{- else -}}
+value: {{ .Values.immich.apiserver.env.DB_PASSWORD | quote }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Env of the server and workers: apiserver.env, with DB_PASSWORD read from the existing Secret when set.
+*/}}
+{{- define "immich.apiserverEnv" -}}
+{{- $useSecret := .Values.immich.database.existingSecret.name -}}
+{{- range $key, $value := .Values.immich.apiserver.env }}
+{{- if not (and $useSecret (eq $key "DB_PASSWORD")) }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+{{- else }}
+- name: DB_PASSWORD
+  {{- include "immich.dbPasswordValue" $ | nindent 2 }}
+{{- end }}
+{{- end }}
+{{- end -}}

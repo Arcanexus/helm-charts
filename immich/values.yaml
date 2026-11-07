@@ -165,6 +165,12 @@ immich:
       port: 6379
 
   database:
+    # Existing Secret (e.g. built by an ExternalSecret next to the Argo CD Application) holding
+    # the Postgres password. When name is set, DB_PASSWORD (server, workers) and POSTGRES_PASSWORD
+    # are read from it and apiserver.env.DB_PASSWORD is ignored.
+    existingSecret:
+      name: ""
+      key: password
     image:
       repository: ghcr.io/immich-app/postgres
       tag: 14-vectorchord0.4.3-pgvectors0.2.0@sha256:bcf63357191b76a916ae5eb93464d65c07511da41e3bf7a8416db519b40b1c23
