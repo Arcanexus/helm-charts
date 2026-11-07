@@ -101,14 +101,30 @@ spec:
             value: "{{ .Values.pods.db.security.runAsGroup }}"
           - name: PUID
             value: "{{ .Values.pods.db.security.runAsUser }}"
+          {{- if .Values.pods.db.existingSecret.name }}
           - name: MARIADB_ROOT_PASSWORD
-            value: 'kuma'
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.pods.db.existingSecret.name }}
+                key: {{ .Values.pods.db.existingSecret.rootPasswordKey }}
+          {{- else }}
+          - name: MARIADB_ROOT_PASSWORD
+            value: {{ .Values.pods.db.rootPassword | squote }}
+          {{- end }}
           - name: MARIADB_DATABASE
             value: 'kuma'
           - name: MARIADB_USER
             value: 'kuma'
+          {{- if .Values.pods.db.existingSecret.name }}
           - name: MARIADB_PASSWORD
-            value: 'kuma'
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.pods.db.existingSecret.name }}
+                key: {{ .Values.pods.db.existingSecret.passwordKey }}
+          {{- else }}
+          - name: MARIADB_PASSWORD
+            value: {{ .Values.pods.db.password | squote }}
+          {{- end }}
       volumes:
       - name: {{ include "app.name" . }}-{{ .Values.volumes.uptimekumadata.name }}
         nfs:

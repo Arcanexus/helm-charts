@@ -51,10 +51,7 @@ spec:
               value: 'api'
             - name: VIPS_NOVECTOR
               value: {{ .Values.immich.apiserver.env.VIPS_NOVECTOR | quote }}
-            {{- range $key, $value := .Values.immich.apiserver.env }}
-            - name: {{ $key }}
-              value: {{ $value | quote }}
-            {{- end }}
+            {{- include "immich.apiserverEnv" . | trim | nindent 12 }}
           volumeMounts:
             {{- range .Values.immich.externalvolumes }}
             - name: {{ .name }}
@@ -124,10 +121,7 @@ spec:
               value: 'api'
             - name: VIPS_NOVECTOR
               value: {{ .Values.immich.apiserver.env.VIPS_NOVECTOR | quote }}
-            {{- range $key, $value := .Values.immich.apiserver.env }}
-            - name: {{ $key }}
-              value: {{ $value | quote }}
-            {{- end }}
+            {{- include "immich.apiserverEnv" . | trim | nindent 12 }}
           volumeMounts:
             {{- range .Values.immich.externalvolumes }}
             - name: {{ .name }}
@@ -284,7 +278,7 @@ spec:
               containerPort: {{ .Values.immich.database.service.port }}
           env:
             - name: POSTGRES_PASSWORD
-              value: {{ .Values.immich.apiserver.env.DB_PASSWORD | quote }}
+              {{- include "immich.dbPasswordValue" . | nindent 14 }}
             - name: POSTGRES_USER
               value: {{ .Values.immich.apiserver.env.DB_USERNAME | quote }}
             - name: POSTGRES_DB

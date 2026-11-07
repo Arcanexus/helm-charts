@@ -41,6 +41,16 @@ pods:
     
     dbContainerPort: 3306
 
+    # MariaDB passwords (only read when the data directory is initialised).
+    # Plain values, or an existing Secret (e.g. built by an ExternalSecret next to the
+    # Argo CD Application): when existingSecret.name is set, the plain values are ignored.
+    rootPassword: kuma
+    password: kuma
+    existingSecret:
+      name: ""
+      rootPasswordKey: root-password
+      passwordKey: password
+
     security:
       runAsUser: 0 #1000
       runAsGroup: 0 #1000
