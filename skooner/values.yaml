@@ -13,6 +13,17 @@ skooner:
 
   env: {}
 
+  # Login through an OIDC provider (authentik) instead of a token. Skooner
+  # sends the user's id_token to the API server, so k3s must also trust that
+  # issuer (kube-apiserver --oidc-* flags). Client secret read from a Secret.
+  oidc:
+    enabled: false
+    url: https://authentik.arcanexus.com/application/o/skooner/
+    clientId: skooner
+    scopes: openid email profile groups
+    existingSecret: skooner-oidc
+    secretKey: clientSecret
+
   serviceAccount:
     create: true
     name: skooner-sa
@@ -23,8 +34,7 @@ skooner:
 
   podAnnotations: {}
 
-  nodeSelector:
-    silent: fanless
+  nodeSelector: {}
 
   tolerations: []
   affinity: {}

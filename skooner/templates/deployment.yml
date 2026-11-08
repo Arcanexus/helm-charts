@@ -34,11 +34,26 @@ spec:
         imagePullPolicy: {{ .Values.skooner.imagePullPolicy }}
         ports:
         - containerPort: {{ .Values.skooner.targetPort }}
-        {{- with .Values.skooner.env }}
+        {{- if or .Values.skooner.env .Values.skooner.oidc.enabled }}
         env:
-          {{- range $key, $value := . }}
+          {{- range $key, $value := .Values.skooner.env }}
           - name: {{ $key }}
             value: {{ $value | quote }}
+          {{- end }}
+          {{- with .Values.skooner.oidc }}
+          {{- if .enabled }}
+          - name: OIDC_URL
+            value: {{ .url | quote }}
+          - name: OIDC_ID
+            value: {{ .clientId | quote }}
+          - name: OIDC_SCOPES
+            value: {{ .scopes | quote }}
+          - name: OIDC_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ .existingSecret }}
+                key: {{ .secretKey }}
+          {{- end }}
           {{- end }}
         {{- end }}
         livenessProbe:
