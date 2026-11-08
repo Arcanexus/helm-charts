@@ -1,0 +1,40 @@
+# krr (https://github.com/robusta-dev/krr): CPU/memory requests and limits
+# recommendations from Prometheus history. Read-only: it changes nothing.
+#
+# The CronJob is suspended: it never runs on its own. Start a run with
+#   kubectl -n krr create job --from=cronjob/krr krr-<suffix>
+# and read the report in the Job's logs.
+
+image:
+  repository: robustadev/krr
+  tag: v1.31.3
+  pullPolicy: IfNotPresent
+
+# In-cluster Prometheus (kube-prometheus-stack). Set to "" to let krr discover it.
+prometheusUrl: http://kube-prometheus-stack-prometheus.kube-prometheus-stack.svc:9090
+
+# Arguments after `krr.py simple`. --width keeps the table readable in the logs.
+args:
+  - --max-workers
+  - "3"
+  - --width
+  - "2048"
+extraArgs: []
+
+# Ignored while suspend is true; set suspend: false for a scheduled run.
+schedule: "0 6 * * 1"
+suspend: true
+
+# Finished Jobs (and their logs) are deleted after this many seconds.
+ttlSecondsAfterFinished: 86400
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 512Mi
+  limits:
+    memory: 2Gi
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
