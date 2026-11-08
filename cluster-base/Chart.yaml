@@ -2,4 +2,4 @@ apiVersion: v2
 name: cluster-base
 description: Cluster-wide base objects that everything else needs - ClusterSecretStores, ClusterIssuers and the nfs StorageClass
 type: application
-version: 0.3.0
+version: 0.3.1

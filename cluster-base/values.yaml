@@ -63,8 +63,11 @@ nfsStorageClass:
   subDir: "${pvc.metadata.namespace}/${pvc.metadata.name}"
   reclaimPolicy: Delete
   volumeBindingMode: Immediate
+  # NFS 4.0, not 4.1: with the Synology NAS, 4.1 clients can get stuck in a
+  # TEST_STATEID loop (every NFS mount of the node then stalls). 4.0 has no
+  # TEST_STATEID. Existing PVs keep their own mountOptions: patch them (runbook).
   mountOptions:
-    - nfsvers=4.1
+    - nfsvers=4.0
 
 # RBAC for users logged in through authentik OIDC (Headlamp, kubectl with
 # kubelogin). The k3s API server trusts authentik via an AuthenticationConfiguration

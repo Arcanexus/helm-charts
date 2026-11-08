@@ -11,7 +11,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: nfs-static
   mountOptions:
-    - nfsvers=4
+    - nfsvers=4.0
   nfs:
     server: {{ .Values.volume.influxdbData.server | quote }}
     path: {{ .Values.volume.influxdbData.path | quote }}
@@ -44,7 +44,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: nfs-static
   mountOptions:
-    - nfsvers=4
+    - nfsvers=4.0
   nfs:
     server: {{ .Values.volume.influxdbConfig.server | quote }}
     path: {{ .Values.volume.influxdbConfig.path | quote }}
