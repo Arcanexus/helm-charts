@@ -28,3 +28,14 @@ portainer:
     annotations:
       cert-manager.io/cluster-issuer: le-wildcard-issuer
       # traefik.ingress.kubernetes.io/router.middlewares: authentik-ak-outpost-authentik-embedded-outpost@kubernetescrd
+
+# Portainer Agent (official k8s NodePort manifest). Keep the image on the same
+# version as the Portainer server.
+agent:
+  enabled: true
+  image: portainer/agent:2.21.5
+  nodePort: 30778
+  logLevel: INFO
+  serviceAccountName: portainer-sa-clusteradmin
+  clusterRoleBindingName: portainer-crb-clusteradmin
+  nodeSelector: {}

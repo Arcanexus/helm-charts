@@ -65,3 +65,17 @@ nfsStorageClass:
   volumeBindingMode: Immediate
   mountOptions:
     - nfsvers=4.1
+
+# RBAC for users logged in through authentik OIDC (Headlamp, kubectl with
+# kubelogin). The k3s API server trusts authentik via an AuthenticationConfiguration
+# (runbook), with groups from the "groups" claim prefixed by groupPrefix.
+oidcRbac:
+  enabled: true
+  groupPrefix: "oidc:"
+  bindings:
+    - name: oidc-kubernetes-admins
+      group: Kubernetes Admins
+      clusterRole: cluster-admin
+    - name: oidc-kubernetes-viewers
+      group: Kubernetes Viewers
+      clusterRole: view
