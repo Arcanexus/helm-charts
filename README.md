@@ -54,6 +54,7 @@ Most charts are self-contained application charts (a Deployment/StatefulSet, Ser
 | [influxdb](influxdb) | Wrapper chart for InfluxDB with static NFS-backed persistence | |
 | [iperf3](iperf3) | iPerf3 | |
 | [it-tools](it-tools) | IT-Tools | |
+| [krr](krr) | Robusta KRR resource recommendations, run on demand (suspended CronJob) | |
 | [komga](komga) | Komga | |
 | [linkwarden](linkwarden) | Linkwarden | |
 | [litellm](litellm) | LiteLLM | |

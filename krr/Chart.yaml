@@ -1,0 +1,6 @@
+apiVersion: v2
+name: krr
+description: Robusta KRR run on demand in the cluster (suspended CronJob + read-only RBAC)
+type: application
+version: 0.1.0
+appVersion: "v1.31.3"
