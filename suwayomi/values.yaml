@@ -7,7 +7,7 @@ volumes:
 
 pods:
   suwayomi:
-    image: ghcr.io/suwayomi/suwayomi-server:v2.4.2476
+    image: ghcr.io/suwayomi/suwayomi-server:v2.4.2490
     replicas: 1
 
     nodeSelector:
@@ -37,7 +37,7 @@ pods:
         value: '["https://raw.githubusercontent.com/keiyoushi/extensions/repo/index.min.json", "https://raw.githubusercontent.com/kitsumed/mihonyomi-extensions/releases/index.min.json"]'
 
   flaresolverr:
-    image: ghcr.io/thephaseless/byparr:3.0.4
+    image: ghcr.io/thephaseless/byparr:3.1.1
     container_name: flaresolverr
     replicas: 1
 
