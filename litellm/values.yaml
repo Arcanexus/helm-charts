@@ -60,7 +60,7 @@ pods:
     existingSecret: ""
 
   openwebui:
-    image: ghcr.io/open-webui/open-webui:main
+    image: ghcr.io/open-webui/open-webui:v0.13.3
     replicas: 1
 
     httpContainerPort: 8080
