@@ -1,5 +1,6 @@
 apiVersion: v2
 name: http-redirects
+icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/traefik.svg
 description: Helm chart for HTTP redirects using Traefik and cert-manager
 type: application
-version: 0.1.0
+version: 0.1.1

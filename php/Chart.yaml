@@ -1,6 +1,7 @@
 apiVersion: v2
 description: Generic PHP (Apache) site, with optional MariaDB and phpMyAdmin
 name: php
+icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/php.svg
 type: application
-version: 0.2.0
+version: 0.2.1
 appVersion: "8.3"

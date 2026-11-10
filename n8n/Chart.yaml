@@ -1,5 +1,7 @@
 apiVersion: v2
 name: n8n
-version: 1.0.0
+icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/n8n.svg
+version: 2.4.3
+appVersion: "2.4.3"
 description: A Helm chart to deploy n8n in single or scalable mode
 type: application

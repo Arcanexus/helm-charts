@@ -11,10 +11,10 @@ volumes:
 
 pods:
   healthchecksio:
-    image: ghcr.io/arcanexus/docker-healthchecksio:v1.1.2
+    image: ghcr.io/arcanexus/docker-healthchecksio:v1.2.1
     replicas: 1
     debug: "false"
     tz: "Europe/Paris"
   # Sidecar restarting the pod when the config changes
   configwatcher:
-    image: alpine:latest
+    image: alpine:3.24.3

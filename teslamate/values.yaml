@@ -14,7 +14,7 @@ teslamate:
       mountPath: /opt/app/import
 
   replicas: 1
-  image: teslamate/teslamate:3.0
+  image: teslamate/teslamate:4.4.0
   pullPolicy: IfNotPresent
   nodeSelector:
     silent: fanless
@@ -40,7 +40,7 @@ teslamate:
       traefik.ingress.kubernetes.io/router.middlewares: authentik-ak-outpost-authentik-embedded-outpost@kubernetescrd
 
 database:
-  image: postgres:18-trixie
+  image: postgres:18.6-trixie
   pullPolicy: IfNotPresent
   replicas: 1
   
@@ -62,7 +62,7 @@ database:
       containerMountPath: /var/lib/postgresql
 
 grafana:
-  image: teslamate/grafana:latest
+  image: teslamate/grafana:4.4.0
   pullPolicy: IfNotPresent
   replicas: 1
 
@@ -114,7 +114,7 @@ grafana:
       containerMountPath: /var/lib/grafana
 
 mosquitto:
-  image: eclipse-mosquitto:2
+  image: eclipse-mosquitto:2.1.2-alpine
   pullPolicy: IfNotPresent
   replicas: 1
 

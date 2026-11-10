@@ -1,5 +1,5 @@
 transmute:
-  image: ghcr.io/transmute-app/transmute:latest
+  image: ghcr.io/transmute-app/transmute:2.1.1
   replicas: 1
   port: 3313
 

@@ -17,7 +17,7 @@ volumes:
 
 pods:
   stash:
-    image: stashapp/stash:v0.27.2
+    image: stashapp/stash:v0.32.0
     replicas: 1
 
     nodeSelector:

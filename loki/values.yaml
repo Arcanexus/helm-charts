@@ -31,7 +31,7 @@ volumes:
 
 pods:
   loki:
-    image: grafana/loki:latest
+    image: grafana/loki:3.7.9
     replicas: 0
     httpContainerPort: 3100
     httpExposedPort: 30007
@@ -39,7 +39,7 @@ pods:
     grpcExposedPort: 30008
 
   promtail:
-    image: grafana/promtail:latest
+    image: grafana/promtail:3.6.8
     replicas: 1
     httpContainerPort: 1514
     httpExposedPort: 30009

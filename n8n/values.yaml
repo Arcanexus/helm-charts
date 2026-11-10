@@ -6,7 +6,7 @@ volumes:
     containerMountPath: /var/lib/postgresql/data/pgdata
 
 n8n:
-  imageTag: latest
+  imageTag: 2.4.3
   deploymentMode: scale # single or scale
   encryptionKey: change-this
   db:
@@ -26,7 +26,7 @@ resources:
   memoryLimit: 1Gi
 
 postgres:
-  image: postgres:13-alpine
+  image: postgres:13.23-alpine
 
 redis:
-  image: redis:6-alpine
+  image: redis:6.2.24-alpine

@@ -1,15 +1,15 @@
 apiVersion: v2
-appVersion: latest
+appVersion: "2026.10.27-ef7bae9dd"
 description: SearXNG is a free internet metasearch engine which aggregates results from various search services and databases.
 name: searxng
-version: 1.0.1
+icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/searxng.svg
+version: 2026.10.27
 kubeVersion: ">=1.16.0-0"
 keywords:
   - searx
   - searxng
   - search engine
   - privacy
-icon: https://github.com/searxng/searxng/blob/master/searx/static/themes/simple/img/favicon.png?raw=true
 sources:
   - https://github.com/searxng/searxng
   - https://docs.searxng.org

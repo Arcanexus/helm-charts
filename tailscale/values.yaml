@@ -2,11 +2,11 @@ replicaCount: 1
 
 image:
   repository: tailscale/tailscale
-  tag: stable
+  tag: v1.104.4
   pullPolicy: IfNotPresent
 
 # initContainer enabling IP forwarding
-sysctlImage: busybox:1.36
+sysctlImage: busybox:1.38.0
 
 tailscale:
   hostname: k8s-router

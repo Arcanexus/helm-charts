@@ -1,9 +1,10 @@
 apiVersion: v2
 name: authentik
+icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/authentik.svg
 description: >-
   Our additions to authentik (blueprints, blueprints watcher, reload job,
   optional external PostgreSQL). authentik itself comes from the official chart
   (https://charts.goauthentik.io), set as a second source in the Argo CD Application,
   which also sets the authentik version.
 type: application
-version: 0.3.0
+version: 0.3.1

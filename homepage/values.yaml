@@ -11,7 +11,7 @@ volumes:
     path: /volume2/docker/homepage/images
 pods:
   homepage:
-    image: ghcr.io/gethomepage/homepage:latest
+    image: ghcr.io/gethomepage/homepage:v2.6.0
     replicas: 1
     
     containerPort: 3000

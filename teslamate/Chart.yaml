@@ -1,6 +1,7 @@
 apiVersion: v2
 name: teslamate
+icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/teslamate.svg
 description: A Helm chart for TeslaMate
 type: application
-version: 0.3.0
-appVersion: "v2"
+version: 4.4.0
+appVersion: "4.4.0"

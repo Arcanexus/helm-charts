@@ -1,6 +1,7 @@
 apiVersion: v2
 name: technitiumdns
+icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/technitium.svg
 description: A Helm chart for Technitium DNS Server
 type: application
-version: 0.3.0
-appVersion: "14.3.0"
+version: 15.4.0
+appVersion: "15.4.0"

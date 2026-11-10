@@ -1,8 +1,9 @@
 apiVersion: v2
 name: gitea
+icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/gitea.svg
 description: Wrapper chart for Gitea with static NFS-backed persistence
 type: application
-version: 0.3.0
+version: 0.3.1
 appVersion: "1.27.2"
 dependencies:
   - name: gitea

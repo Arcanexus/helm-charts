@@ -1,5 +1,6 @@
 apiVersion: v2
 name: omnitool
+icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/omni-tools.png
 version: 0.7.0
 appVersion: "0.7.0"
 description: A Helm chart to deploy omnitool application
