@@ -1,5 +1,5 @@
 wireguard:
-  image: donaldzou/wgdashboard:v4.2.5
+  image: donaldzou/wgdashboard:v4.3.4
   replicas: 1
 
   security:
