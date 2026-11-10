@@ -1,5 +1,5 @@
 shlink:
-  image: shlinkio/shlink:5.0
+  image: shlinkio/shlink:5.1.8
   replicas: 1
   port: 8080
 
@@ -39,7 +39,7 @@ shlink:
       # traefik.ingress.kubernetes.io/router.middlewares: authentik-ak-outpost-authentik-embedded-outpost@kubernetescrd
 
 shlinkweb:
-  image: shlinkio/shlink-web-client:4.6
+  image: shlinkio/shlink-web-client:4.8.1
   replicas: 1
   port: 8080
 

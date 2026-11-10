@@ -7,7 +7,7 @@ volumes:
 
 pods:
   erugo:
-    image: wardy784/erugo:latest 
+    image: wardy784/erugo:0.0.2-liveshares 
     replicas: 1
 
     httpContainerPort: 80

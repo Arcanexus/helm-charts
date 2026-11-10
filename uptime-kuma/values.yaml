@@ -13,7 +13,7 @@ volumes:
 
 pods:
   uptimekuma:
-    image: louislam/uptime-kuma:2.0.0-beta.1
+    image: louislam/uptime-kuma:2.5.9
     replicas: 1
 
     httpContainerPort: 3001
@@ -36,7 +36,7 @@ pods:
     #   silent: fanless
 
   db:
-    image: 'mariadb:11.6.2-noble'
+    image: 'mariadb:12.3.3-noble'
     replicas: 1
     
     dbContainerPort: 3306
@@ -59,4 +59,4 @@ pods:
     #   silent: fanless
   # initContainer waiting for the database
   waitForDb:
-    image: busybox
+    image: busybox:1.38.0

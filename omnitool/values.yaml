@@ -1,5 +1,5 @@
 omnitool:
-  image: iib0011/omni-tools:latest
+  image: iib0011/omni-tools:0.7.0
   replicas: 1
   port: 80
 

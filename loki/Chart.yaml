@@ -1,4 +1,6 @@
 apiVersion: v1
 description: A Helm chart for Loki
 name: loki
-version: 0.0.1
+icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/loki.svg
+version: 3.7.9
+appVersion: "3.7.9"

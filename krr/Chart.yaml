@@ -1,6 +1,7 @@
 apiVersion: v2
 name: krr
+icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/kubernetes.svg
 description: Robusta KRR run on demand in the cluster (suspended CronJob + read-only RBAC)
 type: application
-version: 0.1.0
+version: 1.31.3
 appVersion: "v1.31.3"

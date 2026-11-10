@@ -11,7 +11,7 @@ volumes:
 
 pods:
   snmpexporter:
-    image: prom/snmp-exporter:latest
+    image: prom/snmp-exporter:v0.22.0
     replicas: 1
     containerPort: 9116
     exposedPort: 30006

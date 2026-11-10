@@ -15,7 +15,7 @@ volumes:
 
 pods:
   freshrss:
-    image: freshrss/freshrss:latest
+    image: freshrss/freshrss:1.30.4-alpine
     replicas: 1
     httpContainerPort: 80
     httpExposedPort: 30011
