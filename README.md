@@ -50,10 +50,17 @@ helm template <release-name> <chart-directory>
 
 ## Releasing a chart
 
-1. Change the chart and **bump `version`** in its `Chart.yaml` in the same pull request:
-   patch (`0.1.0` -> `0.1.1`) for a fix or an image bump, minor for a new feature or value,
-   major when existing values change meaning or are removed. Strict SemVer, no leading `v`
-   (the application version goes in `appVersion`).
+1. Change the chart and **bump `version`** in its `Chart.yaml` in the same pull request.
+   The chart version **follows the main application it deploys**:
+   - `version` = the application version without a leading `v` (image `portainer/portainer-ee:3.0.1`
+     -> `3.0.1`, `ekofr/pihole-exporter:v1.3.1` -> `1.3.1`, `sharevb/it-tools:2026.10.25` -> `2026.10.25`);
+     `appVersion` = the exact image tag. The image tag is pinned in `values.yaml`, not overridden
+     in the Argo CD Application.
+   - A chart-only change for the same application version adds a build suffix: `3.0.1+1`, `3.0.1+2`…
+     (stored as OCI tag `3.0.1_1`; Argo CD `targetRevision: 3.0.1+1`).
+   - Charts without one main application (cluster-base, http-redirects, monitoring, php, tools,
+     test-chart, iperf3, speedtest-tracker) keep their own SemVer: patch for a fix or an image bump,
+     minor for a new value, major when values change meaning.
 2. The **Charts check** workflow fails the pull request if a changed chart keeps its version,
    if that version is already published, or if `helm lint` fails.
 3. After the merge, the **Charts release** workflow packages every chart whose version is not

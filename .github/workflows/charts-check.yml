@@ -39,8 +39,8 @@ jobs:
             name=$($s field "$dir" name)
             version=$($s field "$dir" version)
             echo "::group::$dir ($name $version)"
-            if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
-              echo "::error file=$dir/Chart.yaml::version '$version' is not SemVer X.Y.Z (no leading v)"; failed=1
+            if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$ ]]; then
+              echo "::error file=$dir/Chart.yaml::version '$version' is not SemVer X.Y.Z[-pre][+N] (no leading v)"; failed=1
             fi
             old=$(git show "$BASE:$dir/Chart.yaml" 2>/dev/null | awk '$1 == "version:" {print $2; exit}' | tr -d '"'"'" || true)
             if [ -n "$old" ] && [ "$old" = "$version" ]; then

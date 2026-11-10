@@ -1,5 +1,5 @@
 bentopdf:
-  image: ghcr.io/alam00000/bentopdf-simple:v1.16.1
+  image: ghcr.io/alam00000/bentopdf-simple:v2.8.10
   replicas: 1
   port: 8080
 
