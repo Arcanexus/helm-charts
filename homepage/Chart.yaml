@@ -2,5 +2,5 @@ apiVersion: v1
 description: A Helm chart for Homepage
 name: homepage
 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/homepage.png
-version: 2.6.0
-appVersion: "v2.6.0"
+version: 2.7.0
+appVersion: "v2.7.0"
