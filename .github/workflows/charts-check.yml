@@ -30,7 +30,7 @@ jobs:
           REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BASE: ${{ github.event.pull_request.base.sha }}
         run: |
-          set -uo pipefail
+          set +e -uo pipefail  # Actions runs bash -e: keep going to report every chart
           s=.github/scripts/charts.sh
           charts=$($s changed "$BASE")
           if [ -z "$charts" ]; then echo "No chart changed."; exit 0; fi
