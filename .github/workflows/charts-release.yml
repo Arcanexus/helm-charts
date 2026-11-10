@@ -1,0 +1,76 @@
+name: Charts release
+
+# On every push to main, publish each chart whose Chart.yaml version is not yet
+# in the registry:  oci://ghcr.io/arcanexus/charts/<name>:<version>
+# and tag the commit <name>-<version>. Versions already published are never
+# overwritten (bump the version in Chart.yaml to release a change).
+#
+# Argo CD then uses them with:
+#   repoURL: ghcr.io/arcanexus/charts
+#   chart: <name>
+#   targetRevision: <version>
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write   # git tags <name>-<version>
+  packages: write   # helm push to ghcr.io
+
+concurrency:
+  group: charts-release
+  cancel-in-progress: false
+
+env:
+  OCI_REPO: ghcr.io/arcanexus/charts
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: azure/setup-helm@v5
+      - name: Registry login
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u "${{ github.actor }}" --password-stdin
+      - name: Package and push new versions
+        env:
+          REGISTRY_USER: ${{ github.actor }}
+          REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set +e -uo pipefail  # Actions runs bash -e: keep going to report every chart
+          s=.github/scripts/charts.sh
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          failed=0; released=""
+          mkdir -p dist
+          for dir in $($s list); do
+            name=$($s field "$dir" name)
+            version=$($s field "$dir" version)
+            $s published "$name" "$version"; rc=$?
+            if [ $rc -eq 0 ]; then continue; fi
+            if [ $rc -eq 2 ]; then echo "::error::could not query the registry for $name"; failed=1; continue; fi
+            echo "::group::$name $version"
+            if helm dependency update "$dir"; then
+              if helm lint "$dir" && helm package "$dir" -d dist \
+                 && helm push "dist/${name}-${version}.tgz" "oci://${OCI_REPO}"; then
+                released="$released $name:$version"
+                tag="${name}-${version}"
+                if ! git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+                  git tag -a "$tag" -m "$name $version" && git push origin "$tag" || echo "::warning::tag $tag not pushed"
+                fi
+              else
+                echo "::error::$name $version failed"; failed=1
+              fi
+            else
+              echo "::error::dependencies of $name failed"; failed=1
+            fi
+            echo "::endgroup::"
+          done
+          {
+            echo "## Released"
+            if [ -n "$released" ]; then for r in $released; do echo "- \`oci://${OCI_REPO}/${r%%:*}\` ${r#*:}"; done; else echo "Nothing new."; fi
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit $failed

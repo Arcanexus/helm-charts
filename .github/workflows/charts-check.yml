@@ -1,0 +1,59 @@
+name: Charts check
+
+# On every pull request, for each chart directory the PR changes:
+#   - Chart.yaml version must be strict SemVer (1.2.3, 1.2.3-rc.1), no "v"
+#   - the version must be bumped: different from main and not yet in the registry
+#   - helm dependency update + helm lint must pass
+# Published versions are immutable: a merged change without a bump would never
+# reach the cluster.
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  packages: read
+
+env:
+  OCI_REPO: ghcr.io/arcanexus/charts
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: azure/setup-helm@v5
+      - name: Check changed charts
+        env:
+          REGISTRY_USER: ${{ github.actor }}
+          REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set +e -uo pipefail  # Actions runs bash -e: keep going to report every chart
+          s=.github/scripts/charts.sh
+          charts=$($s changed "$BASE")
+          if [ -z "$charts" ]; then echo "No chart changed."; exit 0; fi
+          failed=0
+          for dir in $charts; do
+            name=$($s field "$dir" name)
+            version=$($s field "$dir" version)
+            echo "::group::$dir ($name $version)"
+            if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+              echo "::error file=$dir/Chart.yaml::version '$version' is not SemVer X.Y.Z (no leading v)"; failed=1
+            fi
+            old=$(git show "$BASE:$dir/Chart.yaml" 2>/dev/null | awk '$1 == "version:" {print $2; exit}' | tr -d '"'"'" || true)
+            if [ -n "$old" ] && [ "$old" = "$version" ]; then
+              echo "::error file=$dir/Chart.yaml::$dir changed but its version is still $version: bump it"; failed=1
+            fi
+            $s published "$name" "$version"; rc=$?
+            if [ $rc -eq 0 ]; then
+              echo "::error file=$dir/Chart.yaml::$name $version is already published in $OCI_REPO: bump the version"; failed=1
+            elif [ $rc -eq 2 ]; then
+              echo "::error::could not query the registry for $name"; failed=1
+            fi
+            helm dependency update "$dir" || failed=1
+            helm lint "$dir" || failed=1
+            echo "::endgroup::"
+          done
+          exit $failed

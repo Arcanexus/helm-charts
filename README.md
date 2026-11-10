@@ -1,10 +1,16 @@
 # helm-charts
 
-Helm charts for [Arcanexus](https://arcanexus.com)' homelab Kubernetes (k3s) cluster. Each top-level directory is a standalone chart, deployed by [ArgoCD](https://argo-cd.readthedocs.io/) directly from this git repository (no chart repository / `index.yaml` — Argo `Application` resources point at a path here with `targetRevision: HEAD`).
+Helm charts for [Arcanexus](https://arcanexus.com)' homelab Kubernetes (k3s) cluster.
+
+Each top-level directory is a standalone chart with its own [SemVer](https://semver.org) version (`version` in its `Chart.yaml`). Every version is published as an OCI artifact to GitHub Container Registry and deployed by [ArgoCD](https://argo-cd.readthedocs.io/) from there, pinned to a version (no more `targetRevision: HEAD`).
+
+```
+oci://ghcr.io/arcanexus/charts/<chart-name>:<version>
+```
 
 ## Usage
 
-These charts aren't published to a Helm repo. Reference them straight from git, either with an ArgoCD `Application`:
+ArgoCD `Application`:
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
@@ -18,22 +24,46 @@ spec:
     namespace: <app-name>
   project: default
   source:
-    path: <chart-directory>
-    repoURL: https://github.com/Arcanexus/helm-charts.git
-    targetRevision: HEAD
+    repoURL: ghcr.io/arcanexus/charts   # no oci:// prefix, no repository Secret needed (public)
+    chart: <chart-name>
+    targetRevision: <version>
   syncPolicy:
     automated: {}
     syncOptions:
       - CreateNamespace=true
 ```
 
-or locally with plain Helm:
+Plain Helm:
 
 ```bash
-helm dependency update <chart-directory>   # only needed for charts with dependencies, see below
-helm template <chart-directory>
-helm install <release-name> <chart-directory> -n <namespace> --create-namespace
+helm show values oci://ghcr.io/arcanexus/charts/<chart-name> --version <version>
+helm template <release-name> oci://ghcr.io/arcanexus/charts/<chart-name> --version <version>
+helm install <release-name> oci://ghcr.io/arcanexus/charts/<chart-name> --version <version> -n <namespace> --create-namespace
 ```
+
+From a local checkout (to test a change before releasing it):
+
+```bash
+helm dependency update <chart-directory>   # only for charts with dependencies
+helm template <release-name> <chart-directory>
+```
+
+## Releasing a chart
+
+1. Change the chart and **bump `version`** in its `Chart.yaml` in the same pull request:
+   patch (`0.1.0` -> `0.1.1`) for a fix or an image bump, minor for a new feature or value,
+   major when existing values change meaning or are removed. Strict SemVer, no leading `v`
+   (the application version goes in `appVersion`).
+2. The **Charts check** workflow fails the pull request if a changed chart keeps its version,
+   if that version is already published, or if `helm lint` fails.
+3. After the merge, the **Charts release** workflow packages every chart whose version is not
+   in the registry yet, pushes it to `oci://ghcr.io/arcanexus/charts` and tags the commit
+   `<chart-name>-<version>`. A published version is never overwritten.
+4. Bump `targetRevision` of the Application in
+   [gitops-argocd](https://github.com/Arcanexus/gitops-argocd) to roll it out.
+
+The chart name is `name` in `Chart.yaml`, which is the directory name except for
+`tailscale` (chart `tailscale-router`).
 
 ## Charts
 

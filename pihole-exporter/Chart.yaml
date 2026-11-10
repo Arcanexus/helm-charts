@@ -1,4 +1,5 @@
 apiVersion: v1
 description: A Helm chart for pihole-exporter
 name: pihole-exporter
-version: v1.3.1
+version: 1.3.1
+appVersion: "v1.3.1"
