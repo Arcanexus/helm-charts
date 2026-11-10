@@ -30,7 +30,8 @@ volume:
 
 gitea:
   image:
-    tag: 1.27.2
+    # The upstream chart appends "-rootless" (image.rootless: true by default): 28.3.0 -> 28.3.0-rootless
+    tag: 28.3.0
   strategy:
     type: Recreate
   nodeSelector:
@@ -98,7 +99,7 @@ gitea:
   arcrunner:
     enabled: true
     replicas: 1
-    image: gitea/runner:1.0.8
+    image: gitea/runner:5.2.4
     # Registration token read from an existing Secret (e.g. built by an ExternalSecret).
     # Must hold the same value as GITEA_RUNNER_REGISTRATION_TOKEN on the Gitea server
     # (gitea.deployment.env). Empty name = the chart renders runner-secret from
@@ -107,7 +108,7 @@ gitea:
       name: ""
       key: token
     # Docker-in-Docker sidecar the runner starts job containers in
-    dindImage: docker:23.0.6-dind
+    dindImage: docker:29.9.3-dind
     labels:
     - ubuntu-latest:docker://ghcr.io/arcanexus/gha-custom-runner:1.0.8
     nodeSelector: 
