@@ -3,5 +3,5 @@ name: immich
 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/immich.svg
 description: A Helm chart for Immich
 type: application
-version: 3.4.0
+version: 3.4.0+1
 appVersion: "v3.4.0"
