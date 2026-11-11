@@ -34,6 +34,12 @@ data:
       {{- with $p.userHeader }}
       <p>Utilisateur : <code><!--# echo var="http_{{ . | lower | replace "-" "_" }}" default="(aucun header {{ . }})" --></code></p>
       {{- end }}
+      {{- with $p.groupsHeader }}
+      <p>Groupes : <code><!--# echo var="http_{{ . | lower | replace "-" "_" }}" default="(aucun header {{ . }})" --></code></p>
+      {{- end }}
+      {{- with $p.logoutUrl }}
+      <p><a href="{{ . }}" style="display: inline-block; padding: .6em 1.4em; border-radius: 6px; background: #c0392b; color: #fff; text-decoration: none">Se déconnecter</a></p>
+      {{- end }}
     </body>
     </html>
   {{- end }}
