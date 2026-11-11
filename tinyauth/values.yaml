@@ -1,5 +1,5 @@
 tinyauth:
-  image: ghcr.io/steveiliop56/tinyauth:v4
+  image: ghcr.io/tinyauthapp/tinyauth:v5.2.0
   replicas: 1
   port: 3000
 
@@ -7,14 +7,20 @@ tinyauth:
     runAsUser: 0
     runAsGroup: 0
 
+  # tinyauth v5 configuration: every option is a TINYAUTH_<SECTION>_<KEY> variable
+  # (https://tinyauth.app/docs/reference/configuration/). A TINYAUTH_* variable
+  # that is not a valid option makes tinyauth refuse to start.
+  # The cookie domain is derived from TINYAUTH_APPURL (login.example.com -> example.com).
   environment:
-    APP_URL: "http://auth.arcanexus.com"
-    APP_TITLE: "Arcanexus Login"
-    LOG_LEVEL: "info"
-    COOKIE_DOMAIN: ".arcanexus.com"
-    DISABLE_ANALYTICS: "true"
+    TINYAUTH_APPURL: "https://auth.arcanexus.com"
+    TINYAUTH_UI_TITLE: "Arcanexus Login"
+    TINYAUTH_LOG_LEVEL: "info"
+    TINYAUTH_ANALYTICS_ENABLED: "false"
+    # The Kubernetes label provider (ACLs from Ingress annotations) needs RBAC
+    # this chart does not grant; forward auth works without it.
+    TINYAUTH_LABELPROVIDER: "none"
 
-  # Users: either USERS below, or an existing Secret holding "user:<bcrypt>,..."
+  # Users (TINYAUTH_AUTH_USERS): either USERS below, or an existing Secret holding "user:<bcrypt>,..."
   # (for example one built by an ExternalSecret in extraObjects).
   # When existingSecret.name is set, USERS is ignored and no Secret is rendered.
   existingSecret:
