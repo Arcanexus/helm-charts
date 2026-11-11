@@ -18,7 +18,9 @@ spec:
         app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       dnsPolicy: ClusterFirst
-      enableServiceLinks: true
+      # Service links would inject TINYAUTH_PORT, TINYAUTH_SERVICE_HOST... (Service
+      # "tinyauth"), which tinyauth v5 reads as configuration and rejects.
+      enableServiceLinks: false
       securityContext:
         runAsUser: {{ .Values.tinyauth.security.runAsUser }}
         runAsGroup: {{ .Values.tinyauth.security.runAsGroup }}
@@ -36,7 +38,7 @@ spec:
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{- end }}
-          - name: USERS
+          - name: TINYAUTH_AUTH_USERS
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.tinyauth.existingSecret.name | default (printf "%s-users" (include "app.fullname" .)) }}

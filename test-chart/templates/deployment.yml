@@ -1,3 +1,6 @@
+{{- $secretAws := .Values.testapp.existingSecrets.aws | default (printf "%s-aws-secrets" (include "app.fullname" .)) }}
+{{- $secretBw := .Values.testapp.existingSecrets.bitwarden | default (printf "%s-bitwarden-secrets" (include "app.fullname" .)) }}
+{{- $vols := .Values.testapp.volumes }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,6 +20,8 @@ spec:
       app: {{ include "app.fullname" . }}
   template:
     metadata:
+      annotations:
+        checksum/pages: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
       labels:
         app: {{ include "app.fullname" . }}
         app.kubernetes.io/name: {{ include "app.fullname" . }}
@@ -27,49 +32,80 @@ spec:
       securityContext:
         runAsUser: {{ .Values.testapp.security.runAsUser }}
         runAsGroup: {{ .Values.testapp.security.runAsGroup }}
+      {{- with .Values.testapp.nodeSelector }}
       nodeSelector:
-        {{- toYaml .Values.testapp.nodeSelector | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: {{ include "app.fullname" . }}
         image: {{ .Values.testapp.image }}
-        imagePullPolicy: Always
-        command: ["sleep", "infinity"]
-        {{- if .Values.testapp.resources }}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: {{ .Values.testapp.containerPort }}
+        {{- with .Values.testapp.resources }}
         resources:
-          {{- toYaml .Values.testapp.resources | nindent 10 }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
         env:
+          {{- if .Values.testapp.existingSecrets.enabled }}
           - name: DEFAULT_USERNAME
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.testapp.existingSecrets.aws | default (printf "%s-aws-secrets" (include "app.fullname" .)) }}
+                name: {{ $secretAws }}
                 key: default_username
           - name: AWS_DEFAULT_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.testapp.existingSecrets.aws | default (printf "%s-aws-secrets" (include "app.fullname" .)) }}
+                name: {{ $secretAws }}
                 key: default_password
           - name: BITWARDEN_DEFAULT_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.testapp.existingSecrets.bitwarden | default (printf "%s-bitwarden-secrets" (include "app.fullname" .)) }}
+                name: {{ $secretBw }}
                 key: DEFAULT_PASSWORD
-        {{- if .Values.testapp.env }}
+          {{- end }}
           {{- range $key, $value := .Values.testapp.env }}
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{- end }}
-        {{- end }}
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 20
         volumeMounts:
-        - name: {{ include "app.fullname" . }}-{{ .Values.testapp.volumes.data.name }}
-          mountPath: {{ .Values.testapp.volumes.data.containerMountPath }}
+        - name: pages
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: default.conf
+        - name: pages
+          mountPath: /usr/share/nginx/pages
+        {{- if $vols.data.enabled }}
+        - name: {{ $vols.data.name }}
+          mountPath: {{ $vols.data.containerMountPath }}
+        {{- end }}
+        {{- if $vols.pvc.enabled }}
         - name: pvc
           mountPath: /pvc
+        {{- end }}
       volumes:
-      - name: {{ include "app.fullname" . }}-{{ .Values.testapp.volumes.data.name }}
+      - name: pages
+        configMap:
+          name: {{ include "app.fullname" . }}-pages
+      {{- if $vols.data.enabled }}
+      - name: {{ $vols.data.name }}
         nfs:
-          server: {{ .Values.testapp.volumes.data.server }}
-          path: {{ .Values.testapp.volumes.data.path }}
+          server: {{ $vols.data.server }}
+          path: {{ $vols.data.path }}
+      {{- end }}
+      {{- if $vols.pvc.enabled }}
       - name: pvc
         persistentVolumeClaim:
-          claimName: nfs-test
+          claimName: {{ $vols.pvc.name }}
+      {{- end }}

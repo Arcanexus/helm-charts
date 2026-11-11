@@ -1,6 +1,10 @@
 testapp:
-  image: ubuntu:latest
+  # nginx serving one "Hello World" page per Ingress (see ingress.hosts below).
+  # Alpine based: /bin/sh, wget... for kubectl exec tests.
+  image: nginx:1.31.7-alpine
   replicas: 1
+  # Port nginx listens on (set in the ConfigMap, not the image default)
+  containerPort: 8080
 
   hpa:
     enabled: false
@@ -12,8 +16,10 @@ testapp:
     silent: fanless
 
   # Existing Secrets read by the pod (built by ExternalSecrets next to the
-  # Argo CD Application). Empty = <fullname>-aws-secrets / <fullname>-bitwarden-secrets.
+  # Argo CD Application), exposed as env vars to test ExternalSecrets.
+  # Empty names = <fullname>-aws-secrets / <fullname>-bitwarden-secrets.
   existingSecrets:
+    enabled: true
     aws: ""
     bitwarden: ""
 
@@ -23,36 +29,91 @@ testapp:
 
   resources:
     requests:
-      cpu: 100m
-      memory: 128Mi
+      cpu: 50m
+      memory: 64Mi
     limits:
       cpu: 500m
-      memory: 512Mi
+      memory: 256Mi
 
   # Environment variables injected into the container
   env:
     TZ: "Europe/Paris"
-    # MY_VAR: "my-value"
 
   service:
-    enabled: true
     type: ClusterIP
     port: 80
-    targetPort: 80
-
-  ingress:
-    enabled: false
-    host: test.arcanexus.com
-    ingressClassName: traefik
-    annotations:
-      cert-manager.io/cluster-issuer: le-wildcard-issuer
-    tls:
-      enabled: true
-      secretName: test-arcanexus-com-tls
 
   volumes:
+    # Static NFS volume mounted at containerMountPath
     data:
+      enabled: true
       name: data
       containerMountPath: /data
       server: 192.168.2.50
       path: /volume2/docker-data/testapp
+    # Dynamic PVC from the nfs StorageClass mounted at /pvc
+    pvc:
+      enabled: true
+      name: nfs-test
+      storageClassName: nfs
+      size: 100Mi
+
+# One host, one path per auth method. Each path is its own Ingress so it can
+# carry the Traefik middleware(s) of its auth method; nginx serves a
+# "Hello World" page per path, with the title below and the signed-in user read
+# from userHeader / groupsHeader (the identity headers the auth middleware
+# forwards), plus a logout button to logoutUrl.
+ingress:
+  host: test.arcanexus.com
+  ingressClassName: traefik
+  # Annotations shared by every Ingress below
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+  # One cert-manager Certificate for the host, shared by every Ingress (no
+  # cert-manager annotation on the Ingresses: several of them with the same
+  # secret would fight over one Certificate)
+  tls:
+    secretName: test-arcanexus-com-tls
+    clusterIssuer: le-wildcard-issuer
+  # name -> {enabled, path, extraPaths, title, userHeader, groupsHeader,
+  #          logoutUrl, middlewares, annotations}
+  paths:
+    # Authentik embedded outpost (forward auth). Provider "test" (forward_domain,
+    # external_host https://test.arcanexus.com, group test-group) in the authentik
+    # blueprints. No /outpost.goauthentik.io path here: Authentik's own Ingress
+    # (ak-outpost-authentik-embedded-outpost) already routes it to the outpost,
+    # and a second route on it would steal the login callback.
+    authentik:
+      enabled: true
+      path: /authentik
+      title: Authentik
+      userHeader: X-authentik-username
+      groupsHeader: X-authentik-groups
+      # Ends the outpost session (route served by Authentik's own Ingress)
+      logoutUrl: /outpost.goauthentik.io/sign_out
+      middlewares:
+        - authentik-ak-outpost-authentik-embedded-outpost@kubernetescrd
+    # tinyauth forward auth (Middleware "tinyauth" in namespace tinyauth,
+    # login on login.arcanexus.com, cookie on arcanexus.com)
+    tinyauth:
+      enabled: true
+      path: /tinyauth
+      title: tinyauth
+      userHeader: Remote-User
+      groupsHeader: Remote-Groups
+      logoutUrl: https://login.arcanexus.com/logout
+      middlewares:
+        - tinyauth-tinyauth@kubernetescrd
+    # oauth2-proxy forward auth (Middleware "oauth2" in namespace oauth2-proxy,
+    # Entra ID, sign-in on auth.arcanexus.com, cookie on .arcanexus.com)
+    oauth2proxy:
+      enabled: true
+      path: /oauth2-proxy
+      title: oauth2-proxy
+      userHeader: X-Auth-Request-Email
+      groupsHeader: X-Auth-Request-Groups
+      # Clears the oauth2-proxy cookie (.arcanexus.com) then comes back here. The
+      # Entra ID session stays, so the next visit signs in again without a prompt.
+      logoutUrl: https://auth.arcanexus.com/oauth2/sign_out?rd=https%3A%2F%2Ftest.arcanexus.com%2Foauth2-proxy
+      middlewares:
+        - oauth2-proxy-oauth2@kubernetescrd

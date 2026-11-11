@@ -1,0 +1,44 @@
+{{- range $name, $p := .Values.ingress.paths }}
+{{- if $p.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "app.fullname" $ }}-{{ $name | lower }}
+  labels:
+    app.kubernetes.io/name: {{ include "app.fullname" $ }}
+    helm.sh/chart: {{ include "app.chart" $ }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/managed-by: {{ $.Release.Service }}
+    arcanexus.com/auth-method: {{ $name | lower }}
+  annotations:
+    {{- with $.Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with $p.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with $p.middlewares }}
+    traefik.ingress.kubernetes.io/router.middlewares: {{ join "," . | quote }}
+    {{- end }}
+spec:
+  ingressClassName: {{ $.Values.ingress.ingressClassName }}
+  tls:
+    - hosts:
+        - {{ $.Values.ingress.host }}
+      secretName: {{ $.Values.ingress.tls.secretName }}
+  rules:
+    - host: {{ $.Values.ingress.host }}
+      http:
+        paths:
+          {{- range prepend ($p.extraPaths | default list) $p.path }}
+          - path: {{ . }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "app.fullname" $ }}
+                port:
+                  name: http
+          {{- end }}
+{{- end }}
+{{- end }}
