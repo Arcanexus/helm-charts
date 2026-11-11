@@ -1,13 +1,13 @@
+{{- if .Values.testapp.volumes.pvc.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: nfs-test
+  name: {{ .Values.testapp.volumes.pvc.name }}
 spec:
-  storageClassName: nfs
-
+  storageClassName: {{ .Values.testapp.volumes.pvc.storageClassName }}
   accessModes:
     - ReadWriteMany
-
   resources:
     requests:
-      storage: 100Mi
+      storage: {{ .Values.testapp.volumes.pvc.size }}
+{{- end }}

@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "app.fullname" . }}-pages
+  labels:
+    app.kubernetes.io/name: {{ include "app.fullname" . }}
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  default.conf: |
+    server {
+      listen {{ .Values.testapp.containerPort }} default_server;
+      root /usr/share/nginx/pages;
+      # SSI fills in the user from the header of the auth middleware
+      ssi on;
+      location = /healthz { access_log off; return 200 "ok\n"; }
+      {{- range $name, $p := .Values.ingress.paths }}
+      {{- if $p.enabled }}
+      location {{ $p.path }} { try_files /{{ $name | lower }}.html =404; }
+      {{- end }}
+      {{- end }}
+      location / { return 404; }
+    }
+  {{- range $name, $p := .Values.ingress.paths }}
+  {{- if $p.enabled }}
+  {{ $name | lower }}.html: |
+    <!doctype html>
+    <html lang="fr">
+    <head><meta charset="utf-8"><title>Hello World – {{ $p.title | default $name }}</title></head>
+    <body style="font-family: sans-serif; text-align: center; margin-top: 15vh">
+      <h1>Hello World</h1>
+      <p>Page protégée par <strong>{{ $p.title | default $name }}</strong> ({{ $.Values.ingress.host }}{{ $p.path }})</p>
+      {{- with $p.userHeader }}
+      <p>Utilisateur : <code><!--# echo var="http_{{ . | lower | replace "-" "_" }}" default="(aucun header {{ . }})" --></code></p>
+      {{- end }}
+    </body>
+    </html>
+  {{- end }}
+  {{- end }}

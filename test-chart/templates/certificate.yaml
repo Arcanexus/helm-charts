@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ .Values.ingress.tls.secretName }}
+  labels:
+    app.kubernetes.io/name: {{ include "app.fullname" . }}
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  secretName: {{ .Values.ingress.tls.secretName }}
+  dnsNames:
+    - {{ .Values.ingress.host }}
+  issuerRef:
+    name: {{ .Values.ingress.tls.clusterIssuer }}
+    kind: ClusterIssuer
