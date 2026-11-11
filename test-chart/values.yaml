@@ -61,7 +61,8 @@ testapp:
 # One host, one path per auth method. Each path is its own Ingress so it can
 # carry the Traefik middleware(s) of its auth method; nginx serves a
 # "Hello World" page per path, with the title below and the signed-in user read
-# from userHeader (the identity header the auth middleware forwards).
+# from userHeader / groupsHeader (the identity headers the auth middleware
+# forwards), plus a logout button to logoutUrl.
 ingress:
   host: test.arcanexus.com
   ingressClassName: traefik
@@ -74,7 +75,8 @@ ingress:
   tls:
     secretName: test-arcanexus-com-tls
     clusterIssuer: le-wildcard-issuer
-  # name -> {enabled, path, extraPaths, title, userHeader, middlewares, annotations}
+  # name -> {enabled, path, extraPaths, title, userHeader, groupsHeader,
+  #          logoutUrl, middlewares, annotations}
   paths:
     # Authentik embedded outpost (forward auth). Provider "test" (forward_domain,
     # external_host https://test.arcanexus.com, group test-group) in the authentik
@@ -86,6 +88,9 @@ ingress:
       path: /authentik
       title: Authentik
       userHeader: X-authentik-username
+      groupsHeader: X-authentik-groups
+      # Ends the outpost session (route served by Authentik's own Ingress)
+      logoutUrl: /outpost.goauthentik.io/sign_out
       middlewares:
         - authentik-ak-outpost-authentik-embedded-outpost@kubernetescrd
     # tinyauth forward auth (Middleware "tinyauth" in namespace tinyauth,
@@ -95,6 +100,8 @@ ingress:
       path: /tinyauth
       title: tinyauth
       userHeader: Remote-User
+      groupsHeader: Remote-Groups
+      logoutUrl: https://login.arcanexus.com/logout
       middlewares:
         - tinyauth-tinyauth@kubernetescrd
     # oauth2-proxy forward auth (Middleware "oauth2" in namespace oauth2-proxy,
@@ -104,5 +111,9 @@ ingress:
       path: /oauth2-proxy
       title: oauth2-proxy
       userHeader: X-Auth-Request-Email
+      groupsHeader: X-Auth-Request-Groups
+      # Clears the oauth2-proxy cookie (.arcanexus.com) then comes back here. The
+      # Entra ID session stays, so the next visit signs in again without a prompt.
+      logoutUrl: https://auth.arcanexus.com/oauth2/sign_out?rd=https%3A%2F%2Ftest.arcanexus.com%2Foauth2-proxy
       middlewares:
         - oauth2-proxy-oauth2@kubernetescrd
