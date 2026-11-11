@@ -1,11 +1,9 @@
 testapp:
-  # HTTP echo server: answers every request with what it received (headers,
-  # path, query, body) as JSON, so the identity headers set by each auth
-  # middleware are visible. Alpine based: /bin/sh, wget... for kubectl exec tests.
-  # https://github.com/mendhak/docker-http-https-echo
-  image: mendhak/http-https-echo:43
+  # nginx serving one "Hello World" page per Ingress (see ingress.hosts below).
+  # Alpine based: /bin/sh, wget... for kubectl exec tests.
+  image: nginx:1.31.7-alpine
   replicas: 1
-  # Port the echo server listens on (HTTP_PORT of the image)
+  # Port nginx listens on (set in the ConfigMap, not the image default)
   containerPort: 8080
 
   hpa:
@@ -40,11 +38,6 @@ testapp:
   # Environment variables injected into the container
   env:
     TZ: "Europe/Paris"
-    # Decode the JWT of this header in the echo output (oauth2-proxy forwards
-    # its access token as Authorization: Bearer ...)
-    JWT_HEADER: "Authorization"
-    # Do not log the probes
-    LOG_IGNORE_PATH: "/healthz"
 
   service:
     type: ClusterIP
@@ -65,21 +58,25 @@ testapp:
       storageClassName: nfs
       size: 100Mi
 
-# One Ingress per auth method, all to the same echo server. Each one goes
-# through the Traefik middleware(s) of its auth method.
+# One Ingress per auth method, all to the same nginx. nginx picks the page by
+# host: a "Hello World" page with the title below and the signed-in user, read
+# from userHeader (the identity header the auth middleware forwards).
 ingress:
   ingressClassName: traefik
   # Annotations shared by every Ingress below
   annotations:
     cert-manager.io/cluster-issuer: le-wildcard-issuer
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
-  # name -> {enabled, host, middlewares, tlsSecretName (default <host with dashes>-tls), annotations}
+  # name -> {enabled, host, title, userHeader, middlewares,
+  #          tlsSecretName (default <host with dashes>-tls), annotations}
   hosts:
     # Authentik embedded outpost (forward auth). Provider "test" (forward_domain,
     # external_host https://test.arcanexus.com, group test-group) in the authentik blueprints.
     authentik:
       enabled: true
       host: test.arcanexus.com
+      title: Authentik
+      userHeader: X-authentik-username
       tlsSecretName: test-arcanexus-com-tls
       middlewares:
         - authentik-ak-outpost-authentik-embedded-outpost@kubernetescrd
@@ -88,6 +85,8 @@ ingress:
     tinyauth:
       enabled: true
       host: test-tinyauth.arcanexus.com
+      title: tinyauth
+      userHeader: Remote-User
       middlewares:
         - tinyauth-tinyauth@kubernetescrd
     # oauth2-proxy forward auth (Middleware "oauth2" in namespace oauth2-proxy,
@@ -95,5 +94,7 @@ ingress:
     oauth2proxy:
       enabled: true
       host: test-oauth2.arcanexus.com
+      title: oauth2-proxy
+      userHeader: X-Auth-Request-Email
       middlewares:
         - oauth2-proxy-oauth2@kubernetescrd

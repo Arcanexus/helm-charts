@@ -1,7 +1,7 @@
 apiVersion: v2
-description: Auth test chart – an HTTP echo server (with a shell) behind one Ingress per auth method (Authentik, tinyauth, oauth2-proxy)
+description: Auth test chart – an nginx Hello World page (with a shell) behind one Ingress per auth method (Authentik, tinyauth, oauth2-proxy)
 name: test-chart
 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/ubuntu-linux.svg
 type: application
 version: 1.0.0
-appVersion: "43"
+appVersion: "1.31.7-alpine"
