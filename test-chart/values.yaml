@@ -78,13 +78,12 @@ ingress:
   paths:
     # Authentik embedded outpost (forward auth). Provider "test" (forward_domain,
     # external_host https://test.arcanexus.com, group test-group) in the authentik
-    # blueprints. The outpost callback (/outpost.goauthentik.io/...) must go
-    # through the same middleware, hence the extra path.
+    # blueprints. No /outpost.goauthentik.io path here: Authentik's own Ingress
+    # (ak-outpost-authentik-embedded-outpost) already routes it to the outpost,
+    # and a second route on it would steal the login callback.
     authentik:
       enabled: true
       path: /authentik
-      extraPaths:
-        - /outpost.goauthentik.io
       title: Authentik
       userHeader: X-authentik-username
       middlewares:
