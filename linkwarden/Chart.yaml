@@ -2,5 +2,5 @@ apiVersion: v1
 description: A Helm chart for linkwarden
 name: linkwarden
 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/linkwarden.png
-version: 2.16.3
-appVersion: "v2.16.3"
+version: 2.17.0
+appVersion: "v2.17.0"
