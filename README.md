@@ -117,7 +117,7 @@ Most charts are self-contained application charts (a Deployment/StatefulSet, Ser
 | [technitiumdns](technitiumdns) | Technitium DNS Server | |
 | [tesladash](tesladash) | Tesla dashboard | |
 | [teslamate](teslamate) | TeslaMate | |
-| [test-chart](test-chart) | Auth test chart — an nginx Hello World page per auth method (image with a shell), one Ingress each: Authentik, tinyauth, oauth2-proxy | |
+| [test-chart](test-chart) | Auth test chart — an nginx Hello World page per auth method (image with a shell) on test.arcanexus.com/authentik, /tinyauth and /oauth2-proxy | |
 | [tinyauth](tinyauth) | TinyAuth | |
 | [tools](tools) | Deploys multiple small tools together (bentopdf, it-tools) | |
 | [transmute](transmute) | Transmute | |

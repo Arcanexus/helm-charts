@@ -1,5 +1,5 @@
-{{- range $name, $ing := .Values.ingress.hosts }}
-{{- if $ing.enabled }}
+{{- range $name, $p := .Values.ingress.paths }}
+{{- if $p.enabled }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -15,28 +15,30 @@ metadata:
     {{- with $.Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-    {{- with $ing.annotations }}
+    {{- with $p.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-    {{- with $ing.middlewares }}
+    {{- with $p.middlewares }}
     traefik.ingress.kubernetes.io/router.middlewares: {{ join "," . | quote }}
     {{- end }}
 spec:
   ingressClassName: {{ $.Values.ingress.ingressClassName }}
   tls:
     - hosts:
-        - {{ $ing.host }}
-      secretName: {{ $ing.tlsSecretName | default (printf "%s-tls" ($ing.host | replace "." "-")) }}
+        - {{ $.Values.ingress.host }}
+      secretName: {{ $.Values.ingress.tls.secretName }}
   rules:
-    - host: {{ $ing.host }}
+    - host: {{ $.Values.ingress.host }}
       http:
         paths:
-          - path: /
+          {{- range prepend ($p.extraPaths | default list) $p.path }}
+          - path: {{ . }}
             pathType: Prefix
             backend:
               service:
                 name: {{ include "app.fullname" $ }}
                 port:
                   name: http
+          {{- end }}
 {{- end }}
 {{- end }}
