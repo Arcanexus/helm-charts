@@ -117,7 +117,7 @@ Most charts are self-contained application charts (a Deployment/StatefulSet, Ser
 | [technitiumdns](technitiumdns) | Technitium DNS Server | |
 | [tesladash](tesladash) | Tesla dashboard | |
 | [teslamate](teslamate) | TeslaMate | |
-| [test-chart](test-chart) | Generic test chart — deploys an `ubuntu:latest` pod with configurable service and ingress | |
+| [test-chart](test-chart) | Auth test chart — an HTTP echo server (with a shell) behind one Ingress per auth method: Authentik, tinyauth, oauth2-proxy | |
 | [tinyauth](tinyauth) | TinyAuth | |
 | [tools](tools) | Deploys multiple small tools together (bentopdf, it-tools) | |
 | [transmute](transmute) | Transmute | |
@@ -128,7 +128,7 @@ Most charts are self-contained application charts (a Deployment/StatefulSet, Ser
 
 - Each chart's own metadata (name, version, description) lives in its `Chart.yaml`; check there and in `values.yaml` for the authoritative, up-to-date details and configurable values.
 - Wrapper charts vendor an upstream chart via `dependencies:` in `Chart.yaml`. Run `helm dependency update <chart>` before templating/installing them locally — `charts/` and `Chart.lock` are gitignored and regenerated on demand.
-- `test-chart` is a throwaway chart for exercising the pipeline/ArgoCD setup; it has no real application behind it.
+- `test-chart` is a throwaway chart for exercising the pipeline/ArgoCD setup and the auth middlewares (Authentik, tinyauth, oauth2-proxy); it has no real application behind it.
 
 ## License
 

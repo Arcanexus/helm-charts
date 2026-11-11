@@ -1,0 +1,42 @@
+{{- range $name, $ing := .Values.ingress.hosts }}
+{{- if $ing.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "app.fullname" $ }}-{{ $name | lower }}
+  labels:
+    app.kubernetes.io/name: {{ include "app.fullname" $ }}
+    helm.sh/chart: {{ include "app.chart" $ }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/managed-by: {{ $.Release.Service }}
+    arcanexus.com/auth-method: {{ $name | lower }}
+  annotations:
+    {{- with $.Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with $ing.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with $ing.middlewares }}
+    traefik.ingress.kubernetes.io/router.middlewares: {{ join "," . | quote }}
+    {{- end }}
+spec:
+  ingressClassName: {{ $.Values.ingress.ingressClassName }}
+  tls:
+    - hosts:
+        - {{ $ing.host }}
+      secretName: {{ $ing.tlsSecretName | default (printf "%s-tls" ($ing.host | replace "." "-")) }}
+  rules:
+    - host: {{ $ing.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "app.fullname" $ }}
+                port:
+                  name: http
+{{- end }}
+{{- end }}

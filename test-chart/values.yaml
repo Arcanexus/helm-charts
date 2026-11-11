@@ -1,6 +1,12 @@
 testapp:
-  image: ubuntu:latest
+  # HTTP echo server: answers every request with what it received (headers,
+  # path, query, body) as JSON, so the identity headers set by each auth
+  # middleware are visible. Alpine based: /bin/sh, wget... for kubectl exec tests.
+  # https://github.com/mendhak/docker-http-https-echo
+  image: mendhak/http-https-echo:43
   replicas: 1
+  # Port the echo server listens on (HTTP_PORT of the image)
+  containerPort: 8080
 
   hpa:
     enabled: false
@@ -12,8 +18,10 @@ testapp:
     silent: fanless
 
   # Existing Secrets read by the pod (built by ExternalSecrets next to the
-  # Argo CD Application). Empty = <fullname>-aws-secrets / <fullname>-bitwarden-secrets.
+  # Argo CD Application), exposed as env vars to test ExternalSecrets.
+  # Empty names = <fullname>-aws-secrets / <fullname>-bitwarden-secrets.
   existingSecrets:
+    enabled: true
     aws: ""
     bitwarden: ""
 
@@ -23,36 +31,69 @@ testapp:
 
   resources:
     requests:
-      cpu: 100m
-      memory: 128Mi
+      cpu: 50m
+      memory: 64Mi
     limits:
       cpu: 500m
-      memory: 512Mi
+      memory: 256Mi
 
   # Environment variables injected into the container
   env:
     TZ: "Europe/Paris"
-    # MY_VAR: "my-value"
+    # Decode the JWT of this header in the echo output (oauth2-proxy forwards
+    # its access token as Authorization: Bearer ...)
+    JWT_HEADER: "Authorization"
+    # Do not log the probes
+    LOG_IGNORE_PATH: "/healthz"
 
   service:
-    enabled: true
     type: ClusterIP
     port: 80
-    targetPort: 80
-
-  ingress:
-    enabled: false
-    host: test.arcanexus.com
-    ingressClassName: traefik
-    annotations:
-      cert-manager.io/cluster-issuer: le-wildcard-issuer
-    tls:
-      enabled: true
-      secretName: test-arcanexus-com-tls
 
   volumes:
+    # Static NFS volume mounted at containerMountPath
     data:
+      enabled: true
       name: data
       containerMountPath: /data
       server: 192.168.2.50
       path: /volume2/docker-data/testapp
+    # Dynamic PVC from the nfs StorageClass mounted at /pvc
+    pvc:
+      enabled: true
+      name: nfs-test
+      storageClassName: nfs
+      size: 100Mi
+
+# One Ingress per auth method, all to the same echo server. Each one goes
+# through the Traefik middleware(s) of its auth method.
+ingress:
+  ingressClassName: traefik
+  # Annotations shared by every Ingress below
+  annotations:
+    cert-manager.io/cluster-issuer: le-wildcard-issuer
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+  # name -> {enabled, host, middlewares, tlsSecretName (default <host with dashes>-tls), annotations}
+  hosts:
+    # Authentik embedded outpost (forward auth). Provider "test" (forward_domain,
+    # external_host https://test.arcanexus.com, group test-group) in the authentik blueprints.
+    authentik:
+      enabled: true
+      host: test.arcanexus.com
+      tlsSecretName: test-arcanexus-com-tls
+      middlewares:
+        - authentik-ak-outpost-authentik-embedded-outpost@kubernetescrd
+    # tinyauth forward auth (Middleware "tinyauth" in namespace tinyauth,
+    # login on login.arcanexus.com, cookie on arcanexus.com)
+    tinyauth:
+      enabled: true
+      host: test-tinyauth.arcanexus.com
+      middlewares:
+        - tinyauth-tinyauth@kubernetescrd
+    # oauth2-proxy forward auth (Middleware "oauth2" in namespace oauth2-proxy,
+    # Entra ID, sign-in on auth.arcanexus.com, cookie on .arcanexus.com)
+    oauth2proxy:
+      enabled: true
+      host: test-oauth2.arcanexus.com
+      middlewares:
+        - oauth2-proxy-oauth2@kubernetescrd

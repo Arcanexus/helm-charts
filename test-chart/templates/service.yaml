@@ -1,4 +1,3 @@
-{{- if .Values.testapp.service.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -13,7 +12,6 @@ spec:
   ports:
   - name: http
     port: {{ .Values.testapp.service.port }}
-    targetPort: {{ .Values.testapp.service.targetPort }}
+    targetPort: http
   selector:
     app: {{ include "app.fullname" . }}
-{{- end }}
