@@ -1,6 +1,0 @@
-apiVersion: v2
-name: cluster-base
-icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/kubernetes.svg
-description: Cluster-wide base objects that everything else needs - ClusterSecretStores, ClusterIssuers and the nfs StorageClass
-type: application
-version: 0.3.2
