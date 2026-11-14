@@ -58,7 +58,7 @@ helm template <release-name> <chart-directory>
      in the Argo CD Application.
    - A chart-only change for the same application version adds a build suffix: `3.0.1+1`, `3.0.1+2`…
      (stored as OCI tag `3.0.1_1`; Argo CD `targetRevision: 3.0.1+1`).
-   - Charts without one main application (cluster-base, http-redirects, monitoring, php, tools,
+   - Charts without one main application (http-redirects, monitoring, php, tools,
      test-chart, iperf3, speedtest-tracker) keep their own SemVer: patch for a fix or an image bump,
      minor for a new value, major when values change meaning.
 2. The **Charts check** workflow fails the pull request if a changed chart keeps its version,
@@ -84,7 +84,6 @@ Most charts are self-contained application charts (a Deployment/StatefulSet, Ser
 | [erugo](erugo) | Erugo | |
 | [freshrss](freshrss) | FreshRSS | |
 | [gitea](gitea) | Wrapper chart for Gitea with static NFS-backed persistence | [gitea/gitea](https://dl.gitea.com/charts/) |
-| [cluster-base](cluster-base) | Cluster-wide base objects: ClusterSecretStores (SSM, Bitwarden), ClusterIssuers (Let's Encrypt Route53, Bitwarden TLS chain), nfs StorageClass | |
 | [homepage](homepage) | Homepage dashboard | |
 | [http-redirects](http-redirects) | HTTP redirects using Traefik and cert-manager | |
 | [immich](immich) | Immich, including the Immich Kiosk companion app | |
