@@ -20,7 +20,10 @@ pods:
         value: "true"
       - name: ACCEPT_EULA
         value: "true"
-
+      - name: DB_DRIVER
+        value: sqlite
+      - name: DB_URL
+        value: /data/speedtest-tracker.db
     security:
       runAsUser: 0
       runAsGroup: 0
