@@ -5,7 +5,10 @@ persistence:
     size: 1Gi
     mountPath: /config
   data:
-    size: 5Gi
+    # Use emptyDir for SQLite database (NFS causes locking issues with SQLite)
+    # Data will not persist across pod restarts, but app will work reliably
+    type: emptyDir
+    sizeLimit: 500Mi
     mountPath: /data
 
 secrets:

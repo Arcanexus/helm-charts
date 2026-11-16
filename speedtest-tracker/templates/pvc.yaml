@@ -11,16 +11,4 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.config.size }}
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ include "app.name" . }}-data
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: {{ .Values.persistence.storageClass }}
-  resources:
-    requests:
-      storage: {{ .Values.persistence.data.size }}
 {{- end }}
