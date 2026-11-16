@@ -2,5 +2,5 @@ apiVersion: v1
 description: A Helm chart for speedtest-tracker
 name: speedtest-tracker
 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/speedtest-tracker.png
-version: 2.8.2+2
+version: 2.8.2+3
 appVersion: "v2.8.2"
