@@ -8,7 +8,7 @@ volumes:
 
 pods:
   speedtesttracker:
-    image: henrywhitaker3/speedtest-tracker
+    image: ghcr.io/henrywhitaker3/speedtest-tracker:v2.8.2
     replicas: 1
 
     httpContainerPort: 80
