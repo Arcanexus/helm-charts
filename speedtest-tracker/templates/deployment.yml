@@ -41,9 +41,9 @@ spec:
           - name: TZ
             value: "Europe/Paris"
           - name: PGID
-            value: "{{ .Values.pods.speedtesttracker.security.runAsGroup }}"
+            value: "{{ .Values.pods.speedtesttracker.security.runAsGroup | toString }}"
           - name: PUID
-            value: "{{ .Values.pods.speedtesttracker.security.runAsUser }}"
+            value: "{{ .Values.pods.speedtesttracker.security.runAsUser | toString }}"
           {{- if .Values.pods.speedtesttracker.environment }}
             {{- toYaml .Values.pods.speedtesttracker.environment | nindent 10 }}
           {{- end }}
