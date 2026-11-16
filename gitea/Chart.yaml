@@ -3,8 +3,8 @@ name: gitea
 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/gitea.svg
 description: Wrapper chart for Gitea with static NFS-backed persistence
 type: application
-version: 28.3.0+1
-appVersion: "28.3.0-rootless"
+version: 28.4.0
+appVersion: "28.4.0-rootless"
 dependencies:
   - name: gitea
     repository: https://dl.gitea.com/charts/
