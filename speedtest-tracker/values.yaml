@@ -36,4 +36,4 @@ pods:
 
 # CronJob deleting the pod every night
 recreateJob:
-  image: bitnami/kubectl:latest
+  image: alpine/k8s:1.34.13
