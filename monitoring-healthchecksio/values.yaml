@@ -17,4 +17,4 @@ pods:
     tz: "Europe/Paris"
   # Sidecar restarting the pod when the config changes
   configwatcher:
-    image: alpine:3.24.3
+    image: alpine:3.24.4

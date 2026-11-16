@@ -76,7 +76,7 @@ pods:
         value: postgres
 
   meilisearch:
-    image: getmeili/meilisearch:v1.56.1
+    image: getmeili/meilisearch:v1.56.2
     replicas: 1
 
     httpContainerPort: 7700
