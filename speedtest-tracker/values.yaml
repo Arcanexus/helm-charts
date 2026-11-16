@@ -8,6 +8,12 @@ persistence:
     size: 5Gi
     mountPath: /data
 
+secrets:
+  runtimePsk:
+    enabled: true
+    secretName: speedtest-tracker-secrets
+    secretKey: RUNTIME_PSK
+
 
 pods:
   speedtesttracker:

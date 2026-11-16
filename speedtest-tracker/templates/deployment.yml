@@ -54,6 +54,13 @@ spec:
             value: {{ .value | quote }}
           {{- end }}
           {{- end }}
+          {{- if .Values.secrets.runtimePsk.enabled }}
+          - name: RUNTIME_PSK
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.secrets.runtimePsk.secretName }}
+                key: {{ .Values.secrets.runtimePsk.secretKey }}
+          {{- end }}
       volumes:
       {{- if .Values.persistence.enabled }}
       - name: config
