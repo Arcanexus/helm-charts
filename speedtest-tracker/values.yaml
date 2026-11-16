@@ -18,6 +18,8 @@ pods:
     environment:
       - name: OOKLA_EULA_GDPR
         value: "true"
+      - name: ACCEPT_EULA
+        value: "true"
 
     security:
       runAsUser: 0
