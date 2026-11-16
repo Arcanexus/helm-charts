@@ -20,7 +20,7 @@ pods:
     image: ghcr.io/henrywhitaker3/speedtest-tracker:v2.8.2
     replicas: 1
 
-    httpContainerPort: 80
+    httpContainerPort: 8080
     # httpsContainerPort: 8443
     # httpExposedPort: 30011
 
