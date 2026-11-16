@@ -35,8 +35,12 @@ spec:
         - containerPort: {{ .Values.pods.speedtesttracker.httpContainerPort }}
           name: tracker-http
         volumeMounts:
-        - name: {{ include "app.name" . }}-{{ .Values.volumes.speedtesttrackerconfig.name }}
-          mountPath: {{ .Values.volumes.speedtesttrackerconfig.containerMountPath }}
+        {{- if .Values.persistence.enabled }}
+        - name: config
+          mountPath: {{ .Values.persistence.config.mountPath }}
+        - name: data
+          mountPath: {{ .Values.persistence.data.mountPath }}
+        {{- end }}
         env:
           - name: TZ
             value: "Europe/Paris"
@@ -51,7 +55,11 @@ spec:
           {{- end }}
           {{- end }}
       volumes:
-      - name: {{ include "app.name" . }}-{{ .Values.volumes.speedtesttrackerconfig.name }}
-        nfs:
-          server: {{ .Values.volumes.speedtesttrackerconfig.server }}
-          path: {{ .Values.volumes.speedtesttrackerconfig.path }}
+      {{- if .Values.persistence.enabled }}
+      - name: config
+        persistentVolumeClaim:
+          claimName: {{ include "app.name" . }}-config
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{ include "app.name" . }}-data
+      {{- end }}
