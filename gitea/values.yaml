@@ -99,7 +99,7 @@ gitea:
   arcrunner:
     enabled: true
     replicas: 1
-    image: gitea/runner:5.2.4
+    image: gitea/runner:6.0.0
     # Registration token read from an existing Secret (e.g. built by an ExternalSecret).
     # Must hold the same value as GITEA_RUNNER_REGISTRATION_TOKEN on the Gitea server
     # (gitea.deployment.env). Empty name = the chart renders runner-secret from
