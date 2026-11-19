@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: litellm-postgres-data
+  labels:
+    app: litellm-postgres
+  annotations:
+    # Argo CD must never delete the database, even on prune or app deletion
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.volumes.db.storageClass }}
+  resources:
+    requests:
+      storage: {{ .Values.volumes.db.size }}

@@ -1,9 +1,13 @@
 volumes:
+  # Postgres data: dynamic PVC "litellm-postgres-data" (Argo CD never prunes or
+  # deletes it). The old Postgres 13 data stays untouched on the NAS
+  # (192.168.2.50:/volume2/docker-data/litellm/db) as the rollback.
   db:
-    name: litellm-db
-    server: 192.168.2.50
-    path: /volume2/docker-data/litellm/db
-    containerMountPath: /var/lib/postgresql/data
+    storageClass: nfs
+    size: 5Gi
+    # Postgres 18+: mount the parent, data goes to 18/docker (the image's default
+    # PGDATA), which keeps future pg_upgrade --link possible.
+    containerMountPath: /var/lib/postgresql
 
   openwebui:
     name: openwebui
@@ -48,7 +52,7 @@ pods:
         value: "TRUE"
   
   postgres:
-    image: postgres:13.23
+    image: postgres:18.7-alpine
     replicas: 1
 
     database: litellm
