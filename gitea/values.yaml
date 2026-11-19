@@ -108,7 +108,7 @@ gitea:
       name: ""
       key: token
     # Docker-in-Docker sidecar the runner starts job containers in
-    dindImage: docker:29.9.3-dind
+    dindImage: docker:29.10.0-dind
     labels:
     - ubuntu-latest:docker://ghcr.io/arcanexus/gha-custom-runner:1.0.8
     nodeSelector: 

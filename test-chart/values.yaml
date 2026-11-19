@@ -1,7 +1,7 @@
 testapp:
   # nginx serving one "Hello World" page per Ingress (see ingress.hosts below).
   # Alpine based: /bin/sh, wget... for kubectl exec tests.
-  image: nginx:1.31.8-alpine
+  image: nginx:1.31.9-alpine
   replicas: 1
   # Port nginx listens on (set in the ConfigMap, not the image default)
   containerPort: 8080

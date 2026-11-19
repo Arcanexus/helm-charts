@@ -48,7 +48,7 @@ pods:
         value: "TRUE"
   
   postgres:
-    image: postgres:13.3
+    image: postgres:13.23
     replicas: 1
 
     database: litellm
@@ -60,7 +60,7 @@ pods:
     existingSecret: ""
 
   openwebui:
-    image: ghcr.io/open-webui/open-webui:v0.13.3
+    image: ghcr.io/open-webui/open-webui:v0.13.4
     replicas: 1
 
     httpContainerPort: 8080

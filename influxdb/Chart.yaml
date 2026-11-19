@@ -3,8 +3,8 @@ name: influxdb
 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/influxdb.svg
 description: Wrapper chart for InfluxDB with static NFS-backed persistence
 type: application
-version: 2.9.1
-appVersion: "2.9.1"
+version: 2.10.1
+appVersion: "2.10.1"
 dependencies:
   - name: influxdb2
     repository: https://helm.influxdata.com/
