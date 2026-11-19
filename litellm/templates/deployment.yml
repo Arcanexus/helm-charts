@@ -75,6 +75,9 @@ spec:
     matchLabels:
       app: litellm-postgres
   revisionHistoryLimit: 0
+  # Never two Postgres on the same data directory
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -107,9 +110,8 @@ spec:
           mountPath: {{ .Values.volumes.db.containerMountPath }}
       volumes:
       - name: postgres-data
-        nfs:
-          server: {{ .Values.volumes.db.server }}
-          path: {{ .Values.volumes.db.path }}
+        persistentVolumeClaim:
+          claimName: litellm-postgres-data
 
 ---
 apiVersion: apps/v1
