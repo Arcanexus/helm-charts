@@ -20,7 +20,7 @@ secrets:
 
 pods:
   speedtesttracker:
-    image: ghcr.io/henrywhitaker3/speedtest-tracker:v2.8.2
+    image: ghcr.io/henrywhitaker3/speedtest-tracker:v2.9.0
     replicas: 1
 
     httpContainerPort: 8080
@@ -53,4 +53,4 @@ pods:
 
 # CronJob deleting the pod every night
 recreateJob:
-  image: alpine/k8s:1.34.13
+  image: alpine/k8s:1.36.6

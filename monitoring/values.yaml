@@ -116,7 +116,7 @@ grafana:
   # them that way) into the "folder" Grafana folder.
   sidecar:
     enabled: false
-    image: quay.io/kiwigrid/k8s-sidecar:2.14.1
+    image: quay.io/kiwigrid/k8s-sidecar:2.14.3
     dashboards:
       label: grafana_dashboard
       labelValue: "1"

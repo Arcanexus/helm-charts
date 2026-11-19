@@ -17,7 +17,7 @@ volumes:
 
 pods:
   ctbrec:
-    image: jafea7/ctbrec-alpine:26.11.14
+    image: jafea7/ctbrec-alpine:26.11.18
     replicas: 1
 
     httpContainerPort: 8080

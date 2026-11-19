@@ -1,17 +1,17 @@
 namespace:
   name: 
 
-volumes:
-  config:
-    name: config
-    size: 10Mi
-    path: /volume2/docker/snmp-exporter/snmp-exporter-config-k8s-nfs-pv
-    server: 192.168.2.50
-    containerMountPath: /etc/snmp_exporter/
+config:
+  # Full snmp.yml content (snmp_exporter >= v0.23 format). Empty = files/snmp.yml
+  # (modules synology and if_mib, converted from the previous NAS file).
+  snmpYml: ""
+  # SNMP v2c community of auth public_v2 in files/snmp.yml (snmp_exporter cannot read
+  # a community from env, only usernames/passwords)
+  community: public
 
 pods:
   snmpexporter:
-    image: prom/snmp-exporter:v0.22.0
+    image: prom/snmp-exporter:v0.31.0
     replicas: 1
     containerPort: 9116
     exposedPort: 30006

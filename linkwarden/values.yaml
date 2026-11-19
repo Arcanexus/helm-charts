@@ -60,7 +60,7 @@ pods:
         value: http://meilisearch:7700
         
   postgres:
-    image: postgres:18.6-alpine
+    image: postgres:18.7-alpine
     replicas: 1
 
     security:
@@ -76,7 +76,7 @@ pods:
         value: postgres
 
   meilisearch:
-    image: getmeili/meilisearch:v1.56.2
+    image: getmeili/meilisearch:v1.57.0
     replicas: 1
 
     httpContainerPort: 7700
