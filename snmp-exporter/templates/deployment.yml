@@ -13,6 +13,8 @@ spec:
     metadata:
       labels:
         app: {{ include "app.name" . }} # has to match .spec.selector.matchLabels
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         # date: "{{ now | unixEpoch }}"
     spec:
       dnsPolicy: ClusterFirst
@@ -26,13 +28,15 @@ spec:
         - containerPort: {{ .Values.pods.snmpexporter.containerPort }}
           name: web
         volumeMounts:
-        - name: {{ include "app.name" . }}-{{ .Values.volumes.config.name }}
-          mountPath: {{ .Values.volumes.config.containerMountPath }}
+        - name: config
+          mountPath: /etc/snmp_exporter/snmp.yml
+          subPath: snmp.yml
+          readOnly: true
         env:
           - name: TZ
             value: "Europe/Paris"
       volumes:
-      - name: {{ include "app.name" . }}-{{ .Values.volumes.config.name }}
-        persistentVolumeClaim:
-          claimName: {{ include "app.name" . }}-{{ .Values.volumes.config.name }}-pvc
+      - name: config
+        configMap:
+          name: {{ include "app.name" . }}-config
 

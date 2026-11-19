@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "app.name" . }}-config
+  namespace: {{ template "app.name" . }}
+data:
+  snmp.yml: |-
+{{- if .Values.config.snmpYml }}
+{{ .Values.config.snmpYml | indent 4 }}
+{{- else }}
+{{ .Files.Get "files/snmp.yml" | replace "__SNMP_COMMUNITY__" (.Values.config.community | quote) | indent 4 }}
+{{- end }}
