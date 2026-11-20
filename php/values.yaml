@@ -5,7 +5,7 @@
 timezone: Europe/Paris
 
 php:
-  image: ghcr.io/arcanexus/docker-php:v8.5.11-apache-trixie
+  image: ghcr.io/arcanexus/docker-php:v8.5.13-apache-trixie
   imagePullPolicy: Always
   replicas: 1
   httpContainerPort: 80
