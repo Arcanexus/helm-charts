@@ -1,5 +1,5 @@
 ittools:
-  image: sharevb/it-tools:2026.10.25
+  image: sharevb/it-tools:2026.11.22
   replicas: 1
   port: 8080
 
