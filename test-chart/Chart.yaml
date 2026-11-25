@@ -3,5 +3,5 @@ description: Auth test chart – an nginx Hello World page (with a shell) behind
 name: test-chart
 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/ubuntu-linux.svg
 type: application
-version: 1.0.4
-appVersion: "1.31.9-alpine"
+version: 1.0.5
+appVersion: "1.31.10-alpine"

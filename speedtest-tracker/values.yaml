@@ -20,7 +20,7 @@ secrets:
 
 pods:
   speedtesttracker:
-    image: ghcr.io/henrywhitaker3/speedtest-tracker:v2.9.0
+    image: ghcr.io/henrywhitaker3/speedtest-tracker:v2.9.2
     replicas: 1
 
     httpContainerPort: 8080

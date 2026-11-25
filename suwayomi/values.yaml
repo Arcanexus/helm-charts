@@ -7,7 +7,7 @@ volumes:
 
 pods:
   suwayomi:
-    image: ghcr.io/suwayomi/suwayomi-server:v2.4.2490
+    image: ghcr.io/suwayomi/suwayomi-server:v2.4.2512
     replicas: 1
 
     nodeSelector:
