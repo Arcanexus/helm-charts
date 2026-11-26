@@ -2,4 +2,4 @@ apiVersion: v1
 description: A Helm chart for monitoring
 name: monitoring
 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/prometheus.svg
-version: 0.1.2
+version: 0.2.0

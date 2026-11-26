@@ -52,6 +52,7 @@ spec:
   selector:
     app: {{ include "app.name" . }}-{{ .Release.Name }}-grafana
 ---
+{{- if .Values.syslogng.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -71,7 +72,9 @@ spec:
     protocol: UDP
   selector:
     app: {{ include "app.name" . }}-{{ .Release.Name }}-syslog-ng
+{{- end }}
 ---
+{{- if .Values.syslogng.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -91,3 +94,4 @@ spec:
     protocol: TCP
   selector:
     app: {{ include "app.name" . }}-{{ .Release.Name }}-syslog-ng
+{{- end }}

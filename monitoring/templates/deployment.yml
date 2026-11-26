@@ -237,6 +237,7 @@ spec:
           server: {{ .Values.grafana.volumes.logs.server }}
           path: {{ .Values.grafana.volumes.logs.path }}
 ---
+{{- if .Values.syslogng.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -292,3 +293,4 @@ spec:
         nfs:
           server: {{ .Values.syslogng.volumes.config.server }}
           path: {{ .Values.syslogng.volumes.config.path }}
+{{- end }}
