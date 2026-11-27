@@ -156,6 +156,68 @@ grafana:
     annotations:
       cert-manager.io/cluster-issuer: le-wildcard-issuer
 
+alertmanager:
+  # Optional. When enabled, point Prometheus at it in prometheus.configFiles:
+  #   alerting: {alertmanagers: [{static_configs: [{targets: ["<release>-alertmanager:9093"]}]}]}
+  enabled: false
+  image: prom/alertmanager:v0.35.1
+  httpport: 9093
+  # Public URL used in notification links (e.g. https://alertmanager.arcanexus.com)
+  externalUrl: ""
+  # How long silences and notification state are kept
+  retention: 120h
+  extraArgs: []
+
+  security:
+    runAsUser: 65534
+    runAsGroup: 65534
+
+  # Same placement rule as Grafana: not on the low-performance k3s-3
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: NotIn
+                values: [k3s-3]
+
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      memory: 128Mi
+
+  # alertmanager.yml, rendered with tpl into a ConfigMap. Ignored when
+  # existingSecret is set (use that when receivers hold secrets such as
+  # webhook URLs or SMTP passwords: Secret with key alertmanager.yml,
+  # e.g. from an ExternalSecret next to the Argo CD Application).
+  existingSecret: ""
+  config: |
+    route:
+      receiver: "null"
+      group_by: [alertname, job]
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 4h
+    receivers:
+      - name: "null"
+
+  # Silences/notification log: emptyDir by default (lost on restart).
+  # Set nfs.server + nfs.path to keep them.
+  persistence:
+    nfs:
+      server: ""
+      path: ""
+
+  ingress:
+    enabled: false
+    host: alertmanager.arcanexus.com
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: le-wildcard-issuer
+
 syslogng:
   # false = no syslog-ng Deployment/Services (replaced by Grafana Alloy, app alloy-syslog)
   enabled: true

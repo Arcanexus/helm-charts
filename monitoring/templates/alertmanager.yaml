@@ -1,0 +1,146 @@
+{{- if .Values.alertmanager.enabled }}
+{{- $am := .Values.alertmanager }}
+{{- $name := printf "%s-%s-alertmanager" (include "app.name" .) .Release.Name }}
+{{- if not $am.existingSecret }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $name }}-config
+data:
+  alertmanager.yml: |
+{{ tpl $am.config . | nindent 4 }}
+---
+{{- end }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ $name }}
+  replicas: 1
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      annotations:
+        checksum/alertmanager-config: {{ $am.config | toString | sha256sum }}
+      labels:
+        app: {{ $name }}
+        app.kubernetes.io/name: {{ $name }}
+        helm.sh/chart: {{ include "app.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      securityContext:
+        runAsUser: {{ $am.security.runAsUser }}
+        runAsGroup: {{ $am.security.runAsGroup }}
+        fsGroup: {{ $am.security.runAsGroup }}
+      {{- with $am.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: alertmanager
+        image: {{ $am.image }}
+        args:
+          - --config.file=/etc/alertmanager/alertmanager.yml
+          - --storage.path=/alertmanager
+          - --web.listen-address=:{{ $am.httpport }}
+          {{- if $am.externalUrl }}
+          - --web.external-url={{ $am.externalUrl }}
+          {{- end }}
+          - --data.retention={{ $am.retention }}
+          {{- range $am.extraArgs }}
+          - {{ . }}
+          {{- end }}
+        ports:
+        - containerPort: {{ $am.httpport }}
+          name: http
+        env:
+          - name: TZ
+            value: "Europe/Paris"
+        readinessProbe:
+          httpGet:
+            path: /-/ready
+            port: http
+        livenessProbe:
+          httpGet:
+            path: /-/healthy
+            port: http
+        {{- with $am.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        volumeMounts:
+        - name: config
+          mountPath: /etc/alertmanager
+          readOnly: true
+        - name: data
+          mountPath: /alertmanager
+      volumes:
+      - name: config
+        {{- if $am.existingSecret }}
+        secret:
+          secretName: {{ $am.existingSecret }}
+        {{- else }}
+        configMap:
+          name: {{ $name }}-config
+        {{- end }}
+      - name: data
+        {{- if $am.persistence.nfs.server }}
+        nfs:
+          server: {{ $am.persistence.nfs.server }}
+          path: {{ $am.persistence.nfs.path }}
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-alertmanager
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}-alertmanager
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: {{ $am.httpport }}
+    targetPort: {{ $am.httpport }}
+  selector:
+    app: {{ $name }}
+{{- if $am.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "app.name" . }}-alertmanager
+  {{- with $am.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ingressClassName: {{ $am.ingress.ingressClassName }}
+  tls:
+    - hosts:
+        - {{ $am.ingress.host }}
+      secretName: {{ include "app.name" . }}-alertmanager-tls
+  rules:
+    - host: {{ $am.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-alertmanager
+                port:
+                  number: {{ $am.httpport }}
+{{- end }}
+{{- end }}
