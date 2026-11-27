@@ -22,3 +22,23 @@ dependencies:
     version: 7.7.0
     repository: https://grafana.github.io/helm-charts
     condition: loki.enabled
+  - name: influxdb
+    version: 2.10.1
+    repository: oci://ghcr.io/arcanexus/charts
+    condition: influxdb.enabled
+  - name: pihole-exporter
+    version: 1.4.0
+    repository: oci://ghcr.io/arcanexus/charts
+    condition: pihole-exporter.enabled
+  - name: snmp-exporter
+    version: 0.31.0
+    repository: oci://ghcr.io/arcanexus/charts
+    condition: snmp-exporter.enabled
+  - name: speedtest-exporter
+    version: 3.5.4
+    repository: oci://ghcr.io/arcanexus/charts
+    condition: speedtest-exporter.enabled
+  - name: loki-exporter
+    version: 0.4.0
+    repository: oci://ghcr.io/arcanexus/charts
+    condition: loki-exporter.enabled

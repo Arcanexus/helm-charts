@@ -307,6 +307,22 @@ loki:
   test: {enabled: false}
   minio: {enabled: false}
 
+# --- Own charts as subcharts (oci://ghcr.io/arcanexus/charts), off by default.
+# Their values are the ones of each chart, nested under its name.
+# pihole-, snmp- and speedtest-exporter templates pin their own namespace (the
+# chart name; snmp/speedtest also render that Namespace): they stay where they
+# were. influxdb and loki-exporter use the release namespace.
+influxdb:
+  enabled: false
+pihole-exporter:
+  enabled: false
+snmp-exporter:
+  enabled: false
+speedtest-exporter:
+  enabled: false
+loki-exporter:
+  enabled: false
+
 syslogng:
   # false = no syslog-ng Deployment/Services (replaced by Grafana Alloy, app alloy-syslog)
   enabled: true
