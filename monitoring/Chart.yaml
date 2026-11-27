@@ -18,3 +18,7 @@ dependencies:
     version: 1.16.0
     repository: https://grafana.github.io/helm-charts
     condition: alloy-syslog.enabled
+  - name: loki
+    version: 7.7.0
+    repository: https://grafana.github.io/helm-charts
+    condition: loki.enabled
