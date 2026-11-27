@@ -157,6 +157,8 @@ grafana:
       cert-manager.io/cluster-issuer: le-wildcard-issuer
 
 syslogng:
+  # false = no syslog-ng Deployment/Services (replaced by Grafana Alloy, app alloy-syslog)
+  enabled: true
   image: balabit/syslog-ng:latest
   replicas: 1
   udpport: 514
