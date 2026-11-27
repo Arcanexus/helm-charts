@@ -76,10 +76,4 @@ data:
         with open(path, "w") as f:
             json.dump(dashboard, f)
     PY
-  {{- with .Values.grafana.provisionedDatasources }}
-  datasources-helm.yaml: |
-    apiVersion: 1
-    datasources:
-{{ toYaml . | indent 6 }}
-  {{- end }}
 {{- end }}

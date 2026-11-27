@@ -64,7 +64,8 @@ grafana:
 
   environment:
     TIMEZONE: Europe/Paris
-    GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource,grafana-piechart-panel,grafana-worldmap-panel,grafana-kubernetes-app,simpod-json-datasource,camptocamp-prometheus-alertmanager-datasource,grafana-github-datasource
+    # Plugins installed in Grafana 13 on 2026-11-27 (angular ones like piechart/worldmap no longer load)
+    GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-github-datasource,simpod-json-datasource,camptocamp-prometheus-alertmanager-datasource,knightss27-weathermap-panel,grafana-polystat-panel
     GF_PATHS_CONFIG: /etc/grafana/grafana.ini
     GF_PATHS_DATA: /var/lib/grafana
     GF_PATHS_HOME: /usr/share/grafana
@@ -128,14 +129,40 @@ grafana:
       # Empty = leave the dashboards as they are.
       defaultDatasourceUid: ""
 
-  # Extra datasources provisioned from Helm (Grafana provisioning format),
-  # added to the ones on the NAS. Needs sidecar.enabled.
+  # Datasources provisioned from Helm (Grafana provisioning format). A datasource
+  # with the uid/name of an existing one takes it over (it becomes read-only in
+  # the UI). Secrets: "$VAR" in secureJsonData, VAR coming from envFromSecrets.
   provisionedDatasources: []
 
+  # Secrets whose keys are added as env vars of the Grafana container.
+  envFromSecrets: []
+
+  # Dashboards shipped with the chart: dashboards/<folder>/<uid>.json, one
+  # Grafana folder per key below (title "" = General). A dashboard keeps its uid,
+  # so it takes over the existing one with the same uid (same URL).
+  dashboards:
+    enabled: false
+    # false = edits in the UI cannot be saved (export the JSON into the chart instead)
+    allowUiUpdates: false
+    folders:
+      general: {title: "", uid: ""}
+      alerts: {title: Alerts, uid: 7sJJoeY4k}
+      aws: {title: AWS, uid: TKAqf404k}
+      docker: {title: docker, uid: qILox9o4k}
+      github: {title: Github, uid: cdvpzfphjhyioa}
+      kubernetes: {title: Kubernetes, uid: BfZ-Ddo4k}
+      logs: {title: Logs, uid: RuAPQ-fVk}
+      loki: {title: Loki, uid: fc5abf41-53c7-4f95-ac61-4efe7dfeaaa6}
+      network: {title: Network, uid: anTlTboVk}
+      proxmox: {title: Proxmox, uid: QFUKtA04k}
+      synology: {title: Synology, uid: XB9giKoVz}
+
   volumes:
+    # Optional NFS for /etc/grafana (grafana.ini). Empty server = image defaults;
+    # all settings come from environment (GF_*) and the provisioning above.
     config:
       name: config
-      server: 192.168.2.50
+      server: ""
       path: /volume2/docker/grafana/config
       containerMountPath: /etc/grafana
     data:

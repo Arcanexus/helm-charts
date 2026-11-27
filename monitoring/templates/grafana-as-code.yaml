@@ -1,0 +1,61 @@
+{{- /*
+Grafana "as code": datasources and dashboards provisioned from the chart.
+- Dashboards: chart files dashboards/<folder>/<uid>.json, one ConfigMap each
+  (some are > 256 KB, hence the per-resource ServerSideApply), all mounted in
+  one projected volume; one file provider per folder (grafana.dashboards.folders).
+- Datasources: grafana.provisionedDatasources; $VAR / ${VAR} are expanded by
+  Grafana from env vars (grafana.envFromSecrets) for secrets.
+*/ -}}
+{{- $g := .Values.grafana }}
+{{- $fullname := printf "%s-%s-grafana" (include "app.name" .) .Release.Name }}
+{{- if or $g.dashboards.enabled $g.provisionedDatasources }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $fullname }}-as-code
+data:
+  {{- if $g.dashboards.enabled }}
+  dashboards-chart.yaml: |
+    apiVersion: 1
+    providers:
+      {{- range $key, $folder := $g.dashboards.folders }}
+      - name: chart-{{ $key }}
+        folder: {{ $folder.title | default "" | quote }}
+        {{- with $folder.uid }}
+        folderUid: {{ . | quote }}
+        {{- end }}
+        type: file
+        disableDeletion: false
+        allowUiUpdates: {{ $g.dashboards.allowUiUpdates }}
+        updateIntervalSeconds: 60
+        options:
+          path: /var/lib/grafana-dashboards/{{ $key }}
+      {{- end }}
+  {{- end }}
+  {{- with $g.provisionedDatasources }}
+  datasources-helm.yaml: |
+    apiVersion: 1
+    datasources:
+{{ toYaml . | indent 6 }}
+  {{- end }}
+{{- end }}
+{{- if $g.dashboards.enabled }}
+{{- range $path, $_ := .Files.Glob "dashboards/*/*.json" }}
+{{- $folder := base (dir $path) }}
+{{- if hasKey $g.dashboards.folders $folder }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $fullname }}-dash-{{ $folder }}-{{ adler32sum $path }}
+  annotations:
+    argocd.argoproj.io/sync-options: ServerSideApply=true
+  labels:
+    app.kubernetes.io/component: grafana-dashboard
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+data:
+  {{ base $path }}: |-
+{{ $.Files.Get $path | indent 4 }}
+{{- end }}
+{{- end }}
+{{- end }}

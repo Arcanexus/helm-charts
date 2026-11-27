@@ -110,10 +110,12 @@ spec:
   revisionHistoryLimit: 0
   template:
     metadata:
-      {{- if .Values.grafana.sidecar.enabled }}
       annotations:
+        {{- if .Values.grafana.sidecar.enabled }}
         checksum/grafana-provisioning: {{ include (print $.Template.BasePath "/grafana-sidecar.yaml") . | sha256sum }}
-      {{- end }}
+        {{- end }}
+        # Datasources are only read at startup (dashboards are reloaded live).
+        checksum/grafana-datasources: {{ toJson .Values.grafana.provisionedDatasources | sha256sum }}
       labels:
         app: {{ include "app.name" . }}-{{ .Release.Name }}-grafana
         app.kubernetes.io/name: {{ include "app.name" . }}-{{ .Release.Name }}-grafana
@@ -194,9 +196,19 @@ spec:
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{- end }}
+        {{- with .Values.grafana.envFromSecrets }}
+        # Keys of these Secrets become env vars, e.g. for $VAR in provisionedDatasources
+        envFrom:
+          {{- range . }}
+          - secretRef:
+              name: {{ . }}
+          {{- end }}
+        {{- end }}
         volumeMounts:
+        {{- if .Values.grafana.volumes.config.server }}
         - name: grafana-config
           mountPath: {{ .Values.grafana.volumes.config.containerMountPath }}
+        {{- end }}
         - name: grafana-data
           mountPath: {{ .Values.grafana.volumes.data.containerMountPath }}
         - name: grafana-logs
@@ -209,12 +221,21 @@ spec:
           mountPath: {{ .Values.grafana.environment.GF_PATHS_PROVISIONING }}/dashboards/sidecar.yaml
           subPath: dashboards-sidecar.yaml
           readOnly: true
+        {{- end }}
         {{- if .Values.grafana.provisionedDatasources }}
-        - name: grafana-provisioning
+        - name: grafana-as-code
           mountPath: {{ .Values.grafana.environment.GF_PATHS_PROVISIONING }}/datasources/helm.yaml
           subPath: datasources-helm.yaml
           readOnly: true
         {{- end }}
+        {{- if .Values.grafana.dashboards.enabled }}
+        - name: grafana-as-code
+          mountPath: {{ .Values.grafana.environment.GF_PATHS_PROVISIONING }}/dashboards/chart.yaml
+          subPath: dashboards-chart.yaml
+          readOnly: true
+        - name: grafana-dashboards
+          mountPath: /var/lib/grafana-dashboards
+          readOnly: true
         {{- end }}
       volumes:
       {{- if .Values.grafana.sidecar.enabled }}
@@ -224,10 +245,32 @@ spec:
         configMap:
           name: {{ include "app.name" . }}-{{ .Release.Name }}-grafana-provisioning
       {{- end }}
+      {{- if or .Values.grafana.dashboards.enabled .Values.grafana.provisionedDatasources }}
+      - name: grafana-as-code
+        configMap:
+          name: {{ include "app.name" . }}-{{ .Release.Name }}-grafana-as-code
+      {{- end }}
+      {{- if .Values.grafana.dashboards.enabled }}
+      - name: grafana-dashboards
+        projected:
+          sources:
+          {{- range $path, $_ := .Files.Glob "dashboards/*/*.json" }}
+          {{- $folder := base (dir $path) }}
+          {{- if hasKey $.Values.grafana.dashboards.folders $folder }}
+          - configMap:
+              name: {{ include "app.name" $ }}-{{ $.Release.Name }}-grafana-dash-{{ $folder }}-{{ adler32sum $path }}
+              items:
+                - key: {{ base $path }}
+                  path: {{ $folder }}/{{ base $path }}
+          {{- end }}
+          {{- end }}
+      {{- end }}
+      {{- if .Values.grafana.volumes.config.server }}
       - name: grafana-config
         nfs:
           server: {{ .Values.grafana.volumes.config.server }}
           path: {{ .Values.grafana.volumes.config.path }}
+      {{- end }}
       - name: grafana-data
         nfs:
           server: {{ .Values.grafana.volumes.data.server }}
