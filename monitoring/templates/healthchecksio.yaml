@@ -1,0 +1,53 @@
+# Healthchecks.io pinger (was the monitoring-healthchecksio chart)
+{{- if .Values.healthchecksio.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}-{{ .Release.Name }}-healthchecksio
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}-{{ .Release.Name }}-healthchecksio # has to match .spec.template.metadata.labels
+  replicas: {{ .Values.healthchecksio.replicas }}
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-{{ .Release.Name }}-healthchecksio # has to match .spec.selector.matchLabels
+    spec:
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext:
+        runAsUser: {{ .Values.healthchecksio.security.runAsUser }}
+        runAsGroup: {{ .Values.healthchecksio.security.runAsGroup }}
+      containers:
+      - name: {{ include "app.name" . }}-{{ .Release.Name }}-healthchecksio
+        image: {{ .Values.healthchecksio.image }}
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: {{ include "app.name" . }}-{{ .Release.Name }}-healthchecksio-{{ .Values.healthchecksio.volumes.config.name }}
+          mountPath: {{ .Values.healthchecksio.volumes.config.containerMountPath }}
+        env:
+          - name: TZ
+            value: "{{ .Values.healthchecksio.tz }}"
+          - name: DEBUG
+            value: "{{ .Values.healthchecksio.debug }}"
+      - name: configwatcher
+        image: {{ .Values.healthchecksio.configwatcher.image | default "alpine:latest" }}
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          apk add --no-cache inotify-tools kubectl &&
+          while inotifywait -m -r -e modify,create,delete --format '%w%f' {{ .Values.healthchecksio.volumes.config.containerMountPath }} ; do
+            echo "File changed! Restarting pod...";
+            kubectl delete pod -l app={{ include "app.name" . }}-{{ .Release.Name }}-healthchecksio;
+          done
+        volumeMounts:
+        - name: {{ include "app.name" . }}-{{ .Release.Name }}-healthchecksio-{{ .Values.healthchecksio.volumes.config.name }}
+          mountPath: {{ .Values.healthchecksio.volumes.config.containerMountPath }}
+      volumes:
+      - name: {{ include "app.name" . }}-{{ .Release.Name }}-healthchecksio-{{ .Values.healthchecksio.volumes.config.name }}
+        nfs:
+          server: {{ .Values.healthchecksio.volumes.config.server }}
+          path: {{ .Values.healthchecksio.volumes.config.path }}
+{{- end }}

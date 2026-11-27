@@ -1,0 +1,3213 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "20i-NOT4z"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 10,
+      "options": {
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "9.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "editorMode": "code",
+          "expr": "rate(ifHCInOctets{instance=\"192.168.2.1\",ifName=\"eth0\" ,job=\"network-snmp-exporter\"}[30s])",
+          "legendFormat": "router-linksys28",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "editorMode": "code",
+          "expr": "rate(ifHCOutOctets{instance=\"192.168.2.10\",ifName=\"gi27\",job=\"network-snmp-exporter\"}[30s])",
+          "hide": false,
+          "legendFormat": "linksys28-router",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Panel Title",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "20i-NOT4z"
+      },
+      "gridPos": {
+        "h": 25,
+        "w": 17,
+        "x": 0,
+        "y": 8
+      },
+      "id": 2,
+      "options": {
+        "weathermap": {
+          "id": "9ba9938b-d079-4c25-81c8-dea0cdafb117",
+          "links": [
+            {
+              "arrows": {
+                "height": 10,
+                "offset": 2,
+                "width": 8
+              },
+              "id": "26e1b125-818b-4cb1-9fe2-5592173a5df7",
+              "nodes": [
+                {
+                  "anchors": {
+                    "0": {
+                      "numFilledLinks": 0,
+                      "numLinks": 1
+                    },
+                    "1": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "2": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "3": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "4": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    }
+                  },
+                  "colors": {
+                    "background": "rgba(204, 204, 220, 0.16)",
+                    "border": "rgba(204, 204, 220, 0.25)",
+                    "font": "rgb(204, 204, 220)",
+                    "statusDown": "#ff0000"
+                  },
+                  "compactVerticalLinks": false,
+                  "id": "2b836e33-9f30-4eb6-8376-aa1d71816891",
+                  "isConnection": false,
+                  "label": "Linksys Router",
+                  "nodeIcon": {
+                    "drawInside": true,
+                    "name": "cisco/router-firewall",
+                    "padding": {
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    "size": {
+                      "height": 40,
+                      "width": 40
+                    },
+                    "src": "public/plugins/knightss27-weathermap-panel/icons/cisco/router-firewall.svg"
+                  },
+                  "padding": {
+                    "horizontal": 10,
+                    "vertical": 4
+                  },
+                  "position": [
+                    -90,
+                    160
+                  ],
+                  "statusQuery": "{__name__=\"up\", instance=\"192.168.2.1\", job=\"network-snmp-exporter\"}",
+                  "useConstantSpacing": false
+                },
+                {
+                  "anchors": {
+                    "0": {
+                      "numFilledLinks": 0,
+                      "numLinks": 3
+                    },
+                    "1": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "2": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "3": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "4": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    }
+                  },
+                  "colors": {
+                    "background": "rgba(204, 204, 220, 0.16)",
+                    "border": "rgba(204, 204, 220, 0.25)",
+                    "font": "rgb(204, 204, 220)",
+                    "statusDown": "#ff0000"
+                  },
+                  "compactVerticalLinks": false,
+                  "id": "0a22e988-6bdc-40be-aff2-84a3a1b2ec59",
+                  "isConnection": false,
+                  "label": "Linksys 28 Salon",
+                  "nodeIcon": {
+                    "drawInside": true,
+                    "name": "networking/switch",
+                    "padding": {
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    "size": {
+                      "height": 40,
+                      "width": 40
+                    },
+                    "src": "public/plugins/knightss27-weathermap-panel/icons/networking/switch.svg"
+                  },
+                  "padding": {
+                    "horizontal": 10,
+                    "vertical": 4
+                  },
+                  "position": [
+                    310,
+                    180
+                  ],
+                  "statusQuery": "linksys-28-up",
+                  "useConstantSpacing": false
+                }
+              ],
+              "showThroughputPercentage": false,
+              "sides": {
+                "A": {
+                  "anchor": 0,
+                  "bandwidth": 500000,
+                  "currentBandwidthText": "500  Mb/s",
+                  "currentPercentageText": "50.56%",
+                  "currentText": "253  Mb/s",
+                  "currentValue": 252780.5,
+                  "currentValueText": "253  Mb/s",
+                  "dashboardLink": "",
+                  "labelOffset": 55,
+                  "query": "router-linksys28"
+                },
+                "Z": {
+                  "anchor": 0,
+                  "bandwidth": 500000,
+                  "currentBandwidthText": "500  Mb/s",
+                  "currentPercentageText": "0.00%",
+                  "currentText": "0  kb/s",
+                  "currentValue": 0,
+                  "currentValueText": "0  kb/s",
+                  "dashboardLink": "",
+                  "labelOffset": 55,
+                  "query": "linksys28-router"
+                }
+              },
+              "stroke": 8,
+              "units": "Kbits"
+            },
+            {
+              "arrows": {
+                "height": 10,
+                "offset": 2,
+                "width": 8
+              },
+              "id": "a3684270-1ebd-4ef7-999c-41e4bd57095b",
+              "nodes": [
+                {
+                  "anchors": {
+                    "0": {
+                      "numFilledLinks": 0,
+                      "numLinks": 3
+                    },
+                    "1": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "2": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "3": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "4": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    }
+                  },
+                  "colors": {
+                    "background": "rgba(204, 204, 220, 0.16)",
+                    "border": "rgba(204, 204, 220, 0.25)",
+                    "font": "rgb(204, 204, 220)",
+                    "statusDown": "#ff0000"
+                  },
+                  "compactVerticalLinks": false,
+                  "id": "0a22e988-6bdc-40be-aff2-84a3a1b2ec59",
+                  "isConnection": false,
+                  "label": "Linksys 28 Salon",
+                  "nodeIcon": {
+                    "drawInside": true,
+                    "name": "networking/switch",
+                    "padding": {
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    "size": {
+                      "height": 40,
+                      "width": 40
+                    },
+                    "src": "public/plugins/knightss27-weathermap-panel/icons/networking/switch.svg"
+                  },
+                  "padding": {
+                    "horizontal": 10,
+                    "vertical": 4
+                  },
+                  "position": [
+                    310,
+                    180
+                  ],
+                  "statusQuery": "linksys-28-up",
+                  "useConstantSpacing": false
+                },
+                {
+                  "anchors": {
+                    "0": {
+                      "numFilledLinks": 0,
+                      "numLinks": 2
+                    },
+                    "1": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "2": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "3": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "4": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    }
+                  },
+                  "colors": {
+                    "background": "rgba(204, 204, 220, 0.16)",
+                    "border": "rgba(204, 204, 220, 0.25)",
+                    "font": "rgb(204, 204, 220)",
+                    "statusDown": "#ff0000"
+                  },
+                  "compactVerticalLinks": false,
+                  "id": "2d241118-accf-4b37-9f57-c01a0d9a63ad",
+                  "isConnection": false,
+                  "label": "Linksys 8 Tableau",
+                  "nodeIcon": {
+                    "drawInside": true,
+                    "name": "networking/switch",
+                    "padding": {
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    "size": {
+                      "height": 40,
+                      "width": 40
+                    },
+                    "src": "public/plugins/knightss27-weathermap-panel/icons/networking/switch.svg"
+                  },
+                  "padding": {
+                    "horizontal": 10,
+                    "vertical": 4
+                  },
+                  "position": [
+                    720,
+                    180
+                  ],
+                  "statusQuery": "linksys-8-tab-up",
+                  "useConstantSpacing": false
+                }
+              ],
+              "showThroughputPercentage": false,
+              "sides": {
+                "A": {
+                  "anchor": 0,
+                  "bandwidth": 500000,
+                  "currentBandwidthText": "500  kb/s",
+                  "currentPercentageText": "0.00%",
+                  "currentText": "0  b/s",
+                  "currentValue": 0,
+                  "currentValueText": "0  b/s",
+                  "dashboardLink": "",
+                  "labelOffset": 55,
+                  "query": "linksys28-linksystab"
+                },
+                "Z": {
+                  "anchor": 0,
+                  "bandwidth": 500000,
+                  "currentBandwidthText": "500  kb/s",
+                  "currentPercentageText": "0.00%",
+                  "currentText": "0  b/s",
+                  "currentValue": 0,
+                  "currentValueText": "0  b/s",
+                  "dashboardLink": "",
+                  "labelOffset": 55,
+                  "query": "linksystab-linksys28"
+                }
+              },
+              "stroke": 8
+            },
+            {
+              "arrows": {
+                "height": 10,
+                "offset": 2,
+                "width": 8
+              },
+              "id": "76462a39-2783-435a-82e5-127dd95d4ed0",
+              "nodes": [
+                {
+                  "anchors": {
+                    "0": {
+                      "numFilledLinks": 0,
+                      "numLinks": 2
+                    },
+                    "1": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "2": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "3": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "4": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    }
+                  },
+                  "colors": {
+                    "background": "rgba(204, 204, 220, 0.16)",
+                    "border": "rgba(204, 204, 220, 0.25)",
+                    "font": "rgb(204, 204, 220)",
+                    "statusDown": "#ff0000"
+                  },
+                  "compactVerticalLinks": false,
+                  "id": "2d241118-accf-4b37-9f57-c01a0d9a63ad",
+                  "isConnection": false,
+                  "label": "Linksys 8 Tableau",
+                  "nodeIcon": {
+                    "drawInside": true,
+                    "name": "networking/switch",
+                    "padding": {
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    "size": {
+                      "height": 40,
+                      "width": 40
+                    },
+                    "src": "public/plugins/knightss27-weathermap-panel/icons/networking/switch.svg"
+                  },
+                  "padding": {
+                    "horizontal": 10,
+                    "vertical": 4
+                  },
+                  "position": [
+                    720,
+                    180
+                  ],
+                  "statusQuery": "linksys-8-tab-up",
+                  "useConstantSpacing": false
+                },
+                {
+                  "anchors": {
+                    "0": {
+                      "numFilledLinks": 0,
+                      "numLinks": 1
+                    },
+                    "1": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "2": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "3": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "4": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    }
+                  },
+                  "colors": {
+                    "background": "rgba(204, 204, 220, 0.16)",
+                    "border": "rgba(204, 204, 220, 0.25)",
+                    "font": "rgb(204, 204, 220)",
+                    "statusDown": "#ff0000"
+                  },
+                  "compactVerticalLinks": false,
+                  "id": "9830d400-b1a3-4b4c-a418-05d133b668f9",
+                  "isConnection": false,
+                  "label": "Linksys 8 Bureau",
+                  "nodeIcon": {
+                    "drawInside": true,
+                    "name": "networking/switch",
+                    "padding": {
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    "size": {
+                      "height": 40,
+                      "width": 40
+                    },
+                    "src": "public/plugins/knightss27-weathermap-panel/icons/networking/switch.svg"
+                  },
+                  "padding": {
+                    "horizontal": 10,
+                    "vertical": 4
+                  },
+                  "position": [
+                    1050,
+                    190
+                  ],
+                  "statusQuery": "linksys-8-bur-up",
+                  "useConstantSpacing": false
+                }
+              ],
+              "showThroughputPercentage": false,
+              "sides": {
+                "A": {
+                  "anchor": 0,
+                  "bandwidth": 500000,
+                  "currentBandwidthText": "500  kb/s",
+                  "currentPercentageText": "0%",
+                  "currentText": "n/a",
+                  "currentValue": 0,
+                  "currentValueText": "n/a",
+                  "dashboardLink": "",
+                  "labelOffset": 55
+                },
+                "Z": {
+                  "anchor": 0,
+                  "bandwidth": 500000,
+                  "currentBandwidthText": "500  kb/s",
+                  "currentPercentageText": "0%",
+                  "currentText": "n/a",
+                  "currentValue": 0,
+                  "currentValueText": "n/a",
+                  "dashboardLink": "",
+                  "labelOffset": 55
+                }
+              },
+              "stroke": 8
+            },
+            {
+              "arrows": {
+                "height": 10,
+                "offset": 2,
+                "width": 8
+              },
+              "id": "46085e37-05d1-4150-b9d0-65c75fe51b0c",
+              "nodes": [
+                {
+                  "anchors": {
+                    "0": {
+                      "numFilledLinks": 0,
+                      "numLinks": 3
+                    },
+                    "1": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "2": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "3": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "4": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    }
+                  },
+                  "colors": {
+                    "background": "rgba(204, 204, 220, 0.16)",
+                    "border": "rgba(204, 204, 220, 0.25)",
+                    "font": "rgb(204, 204, 220)",
+                    "statusDown": "#ff0000"
+                  },
+                  "compactVerticalLinks": false,
+                  "id": "0a22e988-6bdc-40be-aff2-84a3a1b2ec59",
+                  "isConnection": false,
+                  "label": "Linksys 28 Salon",
+                  "nodeIcon": {
+                    "drawInside": true,
+                    "name": "networking/switch",
+                    "padding": {
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    "size": {
+                      "height": 40,
+                      "width": 40
+                    },
+                    "src": "public/plugins/knightss27-weathermap-panel/icons/networking/switch.svg"
+                  },
+                  "padding": {
+                    "horizontal": 10,
+                    "vertical": 4
+                  },
+                  "position": [
+                    310,
+                    180
+                  ],
+                  "statusQuery": "linksys-28-up",
+                  "useConstantSpacing": false
+                },
+                {
+                  "anchors": {
+                    "0": {
+                      "numFilledLinks": 0,
+                      "numLinks": 1
+                    },
+                    "1": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "2": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "3": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "4": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    }
+                  },
+                  "colors": {
+                    "background": "rgba(204, 204, 220, 0.16)",
+                    "border": "rgba(204, 204, 220, 0.25)",
+                    "font": "rgb(204, 204, 220)",
+                    "statusDown": "#ff0000"
+                  },
+                  "compactVerticalLinks": false,
+                  "id": "affe24a8-2cf7-476d-a6a5-cf19418f50b9",
+                  "isConnection": false,
+                  "label": "Proxmox",
+                  "nodeIcon": {
+                    "drawInside": true,
+                    "name": "networking/mainframe",
+                    "padding": {
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    "size": {
+                      "height": 40,
+                      "width": 40
+                    },
+                    "src": "public/plugins/knightss27-weathermap-panel/icons/networking/mainframe.svg"
+                  },
+                  "padding": {
+                    "horizontal": 10,
+                    "vertical": 4
+                  },
+                  "position": [
+                    310,
+                    390
+                  ],
+                  "statusQuery": "proxmox-up",
+                  "useConstantSpacing": false
+                }
+              ],
+              "showThroughputPercentage": false,
+              "sides": {
+                "A": {
+                  "anchor": 0,
+                  "bandwidth": 500000,
+                  "currentBandwidthText": "500  kb/s",
+                  "currentPercentageText": "0.00%",
+                  "currentText": "0  b/s",
+                  "currentValue": 0,
+                  "currentValueText": "0  b/s",
+                  "dashboardLink": "",
+                  "labelOffset": 55,
+                  "query": "linksys28-proxmox"
+                },
+                "Z": {
+                  "anchor": 0,
+                  "bandwidth": 500000,
+                  "currentBandwidthText": "500  kb/s",
+                  "currentPercentageText": "0.95%",
+                  "currentText": "4.77  kb/s",
+                  "currentValue": 4766.109090909091,
+                  "currentValueText": "4.77  kb/s",
+                  "dashboardLink": "",
+                  "labelOffset": 55,
+                  "query": "proxmox-net"
+                }
+              },
+              "stroke": 8
+            },
+            {
+              "arrows": {
+                "height": 10,
+                "offset": 2,
+                "width": 8
+              },
+              "id": "5839ba4b-3ebb-4a7e-922e-2a61eaa20c34",
+              "nodes": [
+                {
+                  "anchors": {
+                    "0": {
+                      "numFilledLinks": 0,
+                      "numLinks": 7
+                    },
+                    "1": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "2": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "3": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "4": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    }
+                  },
+                  "colors": {
+                    "background": "rgba(204, 204, 220, 0.16)",
+                    "border": "rgba(204, 204, 220, 0.25)",
+                    "font": "rgb(204, 204, 220)",
+                    "statusDown": "#ff0000"
+                  },
+                  "compactVerticalLinks": false,
+                  "id": "0a22e988-6bdc-40be-aff2-84a3a1b2ec59",
+                  "isConnection": false,
+                  "label": "Linksys 28 Salon",
+                  "nodeIcon": {
+                    "drawInside": true,
+                    "name": "networking/switch",
+                    "padding": {
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    "size": {
+                      "height": 40,
+                      "width": 40
+                    },
+                    "src": "public/plugins/knightss27-weathermap-panel/icons/networking/switch.svg"
+                  },
+                  "padding": {
+                    "horizontal": 10,
+                    "vertical": 4
+                  },
+                  "position": [
+                    580,
+                    280
+                  ],
+                  "statusQuery": "linksys-28-up",
+                  "useConstantSpacing": false
+                },
+                {
+                  "anchors": {
+                    "0": {
+                      "numFilledLinks": 0,
+                      "numLinks": 1
+                    },
+                    "1": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "2": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "3": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "4": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    }
+                  },
+                  "colors": {
+                    "background": "rgba(204, 204, 220, 0.16)",
+                    "border": "rgba(204, 204, 220, 0.25)",
+                    "font": "rgb(204, 204, 220)",
+                    "statusDown": "#ff0000"
+                  },
+                  "compactVerticalLinks": false,
+                  "id": "3608d58d-782b-4b10-a92f-32c1fb8e7848",
+                  "isConnection": false,
+                  "label": "Shield",
+                  "nodeIcon": {
+                    "drawInside": true,
+                    "name": "cisco/pc-video",
+                    "padding": {
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    "size": {
+                      "height": 40,
+                      "width": 40
+                    },
+                    "src": "public/plugins/knightss27-weathermap-panel/icons/cisco/pc-video.svg"
+                  },
+                  "padding": {
+                    "horizontal": 10,
+                    "vertical": 4
+                  },
+                  "position": [
+                    480,
+                    130
+                  ],
+                  "useConstantSpacing": false
+                }
+              ],
+              "showThroughputPercentage": false,
+              "sides": {
+                "A": {
+                  "anchor": 0,
+                  "bandwidth": 500000,
+                  "currentBandwidthText": "500  kb/s",
+                  "currentPercentageText": "0%",
+                  "currentText": "n/a",
+                  "currentValue": 0,
+                  "currentValueText": "n/a",
+                  "dashboardLink": "",
+                  "labelOffset": 55
+                },
+                "Z": {
+                  "anchor": 0,
+                  "bandwidth": 500000,
+                  "currentBandwidthText": "500  kb/s",
+                  "currentPercentageText": "0%",
+                  "currentText": "n/a",
+                  "currentValue": 0,
+                  "currentValueText": "n/a",
+                  "dashboardLink": "",
+                  "labelOffset": 55
+                }
+              },
+              "stroke": 8
+            },
+            {
+              "arrows": {
+                "height": 10,
+                "offset": 2,
+                "width": 8
+              },
+              "id": "daec74d6-cc73-4264-89d9-03c9a2bfb1c5",
+              "nodes": [
+                {
+                  "anchors": {
+                    "0": {
+                      "numFilledLinks": 0,
+                      "numLinks": 7
+                    },
+                    "1": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "2": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "3": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "4": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    }
+                  },
+                  "colors": {
+                    "background": "rgba(204, 204, 220, 0.16)",
+                    "border": "rgba(204, 204, 220, 0.25)",
+                    "font": "rgb(204, 204, 220)",
+                    "statusDown": "#ff0000"
+                  },
+                  "compactVerticalLinks": false,
+                  "id": "0a22e988-6bdc-40be-aff2-84a3a1b2ec59",
+                  "isConnection": false,
+                  "label": "Linksys 28 Salon",
+                  "nodeIcon": {
+                    "drawInside": true,
+                    "name": "networking/switch",
+                    "padding": {
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    "size": {
+                      "height": 40,
+                      "width": 40
+                    },
+                    "src": "public/plugins/knightss27-weathermap-panel/icons/networking/switch.svg"
+                  },
+                  "padding": {
+                    "horizontal": 10,
+                    "vertical": 4
+                  },
+                  "position": [
+                    580,
+                    280
+                  ],
+                  "statusQuery": "linksys-28-up",
+                  "useConstantSpacing": false
+                },
+                {
+                  "anchors": {
+                    "0": {
+                      "numFilledLinks": 0,
+                      "numLinks": 1
+                    },
+                    "1": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "2": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "3": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "4": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    }
+                  },
+                  "colors": {
+                    "background": "rgba(204, 204, 220, 0.16)",
+                    "border": "rgba(204, 204, 220, 0.25)",
+                    "font": "rgb(204, 204, 220)",
+                    "statusDown": "#ff0000"
+                  },
+                  "compactVerticalLinks": false,
+                  "id": "30e1efb6-5182-4265-8efc-28db222da844",
+                  "isConnection": false,
+                  "label": "NAS_1",
+                  "nodeIcon": {
+                    "drawInside": true,
+                    "name": "cisco/storge-server",
+                    "padding": {
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    "size": {
+                      "height": 40,
+                      "width": 40
+                    },
+                    "src": "public/plugins/knightss27-weathermap-panel/icons/cisco/storge-server.svg"
+                  },
+                  "padding": {
+                    "horizontal": 10,
+                    "vertical": 4
+                  },
+                  "position": [
+                    430,
+                    420
+                  ],
+                  "useConstantSpacing": false
+                }
+              ],
+              "showThroughputPercentage": false,
+              "sides": {
+                "A": {
+                  "anchor": 0,
+                  "bandwidth": 500000,
+                  "currentBandwidthText": "500  kb/s",
+                  "currentPercentageText": "0.00%",
+                  "currentText": "0  b/s",
+                  "currentValue": 0,
+                  "currentValueText": "0  b/s",
+                  "dashboardLink": "",
+                  "labelOffset": 55,
+                  "query": "linksys28-nas_1"
+                },
+                "Z": {
+                  "anchor": 0,
+                  "bandwidth": 500000,
+                  "currentBandwidthText": "500  kb/s",
+                  "currentPercentageText": "0.00%",
+                  "currentText": "0  b/s",
+                  "currentValue": 0,
+                  "currentValueText": "0  b/s",
+                  "dashboardLink": "",
+                  "labelOffset": 55,
+                  "query": "nas_1-linksys28"
+                }
+              },
+              "stroke": 8
+            },
+            {
+              "arrows": {
+                "height": 10,
+                "offset": 2,
+                "width": 8
+              },
+              "id": "6081269d-f90b-4849-90fc-2e1a6c62eb2c",
+              "nodes": [
+                {
+                  "anchors": {
+                    "0": {
+                      "numFilledLinks": 0,
+                      "numLinks": 7
+                    },
+                    "1": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "2": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "3": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "4": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    }
+                  },
+                  "colors": {
+                    "background": "rgba(204, 204, 220, 0.16)",
+                    "border": "rgba(204, 204, 220, 0.25)",
+                    "font": "rgb(204, 204, 220)",
+                    "statusDown": "#ff0000"
+                  },
+                  "compactVerticalLinks": false,
+                  "id": "0a22e988-6bdc-40be-aff2-84a3a1b2ec59",
+                  "isConnection": false,
+                  "label": "Linksys 28 Salon",
+                  "nodeIcon": {
+                    "drawInside": true,
+                    "name": "networking/switch",
+                    "padding": {
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    "size": {
+                      "height": 40,
+                      "width": 40
+                    },
+                    "src": "public/plugins/knightss27-weathermap-panel/icons/networking/switch.svg"
+                  },
+                  "padding": {
+                    "horizontal": 10,
+                    "vertical": 4
+                  },
+                  "position": [
+                    580,
+                    280
+                  ],
+                  "statusQuery": "linksys-28-up",
+                  "useConstantSpacing": false
+                },
+                {
+                  "anchors": {
+                    "0": {
+                      "numFilledLinks": 0,
+                      "numLinks": 1
+                    },
+                    "1": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "2": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "3": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "4": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    }
+                  },
+                  "colors": {
+                    "background": "rgba(204, 204, 220, 0.16)",
+                    "border": "rgba(204, 204, 220, 0.25)",
+                    "font": "rgb(204, 204, 220)",
+                    "statusDown": "#ff0000"
+                  },
+                  "compactVerticalLinks": false,
+                  "id": "b8be368a-313c-4eec-b2d2-86e8fba53331",
+                  "isConnection": false,
+                  "label": "NAS_2",
+                  "nodeIcon": {
+                    "drawInside": true,
+                    "name": "cisco/storge-server",
+                    "padding": {
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    "size": {
+                      "height": 40,
+                      "width": 40
+                    },
+                    "src": "public/plugins/knightss27-weathermap-panel/icons/cisco/storge-server.svg"
+                  },
+                  "padding": {
+                    "horizontal": 10,
+                    "vertical": 4
+                  },
+                  "position": [
+                    730,
+                    420
+                  ],
+                  "useConstantSpacing": false
+                }
+              ],
+              "showThroughputPercentage": false,
+              "sides": {
+                "A": {
+                  "anchor": 0,
+                  "bandwidth": 500000,
+                  "currentBandwidthText": "500  kb/s",
+                  "currentPercentageText": "0%",
+                  "currentText": "n/a",
+                  "currentValue": 0,
+                  "currentValueText": "n/a",
+                  "dashboardLink": "",
+                  "labelOffset": 55
+                },
+                "Z": {
+                  "anchor": 0,
+                  "bandwidth": 500000,
+                  "currentBandwidthText": "500  kb/s",
+                  "currentPercentageText": "0%",
+                  "currentText": "n/a",
+                  "currentValue": 0,
+                  "currentValueText": "n/a",
+                  "dashboardLink": "",
+                  "labelOffset": 55
+                }
+              },
+              "stroke": 8
+            },
+            {
+              "arrows": {
+                "height": 10,
+                "offset": 2,
+                "width": 8
+              },
+              "id": "7a97884f-bd98-4e40-82d7-5a1945f97618",
+              "nodes": [
+                {
+                  "anchors": {
+                    "0": {
+                      "numFilledLinks": 0,
+                      "numLinks": 7
+                    },
+                    "1": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "2": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "3": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "4": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    }
+                  },
+                  "colors": {
+                    "background": "rgba(204, 204, 220, 0.16)",
+                    "border": "rgba(204, 204, 220, 0.25)",
+                    "font": "rgb(204, 204, 220)",
+                    "statusDown": "#ff0000"
+                  },
+                  "compactVerticalLinks": false,
+                  "id": "0a22e988-6bdc-40be-aff2-84a3a1b2ec59",
+                  "isConnection": false,
+                  "label": "Linksys 28 Salon",
+                  "nodeIcon": {
+                    "drawInside": true,
+                    "name": "networking/switch",
+                    "padding": {
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    "size": {
+                      "height": 40,
+                      "width": 40
+                    },
+                    "src": "public/plugins/knightss27-weathermap-panel/icons/networking/switch.svg"
+                  },
+                  "padding": {
+                    "horizontal": 10,
+                    "vertical": 4
+                  },
+                  "position": [
+                    580,
+                    280
+                  ],
+                  "statusQuery": "linksys-28-up",
+                  "useConstantSpacing": false
+                },
+                {
+                  "anchors": {
+                    "0": {
+                      "numFilledLinks": 0,
+                      "numLinks": 1
+                    },
+                    "1": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "2": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "3": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "4": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    }
+                  },
+                  "colors": {
+                    "background": "rgba(204, 204, 220, 0.16)",
+                    "border": "rgba(204, 204, 220, 0.25)",
+                    "font": "rgb(204, 204, 220)",
+                    "statusDown": "#ff0000"
+                  },
+                  "compactVerticalLinks": false,
+                  "id": "cb520460-96b5-436d-8e47-04357c9720cf",
+                  "isConnection": false,
+                  "label": "Velop Salon",
+                  "nodeIcon": {
+                    "drawInside": true,
+                    "name": "networking/wireless-access-point",
+                    "padding": {
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    "size": {
+                      "height": 40,
+                      "width": 40
+                    },
+                    "src": "public/plugins/knightss27-weathermap-panel/icons/networking/wireless-access-point.svg"
+                  },
+                  "padding": {
+                    "horizontal": 10,
+                    "vertical": 4
+                  },
+                  "position": [
+                    650,
+                    110
+                  ],
+                  "useConstantSpacing": false
+                }
+              ],
+              "showThroughputPercentage": false,
+              "sides": {
+                "A": {
+                  "anchor": 0,
+                  "bandwidth": 500000,
+                  "currentBandwidthText": "500  kb/s",
+                  "currentPercentageText": "0%",
+                  "currentText": "n/a",
+                  "currentValue": 0,
+                  "currentValueText": "n/a",
+                  "dashboardLink": "",
+                  "labelOffset": 55
+                },
+                "Z": {
+                  "anchor": 0,
+                  "bandwidth": 500000,
+                  "currentBandwidthText": "500  kb/s",
+                  "currentPercentageText": "0%",
+                  "currentText": "n/a",
+                  "currentValue": 0,
+                  "currentValueText": "n/a",
+                  "dashboardLink": "",
+                  "labelOffset": 55
+                }
+              },
+              "stroke": 8
+            },
+            {
+              "arrows": {
+                "height": 10,
+                "offset": 2,
+                "width": 8
+              },
+              "id": "eaf44709-6ecb-42b5-a273-e6e0ac4d40d0",
+              "nodes": [
+                {
+                  "anchors": {
+                    "0": {
+                      "numFilledLinks": 0,
+                      "numLinks": 3
+                    },
+                    "1": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "2": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "3": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "4": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    }
+                  },
+                  "colors": {
+                    "background": "rgba(204, 204, 220, 0.16)",
+                    "border": "rgba(204, 204, 220, 0.25)",
+                    "font": "rgb(204, 204, 220)",
+                    "statusDown": "#ff0000"
+                  },
+                  "compactVerticalLinks": false,
+                  "id": "9830d400-b1a3-4b4c-a418-05d133b668f9",
+                  "isConnection": false,
+                  "label": "Linksys 8 Bureau",
+                  "nodeIcon": {
+                    "drawInside": true,
+                    "name": "networking/switch",
+                    "padding": {
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    "size": {
+                      "height": 40,
+                      "width": 40
+                    },
+                    "src": "public/plugins/knightss27-weathermap-panel/icons/networking/switch.svg"
+                  },
+                  "padding": {
+                    "horizontal": 10,
+                    "vertical": 4
+                  },
+                  "position": [
+                    1270,
+                    200
+                  ],
+                  "statusQuery": "linksys-8-bur-up",
+                  "useConstantSpacing": false
+                },
+                {
+                  "anchors": {
+                    "0": {
+                      "numFilledLinks": 0,
+                      "numLinks": 1
+                    },
+                    "1": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "2": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "3": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "4": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    }
+                  },
+                  "colors": {
+                    "background": "rgba(204, 204, 220, 0.16)",
+                    "border": "rgba(204, 204, 220, 0.25)",
+                    "font": "rgb(204, 204, 220)",
+                    "statusDown": "#ff0000"
+                  },
+                  "compactVerticalLinks": false,
+                  "id": "48623835-24b3-4466-a41c-56fada449a5b",
+                  "isConnection": false,
+                  "label": "Velop Bureau",
+                  "nodeIcon": {
+                    "drawInside": false,
+                    "name": "networking/wireless-access-point",
+                    "padding": {
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    "size": {
+                      "height": 40,
+                      "width": 40
+                    },
+                    "src": "public/plugins/knightss27-weathermap-panel/icons/networking/wireless-access-point.svg"
+                  },
+                  "padding": {
+                    "horizontal": 10,
+                    "vertical": 4
+                  },
+                  "position": [
+                    1450,
+                    60
+                  ],
+                  "useConstantSpacing": false
+                }
+              ],
+              "showThroughputPercentage": false,
+              "sides": {
+                "A": {
+                  "anchor": 0,
+                  "bandwidth": 500000,
+                  "currentBandwidthText": "500  kb/s",
+                  "currentPercentageText": "0%",
+                  "currentText": "n/a",
+                  "currentValue": 0,
+                  "currentValueText": "n/a",
+                  "dashboardLink": "",
+                  "labelOffset": 55
+                },
+                "Z": {
+                  "anchor": 0,
+                  "bandwidth": 500000,
+                  "currentBandwidthText": "500  kb/s",
+                  "currentPercentageText": "0%",
+                  "currentText": "n/a",
+                  "currentValue": 0,
+                  "currentValueText": "n/a",
+                  "dashboardLink": "",
+                  "labelOffset": 55
+                }
+              },
+              "stroke": 8
+            },
+            {
+              "arrows": {
+                "height": 10,
+                "offset": 2,
+                "width": 8
+              },
+              "id": "b3e518c1-1ce6-4f60-ae12-286144d54a41",
+              "nodes": [
+                {
+                  "anchors": {
+                    "0": {
+                      "numFilledLinks": 0,
+                      "numLinks": 3
+                    },
+                    "1": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "2": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "3": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "4": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    }
+                  },
+                  "colors": {
+                    "background": "rgba(204, 204, 220, 0.16)",
+                    "border": "rgba(204, 204, 220, 0.25)",
+                    "font": "rgb(204, 204, 220)",
+                    "statusDown": "#ff0000"
+                  },
+                  "compactVerticalLinks": false,
+                  "id": "9830d400-b1a3-4b4c-a418-05d133b668f9",
+                  "isConnection": false,
+                  "label": "Linksys 8 Bureau",
+                  "nodeIcon": {
+                    "drawInside": true,
+                    "name": "networking/switch",
+                    "padding": {
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    "size": {
+                      "height": 40,
+                      "width": 40
+                    },
+                    "src": "public/plugins/knightss27-weathermap-panel/icons/networking/switch.svg"
+                  },
+                  "padding": {
+                    "horizontal": 10,
+                    "vertical": 4
+                  },
+                  "position": [
+                    1270,
+                    200
+                  ],
+                  "statusQuery": "linksys-8-bur-up",
+                  "useConstantSpacing": false
+                },
+                {
+                  "anchors": {
+                    "0": {
+                      "numFilledLinks": 0,
+                      "numLinks": 1
+                    },
+                    "1": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "2": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "3": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "4": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    }
+                  },
+                  "colors": {
+                    "background": "rgba(204, 204, 220, 0.16)",
+                    "border": "rgba(204, 204, 220, 0.25)",
+                    "font": "rgb(204, 204, 220)",
+                    "statusDown": "#ff0000"
+                  },
+                  "compactVerticalLinks": false,
+                  "id": "42914620-0b52-4b09-bf74-0a0499f09b56",
+                  "isConnection": false,
+                  "label": "Qube",
+                  "nodeIcon": {
+                    "drawInside": true,
+                    "name": "cisco/pc",
+                    "padding": {
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    "size": {
+                      "height": 40,
+                      "width": 40
+                    },
+                    "src": "public/plugins/knightss27-weathermap-panel/icons/cisco/pc.svg"
+                  },
+                  "padding": {
+                    "horizontal": 10,
+                    "vertical": 4
+                  },
+                  "position": [
+                    1430,
+                    370
+                  ],
+                  "useConstantSpacing": false
+                }
+              ],
+              "showThroughputPercentage": false,
+              "sides": {
+                "A": {
+                  "anchor": 0,
+                  "bandwidth": 500000,
+                  "currentBandwidthText": "500  kb/s",
+                  "currentPercentageText": "0%",
+                  "currentText": "n/a",
+                  "currentValue": 0,
+                  "currentValueText": "n/a",
+                  "dashboardLink": "",
+                  "labelOffset": 55
+                },
+                "Z": {
+                  "anchor": 0,
+                  "bandwidth": 500000,
+                  "currentBandwidthText": "500  kb/s",
+                  "currentPercentageText": "0%",
+                  "currentText": "n/a",
+                  "currentValue": 0,
+                  "currentValueText": "n/a",
+                  "dashboardLink": "",
+                  "labelOffset": 55
+                }
+              },
+              "stroke": 8
+            },
+            {
+              "arrows": {
+                "height": 10,
+                "offset": 2,
+                "width": 8
+              },
+              "id": "8627ebd4-edfb-4f87-889e-b918959ad7ca",
+              "nodes": [
+                {
+                  "anchors": {
+                    "0": {
+                      "numFilledLinks": 0,
+                      "numLinks": 3
+                    },
+                    "1": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "2": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "3": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "4": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    }
+                  },
+                  "colors": {
+                    "background": "rgba(204, 204, 220, 0.16)",
+                    "border": "rgba(204, 204, 220, 0.25)",
+                    "font": "rgb(204, 204, 220)",
+                    "statusDown": "#ff0000"
+                  },
+                  "compactVerticalLinks": false,
+                  "id": "2b836e33-9f30-4eb6-8376-aa1d71816891",
+                  "isConnection": false,
+                  "label": "Linksys Router",
+                  "nodeIcon": {
+                    "drawInside": true,
+                    "name": "cisco/router-firewall",
+                    "padding": {
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    "size": {
+                      "height": 40,
+                      "width": 40
+                    },
+                    "src": "public/plugins/knightss27-weathermap-panel/icons/cisco/router-firewall.svg"
+                  },
+                  "padding": {
+                    "horizontal": 10,
+                    "vertical": 4
+                  },
+                  "position": [
+                    260,
+                    210
+                  ],
+                  "statusQuery": "{__name__=\"up\", instance=\"192.168.2.1\", job=\"network-snmp-exporter\"}",
+                  "useConstantSpacing": false
+                },
+                {
+                  "anchors": {
+                    "0": {
+                      "numFilledLinks": 0,
+                      "numLinks": 3
+                    },
+                    "1": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "2": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "3": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    },
+                    "4": {
+                      "numFilledLinks": 0,
+                      "numLinks": 0
+                    }
+                  },
+                  "colors": {
+                    "background": "rgba(204, 204, 220, 0.16)",
+                    "border": "rgba(204, 204, 220, 0.25)",
+                    "font": "rgb(204, 204, 220)",
+                    "statusDown": "#ff0000"
+                  },
+                  "compactVerticalLinks": false,
+                  "id": "2b836e33-9f30-4eb6-8376-aa1d71816891",
+                  "isConnection": false,
+                  "label": "Linksys Router",
+                  "nodeIcon": {
+                    "drawInside": true,
+                    "name": "cisco/router-firewall",
+                    "padding": {
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    "size": {
+                      "height": 40,
+                      "width": 40
+                    },
+                    "src": "public/plugins/knightss27-weathermap-panel/icons/cisco/router-firewall.svg"
+                  },
+                  "padding": {
+                    "horizontal": 10,
+                    "vertical": 4
+                  },
+                  "position": [
+                    260,
+                    210
+                  ],
+                  "statusQuery": "{__name__=\"up\", instance=\"192.168.2.1\", job=\"network-snmp-exporter\"}",
+                  "useConstantSpacing": false
+                }
+              ],
+              "showThroughputPercentage": false,
+              "sides": {
+                "A": {
+                  "anchor": 0,
+                  "bandwidth": 500000,
+                  "currentBandwidthText": "500  kb/s",
+                  "currentPercentageText": "0%",
+                  "currentText": "n/a",
+                  "currentValue": 0,
+                  "currentValueText": "n/a",
+                  "dashboardLink": "",
+                  "labelOffset": 55
+                },
+                "Z": {
+                  "anchor": 0,
+                  "bandwidth": 500000,
+                  "currentBandwidthText": "500  kb/s",
+                  "currentPercentageText": "0%",
+                  "currentText": "n/a",
+                  "currentValue": 0,
+                  "currentValueText": "n/a",
+                  "dashboardLink": "",
+                  "labelOffset": 55
+                }
+              },
+              "stroke": 8
+            }
+          ],
+          "nodes": [
+            {
+              "anchors": {
+                "0": {
+                  "numFilledLinks": 0,
+                  "numLinks": 3
+                },
+                "1": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "2": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "3": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "4": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                }
+              },
+              "colors": {
+                "background": "rgba(204, 204, 220, 0.16)",
+                "border": "rgba(204, 204, 220, 0.25)",
+                "font": "rgb(204, 204, 220)",
+                "statusDown": "#ff0000"
+              },
+              "compactVerticalLinks": false,
+              "id": "2b836e33-9f30-4eb6-8376-aa1d71816891",
+              "isConnection": false,
+              "label": "Linksys Router",
+              "nodeIcon": {
+                "drawInside": true,
+                "name": "cisco/router-firewall",
+                "padding": {
+                  "horizontal": 0,
+                  "vertical": 0
+                },
+                "size": {
+                  "height": 40,
+                  "width": 40
+                },
+                "src": "public/plugins/knightss27-weathermap-panel/icons/cisco/router-firewall.svg"
+              },
+              "padding": {
+                "horizontal": 10,
+                "vertical": 4
+              },
+              "position": [
+                260,
+                210
+              ],
+              "statusQuery": "{__name__=\"up\", instance=\"192.168.2.1\", job=\"network-snmp-exporter\"}",
+              "useConstantSpacing": false
+            },
+            {
+              "anchors": {
+                "0": {
+                  "numFilledLinks": 0,
+                  "numLinks": 7
+                },
+                "1": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "2": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "3": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "4": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                }
+              },
+              "colors": {
+                "background": "rgba(204, 204, 220, 0.16)",
+                "border": "rgba(204, 204, 220, 0.25)",
+                "font": "rgb(204, 204, 220)",
+                "statusDown": "#ff0000"
+              },
+              "compactVerticalLinks": false,
+              "id": "0a22e988-6bdc-40be-aff2-84a3a1b2ec59",
+              "isConnection": false,
+              "label": "Linksys 28 Salon",
+              "nodeIcon": {
+                "drawInside": true,
+                "name": "networking/switch",
+                "padding": {
+                  "horizontal": 0,
+                  "vertical": 0
+                },
+                "size": {
+                  "height": 40,
+                  "width": 40
+                },
+                "src": "public/plugins/knightss27-weathermap-panel/icons/networking/switch.svg"
+              },
+              "padding": {
+                "horizontal": 10,
+                "vertical": 4
+              },
+              "position": [
+                580,
+                280
+              ],
+              "statusQuery": "linksys-28-up",
+              "useConstantSpacing": false
+            },
+            {
+              "anchors": {
+                "0": {
+                  "numFilledLinks": 0,
+                  "numLinks": 2
+                },
+                "1": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "2": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "3": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "4": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                }
+              },
+              "colors": {
+                "background": "rgba(204, 204, 220, 0.16)",
+                "border": "rgba(204, 204, 220, 0.25)",
+                "font": "rgb(204, 204, 220)",
+                "statusDown": "#ff0000"
+              },
+              "compactVerticalLinks": false,
+              "id": "2d241118-accf-4b37-9f57-c01a0d9a63ad",
+              "isConnection": false,
+              "label": "Linksys 8 Tableau",
+              "nodeIcon": {
+                "drawInside": true,
+                "name": "networking/switch",
+                "padding": {
+                  "horizontal": 0,
+                  "vertical": 0
+                },
+                "size": {
+                  "height": 40,
+                  "width": 40
+                },
+                "src": "public/plugins/knightss27-weathermap-panel/icons/networking/switch.svg"
+              },
+              "padding": {
+                "horizontal": 10,
+                "vertical": 4
+              },
+              "position": [
+                940,
+                190
+              ],
+              "statusQuery": "linksys-8-tab-up",
+              "useConstantSpacing": false
+            },
+            {
+              "anchors": {
+                "0": {
+                  "numFilledLinks": 0,
+                  "numLinks": 3
+                },
+                "1": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "2": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "3": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "4": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                }
+              },
+              "colors": {
+                "background": "rgba(204, 204, 220, 0.16)",
+                "border": "rgba(204, 204, 220, 0.25)",
+                "font": "rgb(204, 204, 220)",
+                "statusDown": "#ff0000"
+              },
+              "compactVerticalLinks": false,
+              "id": "9830d400-b1a3-4b4c-a418-05d133b668f9",
+              "isConnection": false,
+              "label": "Linksys 8 Bureau",
+              "nodeIcon": {
+                "drawInside": true,
+                "name": "networking/switch",
+                "padding": {
+                  "horizontal": 0,
+                  "vertical": 0
+                },
+                "size": {
+                  "height": 40,
+                  "width": 40
+                },
+                "src": "public/plugins/knightss27-weathermap-panel/icons/networking/switch.svg"
+              },
+              "padding": {
+                "horizontal": 10,
+                "vertical": 4
+              },
+              "position": [
+                1270,
+                200
+              ],
+              "statusQuery": "linksys-8-bur-up",
+              "useConstantSpacing": false
+            },
+            {
+              "anchors": {
+                "0": {
+                  "numFilledLinks": 0,
+                  "numLinks": 1
+                },
+                "1": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "2": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "3": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "4": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                }
+              },
+              "colors": {
+                "background": "rgba(204, 204, 220, 0.16)",
+                "border": "rgba(204, 204, 220, 0.25)",
+                "font": "rgb(204, 204, 220)",
+                "statusDown": "#ff0000"
+              },
+              "compactVerticalLinks": false,
+              "id": "affe24a8-2cf7-476d-a6a5-cf19418f50b9",
+              "isConnection": false,
+              "label": "Proxmox",
+              "nodeIcon": {
+                "drawInside": true,
+                "name": "networking/mainframe",
+                "padding": {
+                  "horizontal": 0,
+                  "vertical": 0
+                },
+                "size": {
+                  "height": 40,
+                  "width": 40
+                },
+                "src": "public/plugins/knightss27-weathermap-panel/icons/networking/mainframe.svg"
+              },
+              "padding": {
+                "horizontal": 10,
+                "vertical": 4
+              },
+              "position": [
+                580,
+                500
+              ],
+              "statusQuery": "proxmox-up",
+              "useConstantSpacing": false
+            },
+            {
+              "anchors": {
+                "0": {
+                  "numFilledLinks": 0,
+                  "numLinks": 1
+                },
+                "1": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "2": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "3": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "4": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                }
+              },
+              "colors": {
+                "background": "rgba(204, 204, 220, 0.16)",
+                "border": "rgba(204, 204, 220, 0.25)",
+                "font": "rgb(204, 204, 220)",
+                "statusDown": "#ff0000"
+              },
+              "compactVerticalLinks": false,
+              "id": "42914620-0b52-4b09-bf74-0a0499f09b56",
+              "isConnection": false,
+              "label": "Qube",
+              "nodeIcon": {
+                "drawInside": true,
+                "name": "cisco/pc",
+                "padding": {
+                  "horizontal": 0,
+                  "vertical": 0
+                },
+                "size": {
+                  "height": 40,
+                  "width": 40
+                },
+                "src": "public/plugins/knightss27-weathermap-panel/icons/cisco/pc.svg"
+              },
+              "padding": {
+                "horizontal": 10,
+                "vertical": 4
+              },
+              "position": [
+                1430,
+                370
+              ],
+              "useConstantSpacing": false
+            },
+            {
+              "anchors": {
+                "0": {
+                  "numFilledLinks": 0,
+                  "numLinks": 1
+                },
+                "1": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "2": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "3": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "4": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                }
+              },
+              "colors": {
+                "background": "rgba(204, 204, 220, 0.16)",
+                "border": "rgba(204, 204, 220, 0.25)",
+                "font": "rgb(204, 204, 220)",
+                "statusDown": "#ff0000"
+              },
+              "compactVerticalLinks": false,
+              "id": "3608d58d-782b-4b10-a92f-32c1fb8e7848",
+              "isConnection": false,
+              "label": "Shield",
+              "nodeIcon": {
+                "drawInside": true,
+                "name": "cisco/pc-video",
+                "padding": {
+                  "horizontal": 0,
+                  "vertical": 0
+                },
+                "size": {
+                  "height": 40,
+                  "width": 40
+                },
+                "src": "public/plugins/knightss27-weathermap-panel/icons/cisco/pc-video.svg"
+              },
+              "padding": {
+                "horizontal": 10,
+                "vertical": 4
+              },
+              "position": [
+                480,
+                130
+              ],
+              "useConstantSpacing": false
+            },
+            {
+              "anchors": {
+                "0": {
+                  "numFilledLinks": 0,
+                  "numLinks": 1
+                },
+                "1": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "2": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "3": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "4": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                }
+              },
+              "colors": {
+                "background": "rgba(204, 204, 220, 0.16)",
+                "border": "rgba(204, 204, 220, 0.25)",
+                "font": "rgb(204, 204, 220)",
+                "statusDown": "#ff0000"
+              },
+              "compactVerticalLinks": false,
+              "id": "30e1efb6-5182-4265-8efc-28db222da844",
+              "isConnection": false,
+              "label": "NAS_1",
+              "nodeIcon": {
+                "drawInside": true,
+                "name": "cisco/storge-server",
+                "padding": {
+                  "horizontal": 0,
+                  "vertical": 0
+                },
+                "size": {
+                  "height": 40,
+                  "width": 40
+                },
+                "src": "public/plugins/knightss27-weathermap-panel/icons/cisco/storge-server.svg"
+              },
+              "padding": {
+                "horizontal": 10,
+                "vertical": 4
+              },
+              "position": [
+                430,
+                420
+              ],
+              "useConstantSpacing": false
+            },
+            {
+              "anchors": {
+                "0": {
+                  "numFilledLinks": 0,
+                  "numLinks": 1
+                },
+                "1": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "2": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "3": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "4": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                }
+              },
+              "colors": {
+                "background": "rgba(204, 204, 220, 0.16)",
+                "border": "rgba(204, 204, 220, 0.25)",
+                "font": "rgb(204, 204, 220)",
+                "statusDown": "#ff0000"
+              },
+              "compactVerticalLinks": false,
+              "id": "b8be368a-313c-4eec-b2d2-86e8fba53331",
+              "isConnection": false,
+              "label": "NAS_2",
+              "nodeIcon": {
+                "drawInside": true,
+                "name": "cisco/storge-server",
+                "padding": {
+                  "horizontal": 0,
+                  "vertical": 0
+                },
+                "size": {
+                  "height": 40,
+                  "width": 40
+                },
+                "src": "public/plugins/knightss27-weathermap-panel/icons/cisco/storge-server.svg"
+              },
+              "padding": {
+                "horizontal": 10,
+                "vertical": 4
+              },
+              "position": [
+                730,
+                420
+              ],
+              "useConstantSpacing": false
+            },
+            {
+              "anchors": {
+                "0": {
+                  "numFilledLinks": 0,
+                  "numLinks": 1
+                },
+                "1": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "2": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "3": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "4": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                }
+              },
+              "colors": {
+                "background": "rgba(204, 204, 220, 0.16)",
+                "border": "rgba(204, 204, 220, 0.25)",
+                "font": "rgb(204, 204, 220)",
+                "statusDown": "#ff0000"
+              },
+              "compactVerticalLinks": false,
+              "id": "cb520460-96b5-436d-8e47-04357c9720cf",
+              "isConnection": false,
+              "label": "Velop Salon",
+              "nodeIcon": {
+                "drawInside": true,
+                "name": "networking/wireless-access-point",
+                "padding": {
+                  "horizontal": 0,
+                  "vertical": 0
+                },
+                "size": {
+                  "height": 40,
+                  "width": 40
+                },
+                "src": "public/plugins/knightss27-weathermap-panel/icons/networking/wireless-access-point.svg"
+              },
+              "padding": {
+                "horizontal": 10,
+                "vertical": 4
+              },
+              "position": [
+                650,
+                110
+              ],
+              "useConstantSpacing": false
+            },
+            {
+              "anchors": {
+                "0": {
+                  "numFilledLinks": 0,
+                  "numLinks": 1
+                },
+                "1": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "2": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "3": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                },
+                "4": {
+                  "numFilledLinks": 0,
+                  "numLinks": 0
+                }
+              },
+              "colors": {
+                "background": "rgba(204, 204, 220, 0.16)",
+                "border": "rgba(204, 204, 220, 0.25)",
+                "font": "rgb(204, 204, 220)",
+                "statusDown": "#ff0000"
+              },
+              "compactVerticalLinks": false,
+              "id": "48623835-24b3-4466-a41c-56fada449a5b",
+              "isConnection": false,
+              "label": "Velop Bureau",
+              "nodeIcon": {
+                "drawInside": false,
+                "name": "networking/wireless-access-point",
+                "padding": {
+                  "horizontal": 0,
+                  "vertical": 0
+                },
+                "size": {
+                  "height": 40,
+                  "width": 40
+                },
+                "src": "public/plugins/knightss27-weathermap-panel/icons/networking/wireless-access-point.svg"
+              },
+              "padding": {
+                "horizontal": 10,
+                "vertical": 4
+              },
+              "position": [
+                1450,
+                60
+              ],
+              "useConstantSpacing": false
+            }
+          ],
+          "scale": [
+            {
+              "color": "#5794F2",
+              "percent": 0
+            },
+            {
+              "color": "#73BF69",
+              "percent": 25
+            },
+            {
+              "color": "#FADE2A",
+              "percent": 50
+            },
+            {
+              "color": "#FF9830",
+              "percent": 75
+            },
+            {
+              "color": "#F2495C",
+              "percent": 90
+            }
+          ],
+          "settings": {
+            "fontSizing": {
+              "link": 7,
+              "node": 10
+            },
+            "link": {
+              "label": {
+                "background": "rgba(204, 204, 220, 0.16)",
+                "border": "rgba(204, 204, 220, 0.25)",
+                "font": "rgb(204, 204, 220)"
+              },
+              "showAllWithPercentage": false,
+              "spacing": {
+                "horizontal": 10,
+                "vertical": 5
+              },
+              "stroke": {
+                "color": "rgba(204, 204, 220, 0.16)"
+              }
+            },
+            "panel": {
+              "backgroundColor": "#181b1f",
+              "grid": {
+                "enabled": true,
+                "guidesEnabled": false,
+                "size": 10
+              },
+              "offset": {
+                "x": 0,
+                "y": 0
+              },
+              "panelSize": {
+                "height": 1024,
+                "width": 1280
+              },
+              "showTimestamp": true,
+              "zoomScale": 0
+            },
+            "scale": {
+              "fontSizing": {
+                "threshold": 12,
+                "title": 16
+              },
+              "position": {
+                "x": 0,
+                "y": 0
+              },
+              "size": {
+                "height": 200,
+                "width": 50
+              },
+              "title": "Traffic Load"
+            },
+            "tooltip": {
+              "backgroundColor": "black",
+              "fontSize": 8,
+              "textColor": "white"
+            }
+          },
+          "version": 9
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "editorMode": "code",
+          "expr": "up{instance=\"192.168.2.1\",job=\"network-snmp-exporter\"}",
+          "legendFormat": "linksys-router-up",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "editorMode": "code",
+          "expr": "up{instance=\"192.168.2.10\",job=\"network-snmp-exporter\"}",
+          "hide": false,
+          "legendFormat": "linksys-28-up",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "editorMode": "code",
+          "expr": "up{instance=\"192.168.2.11\",job=\"network-snmp-exporter\"}",
+          "hide": false,
+          "legendFormat": "linksys-8-tab-up",
+          "range": true,
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "editorMode": "code",
+          "expr": "up{instance=\"192.168.2.12\",job=\"network-snmp-exporter\"}",
+          "hide": false,
+          "legendFormat": "linksys-8-bur-up",
+          "range": true,
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "editorMode": "code",
+          "expr": "node_network_up{device=\"vmbr0\",instance=\"192.168.2.55:9100\"}",
+          "hide": false,
+          "legendFormat": "proxmox-up",
+          "range": true,
+          "refId": "E"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "editorMode": "code",
+          "expr": "rate(node_network_receive_bytes_total{job=\"node_exporter\", instance=\"192.168.2.55:9100\", device=\"vmbr0\"}[1m])",
+          "hide": false,
+          "legendFormat": "proxmox-net",
+          "range": true,
+          "refId": "F"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "editorMode": "code",
+          "expr": "rate(ifHCOutOctets{instance=\"192.168.2.10\",ifName=\"gi1\",job=\"network-snmp-exporter\"}[30s])",
+          "hide": false,
+          "legendFormat": "linksys28-proxmox",
+          "range": true,
+          "refId": "G"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "editorMode": "code",
+          "expr": "rate(ifHCInOctets{instance=\"192.168.2.10\",ifName=\"gi27\",job=\"network-snmp-exporter\"}[30s])",
+          "hide": false,
+          "legendFormat": "linksys28-router",
+          "range": true,
+          "refId": "H"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "editorMode": "code",
+          "expr": "rate(ifHCInOctets{instance=\"192.168.2.1\",ifName=\"eth0\" ,job=\"network-snmp-exporter\"}[30s])",
+          "hide": false,
+          "legendFormat": "router-linksys28",
+          "range": true,
+          "refId": "I"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "editorMode": "code",
+          "expr": "rate(ifHCInOctets{instance=\"192.168.2.10\",ifName=\"gi28\",job=\"network-snmp-exporter\"}[30s])",
+          "hide": false,
+          "legendFormat": "linksys28-linksystab",
+          "range": true,
+          "refId": "J"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "editorMode": "code",
+          "expr": "rate(ifHCInOctets{instance=\"192.168.2.11\",ifName=\"gi1\",job=\"network-snmp-exporter\"}[30s])",
+          "hide": false,
+          "legendFormat": "linksystab-linksys28",
+          "range": true,
+          "refId": "K"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "editorMode": "code",
+          "expr": "rate(ifHCInOctets{instance=\"192.168.2.10\",ifName=\"gi25\",job=\"network-snmp-exporter\"}[30s])",
+          "hide": false,
+          "legendFormat": "linksys28-nas_1",
+          "range": true,
+          "refId": "L"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "editorMode": "code",
+          "expr": "rate(ifHCInOctets{instance=\"192.168.2.50\",ifName=\"eth0\",job=\"network-snmp-exporter\"}[30s])",
+          "hide": false,
+          "legendFormat": "nas_1-linksys28",
+          "range": true,
+          "refId": "M"
+        }
+      ],
+      "title": "Network Map",
+      "type": "knightss27-weathermap-panel"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "20i-NOT4z"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1000000
+              },
+              {
+                "color": "orange",
+                "value": 100000000
+              },
+              {
+                "color": "red",
+                "value": 1000000000
+              }
+            ]
+          },
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 21,
+        "w": 7,
+        "x": 0,
+        "y": 33
+      },
+      "id": 6,
+      "options": {
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "9.3.2",
+      "targets": [
+        {
+          "$$hashKey": "object:491",
+          "aggregation": "Last",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "decimals": 2,
+          "displayAliasType": "Warning / Critical",
+          "displayType": "Regular",
+          "displayValueWithAlias": "Never",
+          "editorMode": "code",
+          "expr": "rate(ifHCInOctets{instance=\"$server\",job=\"network-snmp-exporter\"}[1m])",
+          "format": "time_series",
+          "legendFormat": "{{ifName}} - {{ifAlias}}",
+          "range": true,
+          "refId": "A",
+          "units": "none",
+          "valueHandler": "Number Threshold"
+        },
+        {
+          "$$hashKey": "object:491",
+          "aggregation": "Last",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "decimals": 2,
+          "displayAliasType": "Warning / Critical",
+          "displayType": "Regular",
+          "displayValueWithAlias": "Never",
+          "editorMode": "code",
+          "expr": "rate(ifHCOutOctets{instance=\"$server\",job=\"network-snmp-exporter\"}[1m])",
+          "hide": true,
+          "legendFormat": "{{ifName}} - {{ifAlias}}",
+          "range": true,
+          "refId": "B",
+          "units": "none",
+          "valueHandler": "Number Threshold"
+        }
+      ],
+      "title": "Download",
+      "transformations": [],
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "20i-NOT4z"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1000000
+              },
+              {
+                "color": "orange",
+                "value": 100000000
+              },
+              {
+                "color": "red",
+                "value": 1000000000
+              }
+            ]
+          },
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 21,
+        "w": 7,
+        "x": 7,
+        "y": 33
+      },
+      "id": 7,
+      "options": {
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "9.3.2",
+      "targets": [
+        {
+          "$$hashKey": "object:491",
+          "aggregation": "Last",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "decimals": 2,
+          "displayAliasType": "Warning / Critical",
+          "displayType": "Regular",
+          "displayValueWithAlias": "Never",
+          "editorMode": "code",
+          "expr": "rate(ifHCInOctets{instance=\"$server\",job=\"network-snmp-exporter\"}[1m])",
+          "format": "time_series",
+          "hide": true,
+          "legendFormat": "{{ifName}} - {{ifAlias}}",
+          "range": true,
+          "refId": "A",
+          "units": "none",
+          "valueHandler": "Number Threshold"
+        },
+        {
+          "$$hashKey": "object:491",
+          "aggregation": "Last",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "decimals": 2,
+          "displayAliasType": "Warning / Critical",
+          "displayType": "Regular",
+          "displayValueWithAlias": "Never",
+          "editorMode": "code",
+          "expr": "rate(ifHCOutOctets{instance=\"$server\",job=\"network-snmp-exporter\"}[1m])",
+          "hide": false,
+          "legendFormat": "{{ifName}} - {{ifAlias}}",
+          "range": true,
+          "refId": "B",
+          "units": "none",
+          "valueHandler": "Number Threshold"
+        }
+      ],
+      "title": "Upload",
+      "transformations": [],
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "20i-NOT4z"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "filterable": false,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "Bps"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #download"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "gradient-gauge"
+              },
+              {
+                "id": "displayName",
+                "value": "Download"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #upload"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "gradient-gauge"
+              },
+              {
+                "id": "displayName",
+                "value": "Upload"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 21,
+        "w": 9,
+        "x": 15,
+        "y": 33
+      },
+      "id": 8,
+      "options": {
+        "footer": {
+          "enablePagination": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "frameIndex": 0,
+        "showHeader": true
+      },
+      "pluginVersion": "9.3.2",
+      "targets": [
+        {
+          "$$hashKey": "object:491",
+          "aggregation": "Last",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "decimals": 2,
+          "displayAliasType": "Warning / Critical",
+          "displayType": "Regular",
+          "displayValueWithAlias": "Never",
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "max(rate(ifHCInOctets{instance=\"$server\", job=\"network-snmp-exporter\"}[1m])) by (ifName,ifAlias)",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "download",
+          "units": "none",
+          "valueHandler": "Number Threshold"
+        },
+        {
+          "$$hashKey": "object:491",
+          "aggregation": "Last",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "decimals": 2,
+          "displayAliasType": "Warning / Critical",
+          "displayType": "Regular",
+          "displayValueWithAlias": "Never",
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "max(rate(ifHCOutOctets{instance=\"$server\",job=\"network-snmp-exporter\"}[1m])) by (ifName,ifAlias)",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "upload",
+          "units": "none",
+          "valueHandler": "Number Threshold"
+        }
+      ],
+      "title": "Network",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "ifAlias",
+                "ifName",
+                "Value #download",
+                "Value #upload"
+              ]
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "20i-NOT4z"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 22,
+        "w": 17,
+        "x": 0,
+        "y": 54
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "sortBy": "Last *",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "editorMode": "code",
+          "expr": "rate(node_network_receive_bytes_total{job=\"node_exporter\", instance=\"192.168.2.55:9100\", device=\"vmbr0\"}[30s])",
+          "legendFormat": "{{instance}} - node - {{device}}",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "editorMode": "code",
+          "expr": "rate(node_network_receive_bytes_total{job=\"node_exporter\", device=\"ens18\"}[30s])",
+          "hide": false,
+          "legendFormat": "{{instance}} - node - {{device}}",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "editorMode": "code",
+          "expr": "rate(node_network_receive_bytes_total{job=\"node_exporter\", device=\"eth0\"}[30s])",
+          "hide": false,
+          "legendFormat": "{{instance}} - node - {{device}}",
+          "range": true,
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "editorMode": "code",
+          "expr": "rate(windows_net_bytes_received_total{job=\"node_exporter\"}[30s])",
+          "hide": false,
+          "legendFormat": "{{instance}} - node- {{nic}}",
+          "range": true,
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "editorMode": "code",
+          "expr": "rate(ifHCInOctets{instance=~\"192.168.2..*\",ifDescr=~\"eth.*\",job=\"network-snmp-exporter\"}[30s])",
+          "hide": false,
+          "legendFormat": "{{instance}} - snmp - {{ifName}}",
+          "range": true,
+          "refId": "E"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "editorMode": "code",
+          "expr": "rate(ifHCInOctets{instance=~\"192.168.2..*\",ifDescr=~\"gi.*\",job=\"network-snmp-exporter\"}[30s])",
+          "hide": false,
+          "legendFormat": "{{instance}} - snmp - {{ifName}}",
+          "range": true,
+          "refId": "F"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "20i-NOT4z"
+          },
+          "editorMode": "code",
+          "expr": "rate(ifHCInOctets{instance=~\"192.168.2..*\",ifDescr=~\"ens.*\",job=\"network-snmp-exporter\"}[30s])",
+          "hide": false,
+          "legendFormat": "{{instance}} - snmp - {{ifName}}",
+          "range": true,
+          "refId": "G"
+        }
+      ],
+      "title": "Panel Title",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 37,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "192.168.2.10",
+          "value": "192.168.2.10"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "20i-NOT4z"
+        },
+        "definition": "label_values(ifHCInOctets{job=\"network-snmp-exporter\"}, instance)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "server",
+        "multi": false,
+        "name": "server",
+        "options": [],
+        "query": {
+          "query": "label_values(ifHCInOctets{job=\"network-snmp-exporter\"}, instance)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Network Map 2",
+  "uid": "hxfP72AVk",
+  "weekStart": ""
+}

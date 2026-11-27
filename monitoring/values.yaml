@@ -64,7 +64,8 @@ grafana:
 
   environment:
     TIMEZONE: Europe/Paris
-    GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource,grafana-piechart-panel,grafana-worldmap-panel,grafana-kubernetes-app,simpod-json-datasource,camptocamp-prometheus-alertmanager-datasource,grafana-github-datasource
+    # Plugins installed in Grafana 13 on 2026-11-27 (angular ones like piechart/worldmap no longer load)
+    GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-github-datasource,simpod-json-datasource,camptocamp-prometheus-alertmanager-datasource,knightss27-weathermap-panel,grafana-polystat-panel
     GF_PATHS_CONFIG: /etc/grafana/grafana.ini
     GF_PATHS_DATA: /var/lib/grafana
     GF_PATHS_HOME: /usr/share/grafana
@@ -128,14 +129,40 @@ grafana:
       # Empty = leave the dashboards as they are.
       defaultDatasourceUid: ""
 
-  # Extra datasources provisioned from Helm (Grafana provisioning format),
-  # added to the ones on the NAS. Needs sidecar.enabled.
+  # Datasources provisioned from Helm (Grafana provisioning format). A datasource
+  # with the uid/name of an existing one takes it over (it becomes read-only in
+  # the UI). Secrets: "$VAR" in secureJsonData, VAR coming from envFromSecrets.
   provisionedDatasources: []
 
+  # Secrets whose keys are added as env vars of the Grafana container.
+  envFromSecrets: []
+
+  # Dashboards shipped with the chart: dashboards/<folder>/<uid>.json, one
+  # Grafana folder per key below (title "" = General). A dashboard keeps its uid,
+  # so it takes over the existing one with the same uid (same URL).
+  dashboards:
+    enabled: false
+    # false = edits in the UI cannot be saved (export the JSON into the chart instead)
+    allowUiUpdates: false
+    folders:
+      general: {title: "", uid: ""}
+      alerts: {title: Alerts, uid: 7sJJoeY4k}
+      aws: {title: AWS, uid: TKAqf404k}
+      docker: {title: docker, uid: qILox9o4k}
+      github: {title: Github, uid: cdvpzfphjhyioa}
+      kubernetes: {title: Kubernetes, uid: BfZ-Ddo4k}
+      logs: {title: Logs, uid: RuAPQ-fVk}
+      loki: {title: Loki, uid: fc5abf41-53c7-4f95-ac61-4efe7dfeaaa6}
+      network: {title: Network, uid: anTlTboVk}
+      proxmox: {title: Proxmox, uid: QFUKtA04k}
+      synology: {title: Synology, uid: XB9giKoVz}
+
   volumes:
+    # Optional NFS for /etc/grafana (grafana.ini). Empty server = image defaults;
+    # all settings come from environment (GF_*) and the provisioning above.
     config:
       name: config
-      server: 192.168.2.50
+      server: ""
       path: /volume2/docker/grafana/config
       containerMountPath: /etc/grafana
     data:
@@ -155,6 +182,146 @@ grafana:
     ingressClassName: traefik
     annotations:
       cert-manager.io/cluster-issuer: le-wildcard-issuer
+
+alertmanager:
+  # Optional. When enabled, point Prometheus at it in prometheus.configFiles:
+  #   alerting: {alertmanagers: [{static_configs: [{targets: ["<release>-alertmanager:9093"]}]}]}
+  enabled: false
+  image: prom/alertmanager:v0.35.1
+  httpport: 9093
+  # Public URL used in notification links (e.g. https://alertmanager.arcanexus.com)
+  externalUrl: ""
+  # How long silences and notification state are kept
+  retention: 120h
+  extraArgs: []
+
+  security:
+    runAsUser: 65534
+    runAsGroup: 65534
+
+  # Same placement rule as Grafana: not on the low-performance k3s-3
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: NotIn
+                values: [k3s-3]
+
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      memory: 128Mi
+
+  # alertmanager.yml, rendered with tpl into a ConfigMap. Ignored when
+  # existingSecret is set (use that when receivers hold secrets such as
+  # webhook URLs or SMTP passwords: Secret with key alertmanager.yml,
+  # e.g. from an ExternalSecret next to the Argo CD Application).
+  existingSecret: ""
+  config: |
+    route:
+      receiver: "null"
+      group_by: [alertname, job]
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 4h
+    receivers:
+      - name: "null"
+
+  # Silences/notification log: emptyDir by default (lost on restart).
+  # Set nfs.server + nfs.path to keep them.
+  persistence:
+    nfs:
+      server: ""
+      path: ""
+
+  ingress:
+    enabled: false
+    host: alertmanager.arcanexus.com
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: le-wildcard-issuer
+
+# Optional local Loki (subchart grafana/loki 7.7.0, Loki 3.6.20), monolithic
+# (SingleBinary) on local-path storage (not the NAS, to keep its writes low).
+# Off: logs go to Grafana Cloud. To use it: enabled: true, then add a
+# loki.write endpoint "http://loki:3100/loki/api/v1/push" to the Alloy configs
+# and a Loki datasource (url http://loki:3100) in grafana.provisionedDatasources.
+loki:
+  enabled: false
+  fullnameOverride: loki
+  deploymentMode: SingleBinary
+  loki:
+    auth_enabled: false
+    commonConfig:
+      replication_factor: 1
+    storage:
+      type: filesystem
+    schemaConfig:
+      configs:
+        - from: "2026-01-01"
+          store: tsdb
+          object_store: filesystem
+          schema: v13
+          index:
+            prefix: loki_index_
+            period: 24h
+    limits_config:
+      retention_period: 720h  # 30 days
+      max_line_size: 256KB
+    compactor:
+      retention_enabled: true
+      delete_request_store: filesystem
+    pattern_ingester:
+      enabled: false
+  singleBinary:
+    replicas: 1
+    persistence:
+      storageClass: local-path
+      size: 30Gi
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: NotIn
+                  values: [k3s-3]
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 1Gi
+  # Monolithic mode: no read/write/backend pods, no caches, canary, gateway or tests
+  read: {replicas: 0}
+  write: {replicas: 0}
+  backend: {replicas: 0}
+  gateway: {enabled: false}
+  chunksCache: {enabled: false}
+  resultsCache: {enabled: false}
+  lokiCanary: {enabled: false}
+  test: {enabled: false}
+  minio: {enabled: false}
+
+# --- Own charts as subcharts (oci://ghcr.io/arcanexus/charts), off by default.
+# Their values are the ones of each chart, nested under its name.
+# pihole-, snmp- and speedtest-exporter templates pin their own namespace (the
+# chart name; snmp/speedtest also render that Namespace): they stay where they
+# were. influxdb and loki-exporter use the release namespace.
+influxdb:
+  enabled: false
+pihole-exporter:
+  enabled: false
+snmp-exporter:
+  enabled: false
+speedtest-exporter:
+  enabled: false
+loki-exporter:
+  enabled: false
 
 syslogng:
   # false = no syslog-ng Deployment/Services (replaced by Grafana Alloy, app alloy-syslog)
@@ -181,3 +348,304 @@ syslogng:
       server: 192.168.2.50
       path: /volume2/docker/loki/config-syslog-ng
       containerMountPath: /etc/syslog-ng
+
+# ---------------------------------------------------------------------------
+# Healthchecks.io pinger (was the monitoring-healthchecksio chart)
+healthchecksio:
+  enabled: false
+  image: ghcr.io/arcanexus/docker-healthchecksio:v1.2.1
+  replicas: 1
+  debug: "false"
+  tz: "Europe/Paris"
+  security:
+    runAsUser: 0
+    runAsGroup: 0
+  volumes:
+    config:
+      name: config
+      server: 192.168.2.50
+      path: /volume2/docker/monitoring-healthchecksio/config
+      containerMountPath: /app/config/
+  # Sidecar restarting the pod when the config changes
+  configwatcher:
+    image: alpine:3.24.4
+
+# ---------------------------------------------------------------------------
+# Grafana Alloy (subchart grafana/alloy, twice). Log collectors -> Grafana Cloud
+# Logs. The token comes from the Secret alloy-grafana-cloud (key
+# GRAFANA_CLOUD_LOGS_TOKEN), created outside the chart (ExternalSecret).
+
+# DaemonSet: pod logs (/var/log/pods) + node journald. Replaces promtail.
+alloy-logs:
+  enabled: false
+  fullnameOverride: alloy-logs
+  image:
+    tag: v1.22.0
+  # PodLogs CRD unused (and would be owned twice)
+  crds:
+    create: false
+  controller:
+    type: daemonset
+    # Also collect k3s-1 (tainted control-plane NoSchedule).
+    tolerations:
+      - operator: Exists
+  alloy:
+    enableReporting: false
+    mounts:
+      # /var/log/pods and /var/log/journal
+      varlog: true
+    extraEnv:
+      - name: NODE_NAME
+        valueFrom:
+          fieldRef:
+            fieldPath: spec.nodeName
+    envFrom:
+      - secretRef:
+          name: alloy-grafana-cloud
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        memory: 512Mi
+    configMap:
+      content: |
+        logging {
+          level  = "info"
+          format = "logfmt"
+        }
+
+        // ---------- Pod logs of this node ----------
+        discovery.kubernetes "pods" {
+          role = "pod"
+          selectors {
+            role  = "pod"
+            field = "spec.nodeName=" + sys.env("NODE_NAME")
+          }
+        }
+
+        // Same labels as the promtail chart (job = namespace/app), minus
+        // the high-cardinality filename.
+        discovery.relabel "pods" {
+          targets = discovery.kubernetes.pods.targets
+          rule {
+            source_labels = ["__meta_kubernetes_namespace"]
+            target_label  = "namespace"
+          }
+          rule {
+            source_labels = ["__meta_kubernetes_pod_name"]
+            target_label  = "pod"
+          }
+          rule {
+            source_labels = ["__meta_kubernetes_pod_container_name"]
+            target_label  = "container"
+          }
+          rule {
+            source_labels = ["__meta_kubernetes_pod_node_name"]
+            target_label  = "node_name"
+          }
+          rule {
+            source_labels = [
+              "__meta_kubernetes_pod_label_app_kubernetes_io_name",
+              "__meta_kubernetes_pod_label_app",
+              "__meta_kubernetes_pod_label_k8s_app",
+            ]
+            separator    = ";"
+            regex        = "^;*([^;]+)(;.*)?$"
+            target_label = "app"
+          }
+          rule {
+            source_labels = ["namespace", "app"]
+            separator     = "/"
+            target_label  = "job"
+          }
+          rule {
+            source_labels = ["__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
+            separator     = "/"
+            target_label  = "__path__"
+            replacement   = "/var/log/pods/*$1/*.log"
+          }
+        }
+
+        local.file_match "pods" {
+          path_targets = discovery.relabel.pods.output
+        }
+
+        loki.source.file "pods" {
+          targets    = local.file_match.pods.targets
+          forward_to = [loki.process.pods.receiver]
+        }
+
+        loki.process "pods" {
+          stage.cri {}
+          stage.label_drop {
+            values = ["filename"]
+          }
+          // Grafana Cloud rejects entries over 256 KiB, and a rejected
+          // entry makes it drop the whole batch (seen with AWX).
+          stage.drop {
+            longer_than         = "250KiB"
+            drop_counter_reason = "line_too_long"
+          }
+          forward_to = [loki.write.grafana_cloud.receiver]
+        }
+
+        // ---------- Node journald ----------
+        loki.relabel "journal" {
+          forward_to = []
+          rule {
+            source_labels = ["__journal__systemd_unit"]
+            target_label  = "unit"
+          }
+          rule {
+            source_labels = ["__journal_priority_keyword"]
+            target_label  = "level"
+          }
+        }
+
+        loki.source.journal "node" {
+          path          = "/var/log/journal"
+          max_age       = "12h"
+          relabel_rules = loki.relabel.journal.rules
+          labels        = {
+            job  = "node/journal",
+            host = sys.env("NODE_NAME"),
+          }
+          forward_to    = [loki.write.grafana_cloud.receiver]
+        }
+
+        // ---------- Grafana Cloud ----------
+        loki.write "grafana_cloud" {
+          endpoint {
+            url = "https://logs-prod-us-central1.grafana.net/loki/api/v1/push"
+            basic_auth {
+              username = "25726"
+              password = sys.env("GRAFANA_CLOUD_LOGS_TOKEN")
+            }
+          }
+          external_labels = {
+            cluster   = "k3s",
+            collector = "alloy",
+          }
+        }
+
+# Single pod: syslog relay for the Synology NAS (replaces syslog-ng) +
+# Kubernetes events. Senders: <any node IP> UDP 30514 (BSD, RFC 3164) or
+# TCP 30601 (IETF, RFC 5424). Needs syslogng.enabled false (same NodePorts).
+alloy-syslog:
+  enabled: false
+  fullnameOverride: alloy-syslog
+  image:
+    tag: v1.22.0
+  crds:
+    create: false
+  controller:
+    type: deployment
+    replicas: 1
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: NotIn
+                  values: [k3s-3]
+  service:
+    type: NodePort
+    # Alloy UI/metrics port 12345
+    nodePort: 31128
+  alloy:
+    enableReporting: false
+    extraPorts:
+      - name: syslog-udp
+        port: 514
+        targetPort: 514
+        nodePort: 30514
+        protocol: UDP
+      - name: syslog-tcp
+        port: 601
+        targetPort: 601
+        nodePort: 30601
+        protocol: TCP
+    envFrom:
+      - secretRef:
+          name: alloy-grafana-cloud
+    resources:
+      requests:
+        cpu: 20m
+        memory: 64Mi
+      limits:
+        memory: 256Mi
+    configMap:
+      content: |
+        logging {
+          level  = "info"
+          format = "logfmt"
+        }
+
+        // ---------- Syslog (Synology and other devices) ----------
+        loki.relabel "syslog" {
+          forward_to = []
+          rule {
+            source_labels = ["__syslog_message_hostname"]
+            target_label  = "host"
+          }
+          // No hostname in the message: use the sender IP.
+          rule {
+            source_labels = ["host", "__syslog_connection_ip_address"]
+            separator     = ";"
+            regex         = ";(.+)"
+            target_label  = "host"
+          }
+          rule {
+            source_labels = ["__syslog_message_app_name"]
+            target_label  = "app"
+          }
+          rule {
+            source_labels = ["__syslog_message_severity"]
+            target_label  = "level"
+          }
+          rule {
+            source_labels = ["__syslog_message_facility"]
+            target_label  = "facility"
+          }
+        }
+
+        loki.source.syslog "network" {
+          listener {
+            address       = "0.0.0.0:514"
+            protocol      = "udp"
+            syslog_format = "rfc3164"
+            labels        = { job = "syslog", transport = "udp" }
+          }
+          listener {
+            address       = "0.0.0.0:601"
+            protocol      = "tcp"
+            syslog_format = "rfc5424"
+            labels        = { job = "syslog", transport = "tcp" }
+          }
+          relabel_rules = loki.relabel.syslog.rules
+          forward_to    = [loki.write.grafana_cloud.receiver]
+        }
+
+        // ---------- Kubernetes events (one pod only) ----------
+        loki.source.kubernetes_events "cluster" {
+          job_name   = "kubernetes/events"
+          log_format = "logfmt"
+          forward_to = [loki.write.grafana_cloud.receiver]
+        }
+
+        // ---------- Grafana Cloud ----------
+        loki.write "grafana_cloud" {
+          endpoint {
+            url = "https://logs-prod-us-central1.grafana.net/loki/api/v1/push"
+            basic_auth {
+              username = "25726"
+              password = sys.env("GRAFANA_CLOUD_LOGS_TOKEN")
+            }
+          }
+          external_labels = {
+            cluster   = "k3s",
+            collector = "alloy",
+          }
+        }
